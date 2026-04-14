@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\DashboardController;
 
 // Quick Login Route to get a token for Postman testing
 Route::post('/login', function (Request $request) {
@@ -29,10 +30,20 @@ Route::post('/login', function (Request $request) {
 });
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json([
+        'success' => true,
+        'message' => 'User profile retrieved',
+        'data' => $request->user()
+    ]);
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
     Route::apiResource('clients', ClientController::class);
+    
+    // Invoice Extra Endpoints
+    Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'generatePdf']);
+    Route::post('invoices/{invoice}/send-email', [InvoiceController::class, 'sendEmail']);
     Route::apiResource('invoices', InvoiceController::class);
 });
