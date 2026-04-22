@@ -233,7 +233,7 @@ class InvoiceController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
         }
 
-        $invoice->load('client', 'invoiceItems');
+        $invoice->load('client', 'invoiceItems', 'user');
 
         $pdf = Pdf::loadView('pdf.invoice', compact('invoice'));
 
@@ -251,18 +251,18 @@ class InvoiceController extends Controller
         }
 
         try {
-            $invoice->load('client', 'invoiceItems');
+            $invoice->load('client', 'invoiceItems', 'user');
             $pdf = Pdf::loadView('pdf.invoice', compact('invoice'));
             $pdfContent = $pdf->output();
 
             Mail::to($invoice->client->email)->send(new InvoiceMail($invoice, $pdfContent));
 
-            // update invoice status to sent
-            $invoice->update(['statut' => 'envoyée']);
+            // update invoice status to sent (envoyee)
+            $invoice->update(['statut' => 'envoyee']);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Invoice sent successfully via email',
+                'message' => 'Invoice sent successfully',
                 'data' => null
             ]);
         } catch (\Exception $e) {

@@ -24,7 +24,11 @@ class ApiAuthTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-                 ->assertJsonStructure(['user', 'token']);
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'data' => ['user', 'token']
+                 ]);
     }
 
     public function test_login_fails_with_invalid_credentials()
