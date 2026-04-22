@@ -2,42 +2,22 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SettingsController;
 
-// Quick Login Route to get a token for Postman testing
-Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+// Public Auth Routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->mot_de_passe)) {
-        return response()->json(['message' => 'Invalid credentials'], 401);
-    }
-
-    $token = $user->createToken('postman-testing')->plainTextToken;
-
-    return response()->json([
-        'user' => $user,
-        'token' => $token
-    ]);
-});
-
-Route::get('/user', function (Request $request) {
-    return response()->json([
-        'success' => true,
-        'message' => 'User profile retrieved',
-        'data' => $request->user()
-    ]);
-})->middleware('auth:sanctum');
-
+// Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'me']);
+    Route::post('/user/logo', [SettingsController::class, 'updateLogo']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
     Route::apiResource('clients', ClientController::class);

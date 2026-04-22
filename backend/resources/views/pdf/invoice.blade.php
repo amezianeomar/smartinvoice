@@ -22,7 +22,11 @@
 <body>
     <div class="header">
         <div class="company-info">
-            <h1>SmartInvoice Pro</h1>
+            @if($invoice->user->logo_url)
+                <img src="{{ $invoice->user->logo_url }}" style="max-width: 150px; max-height: 80px; margin-bottom: 10px;">
+            @else
+                <h1>SmartInvoice Pro</h1>
+            @endif
             <p>123 Rue de la Startup<br>Casablanca, 20000<br>contact@smartinvoice.ma</p>
         </div>
         <div class="invoice-details">
