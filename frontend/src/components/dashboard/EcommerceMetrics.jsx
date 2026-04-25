@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, AlertCircle, Banknote, DollarSign, ArrowRight } from 'lucide-react';
 
-export default function EcommerceMetrics() {
+export default function EcommerceMetrics({ stats }) {
   const metrics = [
     {
       title: "Chiffre d'Affaires",
-      value: "1 245 500,00 MAD",
+      value: `${(stats?.total_revenue || 0).toLocaleString('fr-MA')} MAD`,
       change: "+12.5%",
       isPositive: true,
       icon: <TrendingUp size={24} className="text-[#18adf2]" />,
@@ -14,26 +14,26 @@ export default function EcommerceMetrics() {
       path: "/dashboard/statistiques"
     },
     {
-      title: "TVA Collectée (20%)",
-      value: "249 100,00 MAD",
-      change: "+12.5%",
+      title: "Factures Totales",
+      value: stats?.invoice_count || 0,
+      change: "+5.2%",
       isPositive: true,
       icon: <Banknote size={24} className="text-[#221ab7]" />,
       bgIcon: "bg-[#221ab7]/10",
-      path: "/dashboard/statistiques"
+      path: "/dashboard/factures"
     },
     {
-      title: "Factures en Retard",
-      value: "45 250,00 MAD",
+      title: "En attente de paiement",
+      value: `${(stats?.pending_amount || 0).toLocaleString('fr-MA')} MAD`,
       change: "-2.4%",
       isPositive: false,
-      icon: <AlertCircle size={24} className="text-red-500" />,
-      bgIcon: "bg-red-500/10",
-      path: "/dashboard/factures?filter=retard"
+      icon: <AlertCircle size={24} className="text-amber-500" />,
+      bgIcon: "bg-amber-500/10",
+      path: "/dashboard/factures?filter=attente"
     },
     {
-      title: "Solde Total",
-      value: "951 150,00 MAD",
+      title: "Solde Net Réel",
+      value: `${((stats?.total_revenue || 0) - (stats?.pending_amount || 0)).toLocaleString('fr-MA')} MAD`,
       change: "+8.2%",
       isPositive: true,
       icon: <DollarSign size={24} className="text-emerald-500" />,

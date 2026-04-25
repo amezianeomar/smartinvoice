@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext.jsx';
 
 import LandingPage from './pages/LandingPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
@@ -15,8 +16,31 @@ import Devis from './pages/Devis.jsx';
 import Paiements from './pages/Paiements.jsx';
 import Catalogue from './pages/Catalogue.jsx';
 
+/**
+ * ProtectedRoute Wrapper
+ * Redirects to /login if user is not authenticated
+ */
+function ProtectedRoute({ children }) {
+  const { user, token, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#080C16] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#18adf2] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!user || !token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
 export default function App() {
   const [isDark, setIsDark] = useState(true);
+  const { user, token } = useAuth();
 
   useEffect(() => {
     if (isDark) {
@@ -63,9 +87,25 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<LandingPage isDark={isDark} setIsDark={setIsDark} />} />
-        <Route path="/login" element={<AuthPage initialMode="login" />} />
-        <Route path="/register" element={<AuthPage initialMode="register" />} />
-        <Route path="/dashboard/*" element={<DashboardLayout isDark={isDark} setIsDark={setIsDark} />}>
+        
+        {/* Redirect to dashboard if already logged in */}
+        <Route 
+          path="/login" 
+          element={user && token ? <Navigate to="/dashboard" replace /> : <AuthPage initialMode="login" />} 
+        />
+        <Route 
+          path="/register" 
+          element={user && token ? <Navigate to="/dashboard" replace /> : <AuthPage initialMode="register" />} 
+        />
+
+        <Route 
+          path="/dashboard/*" 
+          element={
+            <ProtectedRoute>
+              <DashboardLayout isDark={isDark} setIsDark={setIsDark} />
+            </ProtectedRoute>
+          }
+        >
            <Route index element={<Dashboard />} />
            <Route path="factures" element={<FacturesList />} />
            <Route path="factures/nouvelle" element={<CreateInvoiceForm />} />

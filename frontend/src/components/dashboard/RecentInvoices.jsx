@@ -1,14 +1,7 @@
 import React from 'react';
 import { MoreHorizontal, FileText } from 'lucide-react';
 
-export default function RecentInvoices() {
-  const invoices = [
-    { id: "FAC-2026-001", client: "Nexus Tech IT", date: "12 Avr 2026", montant: "12 500,00 MAD", status: "Payée" },
-    { id: "FAC-2026-002", client: "Groupe OCP", date: "10 Avr 2026", montant: "450 000,00 MAD", status: "Payée" },
-    { id: "FAC-2026-003", client: "Maroc Telecom", date: "05 Avr 2026", montant: "24 300,00 MAD", status: "En attente" },
-    { id: "FAC-2026-004", client: "Agence Digitale", date: "28 Mar 2026", montant: "8 400,00 MAD", status: "En retard" },
-    { id: "FAC-2026-005", client: "Startup XYZ", date: "15 Mar 2026", montant: "15 000,00 MAD", status: "Payée" },
-  ];
+export default function RecentInvoices({ invoices = [] }) {
 
   const getStatusStyle = (status) => {
     switch (status) {

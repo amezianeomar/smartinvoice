@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, User, ArrowRight, Zap, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -23,22 +24,34 @@ const staggerItem = {
 
 export default function AuthPage({ initialMode = 'login' }) {
   const [isLogin, setIsLogin] = useState(initialMode === 'login');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [apiErrors, setApiErrors] = useState({});
+
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
 
   // Password strength logic
   const strength = Math.min(Math.floor(password.length / 3), 3);
   const strengthColors = ['bg-red-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-400'];
 
-  const navigate = useNavigate();
-
-  const handleSimulatedSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-        setIsLoading(false);
-        navigate('/dashboard');
-    }, 1500);
+    setApiErrors({});
+
+    const result = isLogin 
+      ? await login({ email, password })
+      : await register({ name, email, password });
+
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setApiErrors(result.errors || { general: result.error });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -101,9 +114,26 @@ export default function AuthPage({ initialMode = 'login' }) {
                   
                   <motion.div variants={staggerItem}><Divider text="Ou avec votre email" /></motion.div>
 
-                  <motion.form variants={staggerItem} className="space-y-4 mt-6" onSubmit={handleSimulatedSubmit}>
-                    <InputField icon={Mail} label="Adresse Email" type="email" placeholder="amine@entreprise.ma" />
-                    <InputField icon={Lock} label="Mot de passe" type="password" placeholder="••••••••" forgotLink />
+                  <motion.form variants={staggerItem} className="space-y-4 mt-6" onSubmit={handleSubmit}>
+                    <InputField 
+                      icon={Mail} 
+                      label="Adresse Email" 
+                      type="email" 
+                      placeholder="amine@entreprise.ma" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      error={apiErrors.email?.[0] || apiErrors.general}
+                    />
+                    <InputField 
+                      icon={Lock} 
+                      label="Mot de passe" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      forgotLink 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      error={apiErrors.password?.[0]}
+                    />
                     <SubmitButton text="Se Connecter" isLoading={isLoading} />
                   </motion.form>
 
@@ -129,17 +159,40 @@ export default function AuthPage({ initialMode = 'login' }) {
                   
                   <motion.div variants={staggerItem}><Divider text="Ou avec votre email" /></motion.div>
 
-                  <motion.form variants={staggerItem} className="space-y-4 mt-6" onSubmit={handleSimulatedSubmit}>
-                    <InputField icon={User} label="Nom Complet" type="text" placeholder="Amine Tazi" />
-                    <InputField icon={Mail} label="Adresse Email" type="email" placeholder="amine@entreprise.ma" />
+                  <motion.form variants={staggerItem} className="space-y-4 mt-6" onSubmit={handleSubmit}>
+                    <InputField 
+                      icon={User} 
+                      label="Nom Complet" 
+                      type="text" 
+                      placeholder="Amine Tazi" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      error={apiErrors.name?.[0]}
+                    />
+                    <InputField 
+                      icon={Mail} 
+                      label="Adresse Email" 
+                      type="email" 
+                      placeholder="amine@entreprise.ma" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      error={apiErrors.email?.[0]}
+                    />
                     
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Mot de passe</label>
                       <div className="relative group/input">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Lock size={16} /></div>
-                        <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none" />
+                        <input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          value={password} 
+                          onChange={(e) => setPassword(e.target.value)} 
+                          className={`w-full pl-11 pr-4 py-3 rounded-xl border ${apiErrors.password ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none`} 
+                        />
                         <div className="absolute inset-0 border border-[#18adf2] rounded-xl opacity-0 scale-95 group-focus-within/input:opacity-100 group-focus-within/input:scale-100 transition-all duration-300 pointer-events-none shadow-[0_0_15px_rgba(24,173,242,0.3)]" />
                       </div>
+                      {apiErrors.password && <p className="text-[10px] text-red-400 font-bold ml-1">{apiErrors.password[0]}</p>}
                       {password.length > 0 && (
                         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="flex gap-1 h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
                           {[0, 1, 2, 3].map((level) => (
@@ -246,7 +299,7 @@ export default function AuthPage({ initialMode = 'login' }) {
 // HELPER COMPONENTS
 // ============================================================================
 
-function InputField({ icon: Icon, label, type, placeholder, forgotLink }) {
+function InputField({ icon: Icon, label, type, placeholder, forgotLink, value, onChange, error }) {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center">
@@ -255,10 +308,17 @@ function InputField({ icon: Icon, label, type, placeholder, forgotLink }) {
       </div>
       <div className="relative group/input">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors z-10"><Icon size={16} /></div>
-        <input type={type} placeholder={placeholder} className="w-full pl-11 pr-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none relative z-10" />
+        <input 
+          type={type} 
+          placeholder={placeholder} 
+          value={value}
+          onChange={onChange}
+          className={`w-full pl-11 pr-4 py-3 rounded-xl border ${error ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none relative z-10`} 
+        />
         {/* Glow border effect on focus */}
         <div className="absolute inset-0 border border-[#18adf2] rounded-xl opacity-0 scale-95 group-focus-within/input:opacity-100 group-focus-within/input:scale-100 transition-all duration-300 pointer-events-none shadow-[0_0_15px_rgba(24,173,242,0.3)] z-0" />
       </div>
+      {error && <p className="text-[10px] text-red-400 font-bold ml-1">{error}</p>}
     </div>
   );
 }
