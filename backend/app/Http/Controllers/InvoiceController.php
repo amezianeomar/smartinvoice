@@ -62,7 +62,7 @@ class InvoiceController extends Controller
 
             $client = Client::find($validated['client_id']);
             if ($client->user_id !== auth()->id()) {
-                return response()->json(['success' => false, 'message' => 'Invalid client selected', 'data' => null], 403);
+                return response()->json(['success' => false, 'message' => 'Invalid client selected', 'errors' => []], 403);
             }
 
             $invoice = Invoice::create([
@@ -113,18 +113,18 @@ class InvoiceController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Error creating invoice', 'data' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Error creating invoice', 'errors' => []], 500);
         }
     }
 
     public function show(Invoice $invoice)
     {
         if ($invoice->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         return response()->json([
@@ -137,7 +137,7 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         if ($invoice->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         try {
@@ -158,7 +158,7 @@ class InvoiceController extends Controller
             if (isset($validated['client_id'])) {
                 $client = Client::find($validated['client_id']);
                 if ($client->user_id !== auth()->id()) {
-                    return response()->json(['success' => false, 'message' => 'Invalid client selected', 'data' => null], 403);
+                    return response()->json(['success' => false, 'message' => 'Invalid client selected', 'errors' => []], 403);
                 }
             }
 
@@ -204,18 +204,18 @@ class InvoiceController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Error updating invoice', 'data' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Error updating invoice', 'errors' => []], 500);
         }
     }
 
     public function destroy(Invoice $invoice)
     {
         if ($invoice->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         $invoice->delete();
@@ -230,7 +230,7 @@ class InvoiceController extends Controller
     public function generatePdf(Invoice $invoice)
     {
         if ($invoice->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         $invoice->load('client', 'invoiceItems', 'user');
@@ -243,11 +243,11 @@ class InvoiceController extends Controller
     public function sendEmail(Invoice $invoice)
     {
         if ($invoice->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         if (!$invoice->client || !$invoice->client->email) {
-            return response()->json(['success' => false, 'message' => 'Client has no email address', 'data' => null], 400);
+            return response()->json(['success' => false, 'message' => 'Client has no email address', 'errors' => []], 400);
         }
 
         try {
@@ -269,7 +269,7 @@ class InvoiceController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send invoice email',
-                'data' => $e->getMessage()
+                'errors' => []
             ], 500);
         }
     }

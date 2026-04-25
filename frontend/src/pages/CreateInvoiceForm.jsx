@@ -129,7 +129,7 @@ export default function CreateInvoiceForm() {
          setTimeout(() => navigate('/dashboard/factures'), 900);
       } catch (err) {
          const apiMessage = err.response?.data?.message;
-         const details = err.response?.data?.data;
+         const details = err.response?.data?.errors || err.response?.data?.data;
          if (details && typeof details === 'object') {
             const firstError = Object.values(details)[0];
             if (Array.isArray(firstError) && firstError[0]) {

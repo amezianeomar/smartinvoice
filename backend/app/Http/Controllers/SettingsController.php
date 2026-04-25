@@ -48,13 +48,13 @@ class SettingsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur de validation',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de l\'envoi vers Cloudinary',
-                'data' => $e->getMessage()
+                'errors' => []
             ], 500);
         }
     }

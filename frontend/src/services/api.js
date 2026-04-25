@@ -1,5 +1,97 @@
 import axios from 'axios';
 
+const DRAFT_SNAPSHOT_KEY = 'smartinvoice:draft-snapshot';
+const RETURN_TO_KEY = 'smartinvoice:return-to';
+const MAX_DRAFT_PAYLOAD_SIZE = 250000;
+
+let hasHandledUnauthorized = false;
+
+function appendFieldValue(container, key, value) {
+  if (!key) {
+    return;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(container, key)) {
+    const existingValue = container[key];
+    container[key] = Array.isArray(existingValue)
+      ? [...existingValue, value]
+      : [existingValue, value];
+    return;
+  }
+
+  container[key] = value;
+}
+
+function collectFormDrafts() {
+  const forms = Array.from(document.querySelectorAll('form'));
+
+  return forms.map((form, index) => {
+    const values = {};
+    const elements = Array.from(form.elements || []);
+
+    elements.forEach((element) => {
+      if (!element || !element.name || element.disabled) {
+        return;
+      }
+
+      const tagName = element.tagName?.toLowerCase();
+      if (!tagName || !['input', 'select', 'textarea'].includes(tagName)) {
+        return;
+      }
+
+      const type = (element.type || '').toLowerCase();
+
+      // Ignore sensitive or non-serializable field types.
+      if (['password', 'file', 'submit', 'button', 'reset'].includes(type)) {
+        return;
+      }
+
+      if ((type === 'checkbox' || type === 'radio') && !element.checked) {
+        return;
+      }
+
+      appendFieldValue(values, element.name, element.value ?? '');
+    });
+
+    return {
+      id: form.id || null,
+      name: form.getAttribute('name') || null,
+      index,
+      values,
+    };
+  });
+}
+
+function preserveDraftBeforeRedirect() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.dispatchEvent(
+      new CustomEvent('smartinvoice:before-auth-redirect', {
+        detail: { reason: 'unauthorized' },
+      })
+    );
+
+    const route = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    sessionStorage.setItem(RETURN_TO_KEY, route);
+
+    const snapshot = {
+      capturedAt: new Date().toISOString(),
+      route,
+      forms: collectFormDrafts(),
+    };
+
+    const serialized = JSON.stringify(snapshot);
+    if (serialized.length <= MAX_DRAFT_PAYLOAD_SIZE) {
+      sessionStorage.setItem(DRAFT_SNAPSHOT_KEY, serialized);
+    }
+  } catch (snapshotError) {
+    console.warn('Failed to preserve draft before auth redirect:', snapshotError);
+  }
+}
+
 /**
  * Axiose instance for centralized API communication
  * Base URL is configured via environment variables (VITE_API_URL)
@@ -44,6 +136,11 @@ api.interceptors.response.use(
   (error) => {
     // Global handling for 401 Unauthorized
     if (error.response && error.response.status === 401) {
+      if (!hasHandledUnauthorized) {
+        hasHandledUnauthorized = true;
+        preserveDraftBeforeRedirect();
+      }
+
       console.error('Session expired. Redirecting to login...');
       
       // Clear token from storage
@@ -51,7 +148,7 @@ api.interceptors.response.use(
       
       // Redirect to login (Full page reload to clear any sensitive state)
       if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+        window.location.assign('/login');
       }
     }
 
