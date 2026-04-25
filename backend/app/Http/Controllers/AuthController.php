@@ -39,13 +39,13 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur de validation',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la création du compte',
-                'data' => $e->getMessage()
+                'errors' => []
             ], 500);
         }
     }
@@ -64,7 +64,7 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Identifiants invalides',
-                    'data' => null
+                    'errors' => []
                 ], 401);
             }
 
@@ -83,7 +83,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur de validation',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         }
     }

@@ -40,7 +40,7 @@ class ClientController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         }
     }
@@ -48,7 +48,7 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         if ($client->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         return response()->json([
@@ -61,7 +61,7 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         if ($client->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         try {
@@ -83,7 +83,7 @@ class ClientController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
-                'data' => $e->errors()
+                'errors' => $e->errors()
             ], 422);
         }
     }
@@ -91,7 +91,7 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         if ($client->user_id !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized', 'data' => null], 403);
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
         }
 
         $client->delete();
