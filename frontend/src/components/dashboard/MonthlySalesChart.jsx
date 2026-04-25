@@ -1,16 +1,31 @@
 import React from 'react';
 
-export default function MonthlySalesChart() {
-  const chartData = [
-    { month: 'Oct', sent: 120, paid: 90 },
-    { month: 'Nov', sent: 150, paid: 130 },
-    { month: 'Dec', sent: 110, paid: 85 },
-    { month: 'Jan', sent: 180, paid: 160 },
-    { month: 'Fev', sent: 220, paid: 110 },
-    { month: 'Mar', sent: 240, paid: 200 },
+export default function MonthlySalesChart({ stats }) {
+  // Map backend stats to the format expected by the chart
+  // stats is an array like: [{ month: "2026-04", total: 1000, sent: 1000, paid: 500, count: 2 }]
+  const formatMonth = (dateStr) => {
+    if (!dateStr) return '';
+    const [year, month] = dateStr.split('-');
+    const months = ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aout', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[parseInt(month) - 1] || month;
+  };
+
+  const chartData = (stats && stats.length > 0) ? stats.map(s => ({
+    month: formatMonth(s.month),
+    sent: Math.round((s.sent || 0) / 1000), // convert to K MAD
+    paid: Math.round((s.paid || 0) / 1000)
+  })) : [
+    { month: 'Oct', sent: 0, paid: 0 },
+    { month: 'Nov', sent: 0, paid: 0 },
+    { month: 'Dec', sent: 0, paid: 0 },
+    { month: 'Jan', sent: 0, paid: 0 },
+    { month: 'Fev', sent: 0, paid: 0 },
+    { month: 'Mar', sent: 0, paid: 0 },
   ];
 
-  const maxValue = 250;
+  // Calculate max value dynamically or keep a minimum scale
+  const maxSent = Math.max(...chartData.map(d => d.sent), 10);
+  const maxValue = Math.ceil(maxSent * 1.2); // Add 20% headroom
 
   return (
     <div className="w-full h-full rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 p-6 md:p-8 shadow-xl flex flex-col relative overflow-hidden">

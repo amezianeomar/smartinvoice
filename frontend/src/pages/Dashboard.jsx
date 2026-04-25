@@ -54,7 +54,7 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
            <div className="lg:col-span-2 flex min-h-[400px]">
-              <MonthlySalesChart />
+              <MonthlySalesChart stats={data.monthly_stats} />
            </div>
            <div className="lg:col-span-1 flex">
               <div className="w-full rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 p-8 shadow-xl flex flex-col justify-center items-center text-center relative overflow-hidden group">

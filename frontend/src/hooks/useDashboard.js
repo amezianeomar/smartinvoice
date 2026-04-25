@@ -9,7 +9,8 @@ export const useDashboard = () => {
     total_revenue: 0,
     pending_amount: 0,
     invoice_count: 0,
-    recent_activity: []
+    recent_activity: [],
+    monthly_stats: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,13 +20,14 @@ export const useDashboard = () => {
     setError(null);
     try {
       const response = await api.get('/dashboard');
-      const { total_invoices, total_revenue, recent_invoices } = response.data.data;
+      const { total_invoices, total_revenue, pending_amount, recent_invoices, monthly_stats } = response.data.data;
       
       setData({
         total_revenue: total_revenue,
-        pending_amount: 0, // Backend doesn't calculate this yet
+        pending_amount: pending_amount || 0,
         invoice_count: total_invoices,
-        recent_activity: recent_invoices
+        recent_activity: recent_invoices,
+        monthly_stats: monthly_stats || []
       });
     } catch (err) {
       console.error("Error fetching dashboard stats:", err);
