@@ -18,8 +18,15 @@ export const useDashboard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get('/dashboard/stats');
-      setData(response.data);
+      const response = await api.get('/dashboard');
+      const { total_invoices, total_revenue, recent_invoices } = response.data.data;
+      
+      setData({
+        total_revenue: total_revenue,
+        pending_amount: 0, // Backend doesn't calculate this yet
+        invoice_count: total_invoices,
+        recent_activity: recent_invoices
+      });
     } catch (err) {
       console.error("Error fetching dashboard stats:", err);
       setError(err.response?.data?.message || "Erreur lors du chargement des statistiques");

@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
           // Set default authorization header for the initial request
           // (Our interceptor should handle this, but being explicit doesn't hurt)
           const response = await api.get('/user');
-          setUser(response.data);
+          setUser(response.data.data);
         } catch (error) {
           console.error("Authentication check failed:", error);
           // If the token is invalid, clear it
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // Laravel Sanctum usually returns { token, user } or just token
       const response = await api.post('/login', credentials);
-      const { token: newToken, user: userData } = response.data;
+      const { token: newToken, user: userData } = response.data.data;
 
       localStorage.setItem('token', newToken);
       setToken(newToken);
@@ -53,8 +53,15 @@ export const AuthProvider = ({ children }) => {
   // Register method
   const register = async (data) => {
     try {
-      const response = await api.post('/register', data);
-      const { token: newToken, user: userData } = response.data;
+      // Map name to nom for Laravel backend
+      const payload = { 
+        nom: data.name,
+        email: data.email,
+        password: data.password 
+      };
+
+      const response = await api.post('/register', payload);
+      const { token: newToken, user: userData } = response.data.data;
 
       localStorage.setItem('token', newToken);
       setToken(newToken);
