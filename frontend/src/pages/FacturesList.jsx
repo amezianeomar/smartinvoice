@@ -1,35 +1,115 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Filter, Download, Edit2, Trash2, Eye, FileText, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Search, Filter, Download, FileText, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
 import { EmptyState, TableSkeleton } from '../components/ui/States';
+import useInvoices from '../hooks/useInvoices';
+import InvoiceActions from '../components/invoices/InvoiceActions';
 
 export default function FacturesList() {
-  const [searchTerm, setSearchTerm] = useState("");
+   const [searchTerm, setSearchTerm] = useState('');
+   const [activeStatus, setActiveStatus] = useState('all');
+   const [feedback, setFeedback] = useState('');
+   const [busyInvoiceId, setBusyInvoiceId] = useState(null);
 
-  const invoices = [
-    { id: "FAC-2026-001", client: "Nexus Tech IT", date: "12 Avr 2026", echeance: "12 Mai 2026", montant: "12 500,00 MAD", status: "Payée" },
-    { id: "FAC-2026-002", client: "Groupe OCP", date: "10 Avr 2026", echeance: "10 Mai 2026", montant: "450 000,00 MAD", status: "Payée" },
-    { id: "FAC-2026-003", client: "Maroc Telecom", date: "05 Avr 2026", echeance: "05 Mai 2026", montant: "24 300,00 MAD", status: "En attente" },
-    { id: "FAC-2026-004", client: "Agence Digitale", date: "28 Mar 2026", echeance: "28 Avr 2026", montant: "8 400,00 MAD", status: "En retard" },
-    { id: "FAC-2026-005", client: "Startup XYZ", date: "15 Mar 2026", echeance: "15 Avr 2026", montant: "15 000,00 MAD", status: "Payée" },
-    { id: "FAC-2026-006", client: "Royal Air Maroc", date: "02 Mar 2026", echeance: "02 Avr 2026", montant: "89 000,00 MAD", status: "En attente" },
-  ];
+   const {
+      invoices,
+      isLoading,
+      error,
+      deleteInvoice,
+      downloadInvoicePdf,
+      sendInvoiceEmail,
+   } = useInvoices();
 
-  const [isLoading, setIsLoading] = useState(true);
+   const normalizedStatus = (statut) => {
+      const value = String(statut || '').toLowerCase();
+      if (value === 'payee' || value === 'payée') return 'payee';
+      if (value === 'envoyee' || value === 'envoyée') return 'envoyee';
+      if (value === 'brouillon') return 'brouillon';
+      return value;
+   };
 
-  // Simulate loading then empty state or data
-  useEffect(() => {
-     const timer = setTimeout(() => {
-        setIsLoading(false);
-     }, 2000); // 2 second skeleton presentation
-     return () => clearTimeout(timer);
-  }, []);
+   const filteredInvoices = useMemo(() => {
+      const q = searchTerm.trim().toLowerCase();
+
+      return invoices.filter((invoice) => {
+         const statusKey = normalizedStatus(invoice.statut);
+         const statusOk = activeStatus === 'all' ? true : statusKey === activeStatus;
+         const textOk = !q
+            ? true
+            : [invoice.numero, invoice.client?.nom, invoice.statut]
+                  .filter(Boolean)
+                  .some((value) => String(value).toLowerCase().includes(q));
+
+         return statusOk && textOk;
+      });
+   }, [invoices, searchTerm, activeStatus]);
+
+   const formatDate = (date) => {
+      if (!date) return '-';
+      return new Date(date).toLocaleDateString('fr-FR');
+   };
+
+   const formatMoney = (amount) => {
+      const n = Number(amount || 0);
+      return `${n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MAD`;
+   };
+
+   const handleDownload = async (invoice) => {
+      setBusyInvoiceId(invoice.id);
+      setFeedback('');
+
+      try {
+         await downloadInvoicePdf(invoice);
+         setFeedback(`PDF de ${invoice.numero} telecharge.`);
+      } catch (err) {
+         setFeedback(err.response?.data?.message || 'Echec du telechargement PDF.');
+      } finally {
+         setBusyInvoiceId(null);
+      }
+   };
+
+   const handleSendEmail = async (invoice) => {
+      setBusyInvoiceId(invoice.id);
+      setFeedback('');
+
+      try {
+         await sendInvoiceEmail(invoice.id);
+         setFeedback(`Facture ${invoice.numero} envoyee par email.`);
+      } catch (err) {
+         setFeedback(err.response?.data?.message || 'Echec de l envoi email.');
+      } finally {
+         setBusyInvoiceId(null);
+      }
+   };
+
+   const handleDelete = async (invoice) => {
+      const shouldDelete = window.confirm(`Supprimer la facture ${invoice.numero} ?`);
+      if (!shouldDelete) {
+         return;
+      }
+
+      setBusyInvoiceId(invoice.id);
+      setFeedback('');
+
+      try {
+         await deleteInvoice(invoice.id);
+         setFeedback(`Facture ${invoice.numero} supprimee.`);
+      } catch (err) {
+         setFeedback(err.response?.data?.message || 'Echec de suppression.');
+      } finally {
+         setBusyInvoiceId(null);
+      }
+   };
 
   const getStatusStyle = (status) => {
-    switch (status) {
-      case "Payée": return { bg: "bg-emerald-500/10", text: "text-emerald-500", border: "border-emerald-500/20", icon: <CheckCircle size={14} /> };
-      case "En attente": return { bg: "bg-amber-500/10", text: "text-amber-500", border: "border-amber-500/20", icon: <Clock size={14} /> };
-      case "En retard": return { bg: "bg-red-500/10", text: "text-red-500", border: "border-red-500/20", icon: <AlertCircle size={14} /> };
-      default: return { bg: "bg-[#526e9c]/10", text: "text-[#526e9c]", border: "border-[#526e9c]/20" };
+      switch (normalizedStatus(status)) {
+         case 'payee':
+            return { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'border-emerald-500/20', icon: <CheckCircle size={14} />, label: 'Payee' };
+         case 'envoyee':
+            return { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20', icon: <Clock size={14} />, label: 'Envoyee' };
+         case 'brouillon':
+            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: 'Brouillon' };
+         default:
+            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: status || 'N/A' };
     }
   };
 
@@ -50,20 +130,30 @@ export default function FacturesList() {
              <input type="text" placeholder="Rechercher par N°, Client..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />
           </div>
           <div className="flex gap-3 w-full md:w-auto">
-             <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors text-sm font-bold shadow-sm">
+             <button
+                type="button"
+                onClick={() => setActiveStatus((prev) => (prev === 'all' ? 'envoyee' : 'all'))}
+                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors text-sm font-bold shadow-sm"
+             >
                 <Filter size={18} /> Filtrer
              </button>
-             <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
+             <button type="button" className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
                 <Download size={18} /> Exporter (CSV)
              </button>
           </div>
         </div>
 
+        {(error || feedback) && (
+          <div className={`px-6 py-3 text-sm font-medium ${error ? 'text-red-500' : 'text-emerald-500'}`}>
+            {error || feedback}
+          </div>
+        )}
+
         {/* Data Table Area */}
         <div className="overflow-x-auto flex-1 flex flex-col">
           {isLoading ? (
              <TableSkeleton />
-          ) : invoices.length === 0 ? (
+          ) : filteredInvoices.length === 0 ? (
              <div className="flex-1 flex items-center justify-center">
                 <EmptyState 
                    icon={FileText} 
@@ -87,32 +177,32 @@ export default function FacturesList() {
                 </tr>
              </thead>
              <tbody className="divide-y divide-[#526e9c]/10">
-                {invoices.map((inv, idx) => {
-                   const status = getStatusStyle(inv.status);
+                {filteredInvoices.map((inv) => {
+                   const status = getStatusStyle(inv.statut);
                    return (
-                      <tr key={idx} className="hover:bg-[#526e9c]/5 transition-colors group">
+                      <tr key={inv.id} className="hover:bg-[#526e9c]/5 transition-colors group">
                          <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors"><FileText size={18}/></div>
-                               <span className="font-bold text-[#0F172A] dark:text-white truncate">{inv.id}</span>
+                               <span className="font-bold text-[#0F172A] dark:text-white truncate">{inv.numero}</span>
                             </div>
                          </td>
-                         <td className="px-6 py-4 text-[#526e9c] font-medium">{inv.client}</td>
-                         <td className="px-6 py-4 text-[#526e9c] text-sm">{inv.date}</td>
-                         <td className="px-6 py-4 text-[#526e9c] text-sm">{inv.echeance}</td>
-                         <td className="px-6 py-4 font-black text-[#0F172A] dark:text-white">{inv.montant}</td>
+                         <td className="px-6 py-4 text-[#526e9c] font-medium">{inv.client?.nom || '-'}</td>
+                         <td className="px-6 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_emission)}</td>
+                         <td className="px-6 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_echeance)}</td>
+                         <td className="px-6 py-4 font-black text-[#0F172A] dark:text-white">{formatMoney(inv.total_ttc)}</td>
                          <td className="px-6 py-4">
                             <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border ${status.bg} ${status.text} ${status.border}`}>
-                               {status.icon} {inv.status}
+                               {status.icon} {status.label}
                             </span>
                          </td>
                          <td className="px-6 py-4">
-                            <div className="flex items-center justify-center gap-2">
-                               <button className="p-2 text-[#526e9c] hover:bg-[#221ab7]/10 hover:text-[#221ab7] rounded-lg transition-colors" title="Visualiser"><Eye size={18} /></button>
-                               <button className="p-2 text-[#526e9c] hover:bg-emerald-500/10 hover:text-emerald-500 rounded-lg transition-colors" title="Télécharger PDF"><Download size={18} /></button>
-                               <button className="p-2 text-[#526e9c] hover:bg-[#18adf2]/10 hover:text-[#18adf2] rounded-lg transition-colors" title="Éditer"><Edit2 size={18} /></button>
-                               <button className="p-2 text-[#526e9c] hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-colors" title="Supprimer"><Trash2 size={18} /></button>
-                            </div>
+                            <InvoiceActions
+                              onDownload={() => handleDownload(inv)}
+                              onSendEmail={() => handleSendEmail(inv)}
+                              onDelete={() => handleDelete(inv)}
+                              busy={busyInvoiceId === inv.id}
+                            />
                          </td>
                       </tr>
                    );
@@ -123,9 +213,9 @@ export default function FacturesList() {
         </div>
         
         {/* Pagination */}
-        {!isLoading && invoices.length > 0 && (
+        {!isLoading && filteredInvoices.length > 0 && (
         <div className="p-4 border-t border-[#526e9c]/10 flex items-center justify-between text-sm text-[#526e9c]">
-           <span>Affichant 1 à {invoices.length} sur {invoices.length} factures</span>
+           <span>Affichant 1 a {filteredInvoices.length} sur {invoices.length} factures</span>
            <div className="flex gap-2">
               <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>Précédent</button>
               <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 bg-[#18adf2]/10 text-[#18adf2] font-bold">1</button>
