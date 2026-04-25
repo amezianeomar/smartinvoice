@@ -49,7 +49,17 @@ export default function AuthPage({ initialMode = 'login' }) {
     if (result.success) {
       navigate('/dashboard');
     } else {
-      setApiErrors(result.errors || { general: result.error });
+      // Fix 1: Properly handle truthy but empty error results (e.g. [])
+      const errors = result.errors && Object.keys(result.errors).length > 0 
+        ? result.errors 
+        : { general: result.error };
+      
+      // Fix 2: Map backend 'nom' to frontend 'name' for the validation UI
+      if (errors.nom) {
+        errors.name = errors.nom;
+      }
+
+      setApiErrors(errors);
       setIsLoading(false);
     }
   };

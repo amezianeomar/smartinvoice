@@ -9,8 +9,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SettingsController;
 
 // Public Auth Routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {

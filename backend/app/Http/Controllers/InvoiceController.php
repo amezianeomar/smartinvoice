@@ -52,6 +52,7 @@ class InvoiceController extends Controller
                 'date_emission' => 'required|date',
                 'date_echeance' => 'required|date|after_or_equal:date_emission',
                 'statut' => 'nullable|string',
+                'notes' => 'nullable|string',
                 'items' => 'required|array|min:1',
                 'items.*.designation' => 'required|string|max:255',
                 'items.*.quantite' => 'required|integer|min:1',
@@ -62,6 +63,7 @@ class InvoiceController extends Controller
 
             $client = Client::find($validated['client_id']);
             if ($client->user_id !== auth()->id()) {
+                DB::rollBack();
                 return response()->json(['success' => false, 'message' => 'Invalid client selected', 'errors' => []], 403);
             }
 
@@ -72,6 +74,7 @@ class InvoiceController extends Controller
                 'date_emission' => $validated['date_emission'],
                 'date_echeance' => $validated['date_echeance'],
                 'statut' => $validated['statut'] ?? 'brouillon',
+                'notes' => $validated['notes'] ?? null,
                 'total_ht' => 0,
                 'total_tva' => 0,
                 'total_ttc' => 0,
@@ -147,6 +150,7 @@ class InvoiceController extends Controller
                 'date_emission' => 'sometimes|required|date',
                 'date_echeance' => 'sometimes|required|date|after_or_equal:date_emission',
                 'statut' => 'nullable|string',
+                'notes' => 'nullable|string',
                 'items' => 'sometimes|required|array|min:1',
                 'items.*.designation' => 'required|string|max:255',
                 'items.*.quantite' => 'required|integer|min:1',
@@ -158,11 +162,12 @@ class InvoiceController extends Controller
             if (isset($validated['client_id'])) {
                 $client = Client::find($validated['client_id']);
                 if ($client->user_id !== auth()->id()) {
+                    DB::rollBack();
                     return response()->json(['success' => false, 'message' => 'Invalid client selected', 'errors' => []], 403);
                 }
             }
 
-            $invoice->update($request->only(['client_id', 'numero', 'date_emission', 'date_echeance', 'statut']));
+            $invoice->update($request->only(['client_id', 'numero', 'date_emission', 'date_echeance', 'statut', 'notes']));
 
             if ($request->has('items')) {
                 $invoice->invoiceItems()->delete();
