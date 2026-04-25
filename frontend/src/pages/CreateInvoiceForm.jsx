@@ -32,6 +32,7 @@ export default function CreateInvoiceForm() {
       date_emission: toInputDate(new Date()),
       date_echeance: toInputDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)),
       statut: 'brouillon',
+      notes: '',
    });
    const [items, setItems] = useState([
       {
@@ -117,6 +118,7 @@ export default function CreateInvoiceForm() {
             date_emission: form.date_emission,
             date_echeance: form.date_echeance,
             statut: form.statut,
+            notes: form.notes.trim(),
             items: validItems.map((item) => ({
                designation: item.designation.trim(),
                quantite: Number(item.quantite),
@@ -295,7 +297,11 @@ export default function CreateInvoiceForm() {
                 </table>
              </div>
              
-             <button type="button" className="flex items-center gap-2 text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2.5 rounded-xl border border-[#18adf2]/20 w-fit">
+             <button 
+                type="button" 
+                onClick={handleAddItem}
+                className="flex items-center gap-2 text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2.5 rounded-xl border border-[#18adf2]/20 w-fit"
+             >
                 <Plus size={16} /> Ajouter une ligne
              </button>
           </div>
@@ -306,7 +312,13 @@ export default function CreateInvoiceForm() {
              <div className="w-full md:w-1/2 space-y-4">
                 <div className="space-y-1.5">
                    <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Notes pour le client</label>
-                   <textarea rows="3" placeholder="Merci pour votre confiance..." className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/50 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none resize-none"></textarea>
+                   <textarea 
+                      rows="3" 
+                      placeholder="Merci pour votre confiance..." 
+                      value={form.notes}
+                      onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/50 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none resize-none"
+                    ></textarea>
                 </div>
              </div>
 

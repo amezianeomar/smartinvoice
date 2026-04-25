@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import EcommerceMetrics from '../components/dashboard/EcommerceMetrics';
 import MonthlySalesChart from '../components/dashboard/MonthlySalesChart';
 import RecentInvoices from '../components/dashboard/RecentInvoices';
@@ -6,6 +7,7 @@ import { useDashboard } from '../hooks/useDashboard';
 import { Loader2, RefreshCcw } from 'lucide-react';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { data, isLoading, error, refresh } = useDashboard();
 
   if (isLoading) {
@@ -39,7 +41,10 @@ export default function Dashboard() {
             <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">Aperçu Général</h1>
             <p className="text-[#526e9c] text-sm font-medium">Suivez l'évolution de vos factures et de votre trésorerie.</p>
          </div>
-         <button className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-5 py-2.5 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all hover:scale-105 active:scale-95">
+         <button 
+            onClick={() => navigate('/dashboard/factures/nouvelle')}
+            className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-5 py-2.5 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all hover:scale-105 active:scale-95"
+         >
             + Nouvelle Facture
          </button>
       </div>

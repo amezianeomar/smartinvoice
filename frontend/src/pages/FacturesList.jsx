@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Download, FileText, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
 import { EmptyState, TableSkeleton } from '../components/ui/States';
 import useInvoices from '../hooks/useInvoices';
 import InvoiceActions from '../components/invoices/InvoiceActions';
 
 export default function FacturesList() {
+   const navigate = useNavigate();
    const [searchTerm, setSearchTerm] = useState('');
    const [activeStatus, setActiveStatus] = useState('all');
    const [feedback, setFeedback] = useState('');
@@ -161,6 +163,7 @@ export default function FacturesList() {
                    description="Vous n'avez pas encore généré de factures. Commencez à facturer vos clients dès maintenant." 
                    actionText="Nouvelle Facture"
                    actionIcon={Plus}
+                   onAction={() => navigate('/dashboard/factures/nouvelle')}
                 />
              </div>
           ) : (

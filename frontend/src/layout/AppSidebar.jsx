@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, FileText, BarChart3, Settings, LogOut, FilePlus, ChevronDown } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function AppSidebar() {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { logout } = useAuth();
   const location = useLocation();
 
   // Accordion state management
@@ -42,7 +44,7 @@ export default function AppSidebar() {
 
   const bottomItems = [
     { name: "Paramètres", icon: <Settings size={22} />, path: "/dashboard/parametres" },
-    { name: "Déconnexion", icon: <LogOut size={22} className="text-red-500" />, path: "/" },
+    { name: "Déconnexion", icon: <LogOut size={22} className="text-red-500" />, onClick: logout },
   ];
 
   const renderItem = (item) => {
@@ -155,16 +157,29 @@ export default function AppSidebar() {
       <div className="p-4 border-t border-[#526e9c]/10 shrink-0">
          <nav className="flex flex-col gap-2">
             {bottomItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className="flex items-center gap-4 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 hover:text-[#0F172A] dark:hover:text-white font-medium transition-all duration-200 group"
-              >
-                <span className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">{item.icon}</span>
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className={`whitespace-nowrap ${item.name === 'Déconnexion' ? 'text-red-500 font-bold group-hover:text-red-600' : ''}`}>{item.name}</span>
-                )}
-              </Link>
+              item.onClick ? (
+                <button
+                  key={item.name}
+                  onClick={item.onClick}
+                  className="flex items-center gap-4 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 hover:text-[#0F172A] dark:hover:text-white font-medium transition-all duration-200 group w-full"
+                >
+                  <span className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">{item.icon}</span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="whitespace-nowrap text-red-500 font-bold group-hover:text-red-600">{item.name}</span>
+                  )}
+                </button>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="flex items-center gap-4 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 hover:text-[#0F172A] dark:hover:text-white font-medium transition-all duration-200 group"
+                >
+                  <span className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">{item.icon}</span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="whitespace-nowrap">{item.name}</span>
+                  )}
+                </Link>
+              )
             ))}
          </nav>
       </div>
