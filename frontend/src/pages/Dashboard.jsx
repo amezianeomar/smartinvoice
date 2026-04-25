@@ -2,8 +2,36 @@ import React from 'react';
 import EcommerceMetrics from '../components/dashboard/EcommerceMetrics';
 import MonthlySalesChart from '../components/dashboard/MonthlySalesChart';
 import RecentInvoices from '../components/dashboard/RecentInvoices';
+import { useDashboard } from '../hooks/useDashboard';
+import { Loader2, RefreshCcw } from 'lucide-react';
 
 export default function Dashboard() {
+  const { data, isLoading, error, refresh } = useDashboard();
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 size={48} className="text-[#18adf2] animate-spin mb-4" />
+        <p className="text-[#526e9c] font-bold animate-pulse">Chargement de vos données...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-12 rounded-3xl bg-red-500/10 border border-red-500/20 text-center">
+        <h2 className="text-xl font-black text-red-500 mb-4">Oups ! Une erreur est survenue</h2>
+        <p className="text-red-400 mb-8">{error}</p>
+        <button 
+          onClick={refresh}
+          className="flex items-center gap-2 mx-auto px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors"
+        >
+          <RefreshCcw size={18} /> Réessayer
+        </button>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -17,7 +45,7 @@ export default function Dashboard() {
       </div>
       
       <div className="space-y-6">
-        <EcommerceMetrics />
+        <EcommerceMetrics stats={data} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
            <div className="lg:col-span-2 flex min-h-[400px]">
@@ -41,7 +69,7 @@ export default function Dashboard() {
            </div>
         </div>
 
-        <RecentInvoices />
+        <RecentInvoices invoices={data.recent_activity} />
       </div>
     </>
   );
