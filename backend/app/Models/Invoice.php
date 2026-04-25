@@ -19,6 +19,7 @@ class Invoice extends Model
         'total_tva',
         'total_ttc',
         'statut',
+        'notes',
     ];
 
     public function user()

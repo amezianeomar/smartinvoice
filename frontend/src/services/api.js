@@ -110,8 +110,8 @@ const api = axios.create({
  */
 api.interceptors.request.use(
   (config) => {
-    // Priority 1: Get token from localStorage
-    const token = localStorage.getItem('token');
+    // Get token from sessionStorage
+    const token = sessionStorage.getItem('token');
     
     // Priority 2: If you use Redux in the future, you can import the store and get it from there:
     // import { store } from '../store';
@@ -144,7 +144,7 @@ api.interceptors.response.use(
       console.error('Session expired. Redirecting to login...');
       
       // Clear token from storage
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       
       // Redirect to login (Full page reload to clear any sensitive state)
       if (window.location.pathname !== '/login') {

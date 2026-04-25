@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
 
   // Initialize: Fetch user profile if token exists
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/login', credentials);
       const { token: newToken, user: userData } = response.data.data;
 
-      localStorage.setItem('token', newToken);
+      sessionStorage.setItem('token', newToken);
       setToken(newToken);
       setUser(userData);
       
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/register', payload);
       const { token: newToken, user: userData } = response.data.data;
 
-      localStorage.setItem('token', newToken);
+      sessionStorage.setItem('token', newToken);
       setToken(newToken);
       setUser(userData);
 
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
       // Optional: notify backend
       await api.post('/logout').catch(() => {}); 
     } finally {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       setToken(null);
       setUser(null);
       // Optional: window.location.href = '/login'; 

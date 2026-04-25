@@ -3,13 +3,25 @@ import { MoreHorizontal, FileText } from 'lucide-react';
 
 export default function RecentInvoices({ invoices = [] }) {
 
+  const normalizedStatus = (statut) => {
+    const value = String(statut || '').toLowerCase();
+    if (value === 'payee' || value === 'payée') return 'payee';
+    if (value === 'envoyee' || value === 'envoyée') return 'envoyee';
+    if (value === 'brouillon') return 'brouillon';
+    return value;
+  };
+
   const getStatusStyle = (status) => {
-    switch (status) {
-      case "Payée": return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
-      case "En attente": return "bg-amber-500/10 text-amber-500 border-amber-500/20";
-      case "En retard": return "bg-red-500/10 text-red-500 border-red-500/20";
+    switch (normalizedStatus(status)) {
+      case 'payee': return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+      case 'envoyee': return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case 'brouillon': return "bg-[#526e9c]/10 text-[#526e9c] border-[#526e9c]/20";
       default: return "bg-[#526e9c]/10 text-[#526e9c] border-[#526e9c]/20";
     }
+  };
+
+  const formatMoney = (amount) => {
+    return `${Number(amount || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MAD`;
   };
 
   return (
@@ -47,15 +59,15 @@ export default function RecentInvoices({ invoices = [] }) {
                       <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors">
                          <FileText size={18} />
                       </div>
-                      <span className="font-bold text-[#0F172A] dark:text-white">{invoice.id}</span>
+                      <span className="font-bold text-[#0F172A] dark:text-white">{invoice.numero}</span>
                    </div>
                 </td>
-                <td className="py-4 text-[#526e9c] font-medium">{invoice.client}</td>
-                <td className="py-4 text-[#526e9c] text-sm">{invoice.date}</td>
-                <td className="py-4 font-black text-[#0F172A] dark:text-white">{invoice.montant}</td>
+                <td className="py-4 text-[#526e9c] font-medium">{invoice.client?.nom || '-'}</td>
+                <td className="py-4 text-[#526e9c] text-sm">{new Date(invoice.date_emission).toLocaleDateString('fr-FR')}</td>
+                <td className="py-4 font-black text-[#0F172A] dark:text-white">{formatMoney(invoice.total_ttc)}</td>
                 <td className="py-4">
-                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${getStatusStyle(invoice.status)}`}>
-                    {invoice.status}
+                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${getStatusStyle(invoice.statut)}`}>
+                    {invoice.statut}
                   </span>
                 </td>
                 <td className="py-4 text-right pr-2">
