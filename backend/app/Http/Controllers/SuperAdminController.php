@@ -32,4 +32,41 @@ class SuperAdminController extends Controller
             ]
         ]);
     }
+
+    public function getUsers(Request $request)
+    {
+        $users = User::where('role', '!=', 'admin')->latest()->get();
+        return response()->json([
+            'success' => true,
+            'data' => $users
+        ]);
+    }
+
+    public function getLedger(Request $request)
+    {
+        $payments = Paiement::with('user')->orderBy('date_transaction', 'desc')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $payments
+        ]);
+    }
+
+    public function getFinancialReports(Request $request)
+    {
+        $monthlyRevenue = Paiement::where('statut', 'payé')
+            ->selectRaw('SUM(montant) as total, DATE_FORMAT(date_transaction, "%Y-%m") as month')
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+            
+        $totalRevenue = Paiement::where('statut', 'payé')->sum('montant');
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'monthly' => $monthlyRevenue,
+                'total' => $totalRevenue
+            ]
+        ]);
+    }
 }
