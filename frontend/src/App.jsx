@@ -20,6 +20,9 @@ import Devis from './pages/Devis.jsx';
 import Paiements from './pages/Paiements.jsx';
 import Catalogue from './pages/Catalogue.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
+import AdminUsers from './pages/AdminUsers.jsx';
+import AdminSettings from './pages/AdminSettings.jsx';
+import AdminReports from './pages/AdminReports.jsx';
 
 /**
  * ProtectedRoute Wrapper
@@ -118,7 +121,7 @@ export default function App() {
         />
 
         <Route 
-          path="/dashboard/*" 
+          path="/dashboard" 
           element={
             <ProtectedRoute>
               <DashboardLayout isDark={isDark} setIsDark={setIsDark} />
@@ -138,7 +141,7 @@ export default function App() {
 
         {/* Isolated Super Admin zone — its own layout, sidebar, header */}
         <Route 
-          path="/admin/*" 
+          path="/admin" 
           element={
             <ProtectedRoute>
               <AdminLayout isDark={isDark} setIsDark={setIsDark} />
@@ -146,7 +149,9 @@ export default function App() {
           }
         >
            <Route index element={<AdminDashboard />} />
-           {/* Future admin pages go here: /admin/utilisateurs, /admin/parametres */}
+           <Route path="utilisateurs" element={<AdminUsers />} />
+           <Route path="parametres" element={<AdminSettings />} />
+           <Route path="rapports" element={<AdminReports />} />
         </Route>
       </Routes>
 

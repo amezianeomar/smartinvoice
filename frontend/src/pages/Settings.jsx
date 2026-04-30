@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, Building, Save, Camera, CreditCard, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 export default function Settings() {
-  const { user, token } = useAuth();
+  const { user, token, setAuthUser } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [settings, setSettings] = useState({
     nom: '',
     email: '',
     type_entreprise: '',
+    ice: '',
+    patente: '',
+    taux_tva_defaut: '20%',
+    adresse_siege: '',
   });
+  const [logoUrl, setLogoUrl] = useState(null);
   const [recentPayment, setRecentPayment] = useState(null);
 
   useEffect(() => {
@@ -26,7 +33,12 @@ export default function Settings() {
           nom: data.user.nom || '',
           email: data.user.email || '',
           type_entreprise: data.user.type_entreprise || '',
+          ice: data.user.ice || '',
+          patente: data.user.patente || '',
+          taux_tva_defaut: data.user.taux_tva_defaut || '20%',
+          adresse_siege: data.user.adresse_siege || '',
         });
+        setLogoUrl(data.user.logo_path || data.user.logo_url);
         setRecentPayment(data.recent_payment);
       } catch (error) {
         console.error("Failed to fetch settings", error);
@@ -40,15 +52,46 @@ export default function Settings() {
     }
   }, [token]);
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     setIsSaving(true);
     try {
-      await api.put('/settings', settings);
-      // Optional: Show toast success
+      const response = await api.put('/settings', settings);
+      if (response.data.success) {
+        // Optionally update the context user
+        if (setAuthUser) {
+           setAuthUser(response.data.data);
+        }
+      }
     } catch (error) {
       console.error("Failed to update settings", error);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('logo', file);
+
+    try {
+      const response = await api.post('/user/logo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (response.data.success) {
+        setLogoUrl(response.data.data.logo_url);
+        if (setAuthUser && user) {
+            setAuthUser({ ...user, logo_url: response.data.data.logo_url, logo_path: response.data.data.logo_url });
+        }
+      }
+    } catch (error) {
+      console.error("Failed to upload logo", error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -75,17 +118,33 @@ export default function Settings() {
          <div className="lg:col-span-1 space-y-6">
             <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 p-6 shadow-xl flex flex-col items-center text-center relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-[#18adf2]/10 rounded-full blur-3xl pointer-events-none" />
-               <div className="relative mb-4 group cursor-pointer">
+               <div 
+                 className="relative mb-4 group cursor-pointer"
+                 onClick={() => fileInputRef.current?.click()}
+               >
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#221ab7] to-[#18adf2] p-1">
                      <div className="w-full h-full rounded-full bg-white dark:bg-[#0F172A] overflow-hidden flex items-center justify-center text-4xl font-bold text-[#221ab7] uppercase">
-                        {settings.nom ? settings.nom.charAt(0) : 'U'}
+                        {isUploading ? (
+                          <Loader2 className="animate-spin text-[#18adf2]" size={32} />
+                        ) : logoUrl ? (
+                          <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                        ) : (
+                          settings.nom ? settings.nom.charAt(0) : 'U'
+                        )}
                      </div>
                   </div>
                   <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                      <Camera className="text-white" size={24} />
                   </div>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                  />
                </div>
-               <h3 className="text-xl font-black text-[#0F172A] dark:text-white">{settings.nom}</h3>
+               <h3 className="text-xl font-black text-[#0F172A] dark:text-white">{settings.nom || 'Utilisateur'}</h3>
                <p className="text-[#526e9c] text-sm font-medium">{settings.type_entreprise || 'Entreprise'}</p>
                <div className="mt-6 w-full flex justify-center gap-2 text-xs font-bold">
                   {isPro ? (
@@ -137,10 +196,10 @@ export default function Settings() {
                <h3 className="text-lg font-black text-[#0F172A] dark:text-white flex items-center gap-2 mb-6 border-b border-[#526e9c]/10 pb-4">
                   <Building className="text-[#221ab7]" size={20} /> Informations de l'Entreprise
                </h3>
-               <form className="space-y-5">
+               <form className="space-y-5" onSubmit={handleSave}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Raison Sociale</label>
+                        <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Raison Sociale / Nom d'Entreprise</label>
                         <input 
                           type="text" 
                           value={settings.type_entreprise}
@@ -149,7 +208,48 @@ export default function Settings() {
                         />
                      </div>
                   </div>
-                  {/* Additional enterprise fields omitted for brevity, can be expanded later */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">ICE</label>
+                        <input 
+                          type="text" 
+                          value={settings.ice}
+                          onChange={(e) => setSettings({...settings, ice: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] outline-none transition-all" 
+                        />
+                     </div>
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Patente</label>
+                        <input 
+                          type="text" 
+                          value={settings.patente}
+                          onChange={(e) => setSettings({...settings, patente: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] outline-none transition-all" 
+                        />
+                     </div>
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Taux TVA Défaut</label>
+                        <select 
+                          value={settings.taux_tva_defaut}
+                          onChange={(e) => setSettings({...settings, taux_tva_defaut: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] outline-none transition-all appearance-none"
+                        >
+                           <option value="20%">20%</option>
+                           <option value="14%">14%</option>
+                           <option value="10%">10%</option>
+                           <option value="Exonéré">Exonéré</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div className="space-y-1.5">
+                     <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Adresse du Siège</label>
+                     <input 
+                       type="text" 
+                       value={settings.adresse_siege}
+                       onChange={(e) => setSettings({...settings, adresse_siege: e.target.value})}
+                       className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] outline-none transition-all" 
+                     />
+                  </div>
                </form>
             </div>
 
@@ -158,7 +258,7 @@ export default function Settings() {
                <h3 className="text-lg font-black text-[#0F172A] dark:text-white flex items-center gap-2 mb-6 border-b border-[#526e9c]/10 pb-4">
                   <User className="text-[#18adf2]" size={20} /> Informations Personnelles
                </h3>
-               <form className="space-y-5">
+               <form className="space-y-5" onSubmit={handleSave}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                      <div className="space-y-1.5">
                         <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Nom Complet</label>

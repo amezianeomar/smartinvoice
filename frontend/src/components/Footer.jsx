@@ -108,7 +108,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-[#526e9c]/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-[#526e9c]">
         <p>© 2026 SmartInvoice Pro. Tous droits réservés.</p>
         <p className="flex items-center gap-1">
-          Fait avec <span className="text-red-500">♥</span> à Tanger
+           à Tanger
         </p>
       </div>
       

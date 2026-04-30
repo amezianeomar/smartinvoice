@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin Routes
     Route::middleware('admin')->prefix('admin')->group(function () {
         Route::get('/dashboard-stats', [SuperAdminController::class, 'getDashboardStats']);
+        Route::get('/users', [SuperAdminController::class, 'getUsers']);
+        Route::get('/ledger', [SuperAdminController::class, 'getLedger']);
+        Route::get('/reports', [SuperAdminController::class, 'getFinancialReports']);
     });
     
     Route::get('/dashboard', [DashboardController::class, 'index']);

@@ -34,7 +34,10 @@ class SettingsController extends Controller
             $logoUrl = $response['secure_url'];
 
             $user = $request->user();
-            $user->update(['logo_url' => $logoUrl]);
+            $user->update([
+                'logo_url' => $logoUrl,
+                'logo_path' => $logoUrl,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -83,7 +86,10 @@ class SettingsController extends Controller
                 'nom' => 'string|max:255',
                 'email' => 'email|unique:users,email,' . $request->user()->id,
                 'type_entreprise' => 'nullable|string|max:255',
-                // add more fields if needed
+                'ice' => 'nullable|string|max:255',
+                'patente' => 'nullable|string|max:255',
+                'taux_tva_defaut' => 'nullable|string|max:255',
+                'adresse_siege' => 'nullable|string|max:255',
             ]);
 
             $user = $request->user();
