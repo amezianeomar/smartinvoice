@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import { Outlet } from "react-router-dom";
-import AppHeader from "./AppHeader";
-import AppSidebar from "./AppSidebar";
-import UpgradeModal from "../components/UpgradeModal";
+import AdminHeader from "./AdminHeader";
+import AdminSidebar from "./AdminSidebar";
 
 const LayoutContent = ({ isDark, setIsDark }) => {
   const { isExpanded, isHovered, isMobileOpen, toggleMobileSidebar } = useSidebar();
-  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-
-  useEffect(() => {
-    const handleOpenModal = () => setIsUpgradeModalOpen(true);
-    window.addEventListener('openUpgradeModal', handleOpenModal);
-    return () => window.removeEventListener('openUpgradeModal', handleOpenModal);
-  }, []);
 
   return (
-    <div className="relative min-h-screen text-[#0F172A] dark:text-[#F8FAFC] overflow-x-hidden font-sans">
-      <AppSidebar />
+    <div className="relative min-h-screen text-[#0F172A] dark:text-[#F8FAFC] overflow-x-hidden font-sans bg-[#f8fafc] dark:bg-[#030712]">
+      <AdminSidebar />
       
       {isMobileOpen && (
         <div 
@@ -32,21 +24,16 @@ const LayoutContent = ({ isDark, setIsDark }) => {
           ${isMobileOpen ? "ml-0" : ""}
         `}
       >
-        <AppHeader isDark={isDark} setIsDark={setIsDark} />
+        <AdminHeader isDark={isDark} setIsDark={setIsDark} />
         <main className="flex-1 p-4 md:p-6 lg:p-8 mx-auto w-full max-w-7xl pt-[100px] lg:pt-8">
           <Outlet />
         </main>
       </div>
-
-      <UpgradeModal 
-        isOpen={isUpgradeModalOpen} 
-        onClose={() => setIsUpgradeModalOpen(false)} 
-      />
     </div>
   );
 };
 
-const DashboardLayout = ({ isDark, setIsDark }) => {
+const AdminLayout = ({ isDark, setIsDark }) => {
   return (
     <SidebarProvider>
       <LayoutContent isDark={isDark} setIsDark={setIsDark} />
@@ -54,4 +41,4 @@ const DashboardLayout = ({ isDark, setIsDark }) => {
   );
 };
 
-export default DashboardLayout;
+export default AdminLayout;

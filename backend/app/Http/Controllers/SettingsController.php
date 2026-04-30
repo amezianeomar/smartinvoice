@@ -58,4 +58,48 @@ class SettingsController extends Controller
             ], 500);
         }
     }
+
+    public function getSettings(Request $request)
+    {
+        $user = $request->user();
+        $recentPayment = \App\Models\Paiement::where('user_id', $user->id)
+            ->latest('date_transaction')
+            ->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Paramètres récupérés avec succès',
+            'data' => [
+                'user' => $user,
+                'recent_payment' => $recentPayment
+            ]
+        ]);
+    }
+
+    public function updateSettings(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'nom' => 'string|max:255',
+                'email' => 'email|unique:users,email,' . $request->user()->id,
+                'type_entreprise' => 'nullable|string|max:255',
+                // add more fields if needed
+            ]);
+
+            $user = $request->user();
+            $user->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Paramètres mis à jour avec succès',
+                'data' => $user
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        }
+    }
 }

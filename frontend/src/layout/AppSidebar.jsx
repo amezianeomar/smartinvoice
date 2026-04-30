@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, BarChart3, Settings, LogOut, FilePlus, ChevronDown } from "lucide-react";
+import { LayoutDashboard, Users, FileText, BarChart3, Settings, LogOut, FilePlus, ChevronDown, Shield } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../context/AuthContext";
 
 export default function AppSidebar() {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const location = useLocation();
 
   // Accordion state management
@@ -39,8 +39,14 @@ export default function AppSidebar() {
         { name: "Catalogue", path: "/dashboard/catalogue" },
       ]
     },
-    { name: "Rapports & TVA", icon: <BarChart3 size={22} />, path: "/dashboard/statistiques" },
+    { 
+      name: "Rapports & TVA", 
+      icon: <BarChart3 size={22} />, 
+      path: "/dashboard/statistiques",
+      isPro: true 
+    },
   ];
+
 
   const bottomItems = [
     { name: "Paramètres", icon: <Settings size={22} />, path: "/dashboard/parametres" },
@@ -86,6 +92,16 @@ export default function AppSidebar() {
         <div key={item.name} className="flex flex-col relative w-full">
             {hasChildren ? (
                 <button onClick={() => toggleMenu(item.name)} className={containerClass}>
+                   {content}
+                </button>
+            ) : item.isPro && user?.statut_abonnement !== 'actif' ? (
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent('openUpgradeModal'));
+                  }} 
+                  className={containerClass}
+                >
                    {content}
                 </button>
             ) : (
