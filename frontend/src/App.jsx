@@ -4,7 +4,11 @@ import { useAuth } from './context/AuthContext.jsx';
 
 import LandingPage from './pages/LandingPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
+import Onboarding from './pages/Onboarding.jsx';
+import SelectPlan from './pages/SelectPlan.jsx';
+import Checkout from './pages/Checkout.jsx';
 import DashboardLayout from './layout/DashboardLayout.jsx';
+import AdminLayout from './layout/AdminLayout.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import ComingSoon from './pages/ComingSoon.jsx';
 import CreateInvoiceForm from './pages/CreateInvoiceForm.jsx';
@@ -15,6 +19,7 @@ import Settings from './pages/Settings.jsx';
 import Devis from './pages/Devis.jsx';
 import Paiements from './pages/Paiements.jsx';
 import Catalogue from './pages/Catalogue.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
 
 /**
  * ProtectedRoute Wrapper
@@ -88,14 +93,28 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage isDark={isDark} setIsDark={setIsDark} />} />
         
-        {/* Redirect to dashboard if already logged in */}
+        {/* Redirect to dashboard if already logged in (or onboarding if not finished) */}
         <Route 
           path="/login" 
-          element={user && token ? <Navigate to="/dashboard" replace /> : <AuthPage initialMode="login" />} 
+          element={user && token ? <Navigate to={user.role === 'admin' ? "/admin" : (user.profession ? "/dashboard" : "/onboarding")} replace /> : <AuthPage initialMode="login" />} 
         />
         <Route 
           path="/register" 
-          element={user && token ? <Navigate to="/dashboard" replace /> : <AuthPage initialMode="register" />} 
+          element={user && token ? <Navigate to={user.role === 'admin' ? "/admin" : (user.profession ? "/dashboard" : "/onboarding")} replace /> : <AuthPage initialMode="register" />} 
+        />
+
+        {/* Onboarding & Plan Selection Funnel */}
+        <Route 
+          path="/onboarding" 
+          element={<ProtectedRoute><Onboarding /></ProtectedRoute>} 
+        />
+        <Route 
+          path="/select-plan" 
+          element={<ProtectedRoute><SelectPlan /></ProtectedRoute>} 
+        />
+        <Route 
+          path="/checkout" 
+          element={<ProtectedRoute><Checkout /></ProtectedRoute>} 
         />
 
         <Route 
@@ -115,6 +134,19 @@ export default function App() {
            <Route path="catalogue" element={<Catalogue />} />
            <Route path="statistiques" element={<Statistiques />} />
            <Route path="parametres" element={<Settings />} />
+        </Route>
+
+        {/* Isolated Super Admin zone — its own layout, sidebar, header */}
+        <Route 
+          path="/admin/*" 
+          element={
+            <ProtectedRoute>
+              <AdminLayout isDark={isDark} setIsDark={setIsDark} />
+            </ProtectedRoute>
+          }
+        >
+           <Route index element={<AdminDashboard />} />
+           {/* Future admin pages go here: /admin/utilisateurs, /admin/parametres */}
         </Route>
       </Routes>
 

@@ -152,7 +152,12 @@ api.interceptors.response.use(
       }
     }
 
-    // You can add more status code handlers here (e.g., 403, 500)
+    // Global handling for 403 Quota Exceeded
+    if (error.response && error.response.status === 403 && error.response.data?.error === 'quota_exceeded') {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('openUpgradeModal'));
+      }
+    }
     
     return Promise.reject(error);
   }

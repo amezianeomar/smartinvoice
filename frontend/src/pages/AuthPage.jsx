@@ -47,7 +47,13 @@ export default function AuthPage({ initialMode = 'login' }) {
       : await register({ name, email, password });
 
     if (result.success) {
-      navigate('/dashboard');
+      if (result.user?.role === 'admin') {
+         navigate('/admin');
+      } else if (isLogin) {
+        navigate('/dashboard');
+      } else {
+        navigate('/onboarding');
+      }
     } else {
       // Fix 1: Properly handle truthy but empty error results (e.g. [])
       const errors = result.errors && Object.keys(result.errors).length > 0 
