@@ -11,28 +11,28 @@ import { useLanguage } from '../context/LanguageContext';
 const InvoiceMockup = () => {
   const { t } = useLanguage();
   return (
-  <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 p-6 md:p-8 rounded-2xl flex flex-col gap-4 text-xs shadow-2xl h-auto">
-    <div className="flex justify-between items-start border-b border-[#526e9c]/10 pb-4 relative z-10">
+  <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 p-4 md:p-8 rounded-2xl flex flex-col gap-3 md:gap-4 text-[10px] md:text-xs shadow-2xl h-auto">
+    <div className="flex justify-between items-start border-b border-[#526e9c]/10 pb-3 md:pb-4 relative z-10">
       <div>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#221ab7] to-[#18adf2] text-white font-black flex items-center justify-center mb-3 shadow-md">S</div>
-        <p className="font-bold text-[#0F172A] dark:text-white text-sm">SI-PRO S.A.R.L</p>
+        <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-[#221ab7] to-[#18adf2] text-white font-black flex items-center justify-center mb-2 md:mb-3 shadow-md text-[10px] md:text-sm">S</div>
+        <p className="font-bold text-[#0F172A] dark:text-white text-xs md:text-sm">SI-PRO S.A.R.L</p>
         <p className="text-[#526e9c]">ICE: 000123456789</p>
       </div>
       <div className="text-right text-[#526e9c]">
-        <h3 className="text-xl md:text-2xl font-black text-[#18adf2] uppercase tracking-widest mb-1">{t('featuresMockup.invoice.title')}</h3>
+        <h3 className="text-lg md:text-2xl font-black text-[#18adf2] uppercase tracking-widest mb-1">{t('featuresMockup.invoice.title')}</h3>
         <p className="font-bold">FAC-2026-001</p>
         <p>{t('featuresMockup.invoice.date')}</p>
       </div>
     </div>
-    <div className="bg-[#526e9c]/5 rounded-xl p-4 mt-2">
-      <p className="font-bold text-[#0F172A] dark:text-white text-sm mb-1">{t('featuresMockup.invoice.billedTo')}</p>
-      <p className="text-[#526e9c] text-sm">TechCorp Maroc<br/>Casablanca, 20000</p>
+    <div className="bg-[#526e9c]/5 rounded-xl p-3 md:p-4 mt-1 md:mt-2">
+      <p className="font-bold text-[#0F172A] dark:text-white text-xs md:text-sm mb-1">{t('featuresMockup.invoice.billedTo')}</p>
+      <p className="text-[#526e9c] text-[10px] md:text-sm">TechCorp Maroc<br/>Casablanca, 20000</p>
     </div>
-    <table className="w-full mt-4 text-sm relative z-10">
+    <table className="w-full mt-2 md:mt-4 text-[10px] md:text-sm relative z-10">
       <thead className="text-[#526e9c] border-b border-[#526e9c]/10">
         <tr>
-          <th className="text-left font-bold pb-3">{t('featuresMockup.invoice.desc')}</th>
-          <th className="text-right font-bold pb-3">{t('featuresMockup.invoice.amount')}</th>
+          <th className="text-left font-bold pb-2 md:pb-3">{t('featuresMockup.invoice.desc')}</th>
+          <th className="text-right font-bold pb-2 md:pb-3">{t('featuresMockup.invoice.amount')}</th>
         </tr>
       </thead>
       <tbody className="text-[#0F172A] dark:text-white">
@@ -46,16 +46,16 @@ const InvoiceMockup = () => {
         </tr>
       </tbody>
     </table>
-    <div className="flex justify-end gap-8 mt-4 pt-4 border-t-2 border-[#18adf2]/20 relative z-10">
-      <div className="text-right text-[#526e9c] space-y-2">
+    <div className="flex justify-end gap-4 md:gap-8 mt-2 md:mt-4 pt-2 md:pt-4 border-t-2 border-[#18adf2]/20 relative z-10">
+      <div className="text-right text-[#526e9c] space-y-1 md:space-y-2">
         <p>{t('featuresMockup.invoice.subtotal')}</p>
         <p>{t('featuresMockup.invoice.tax')}</p>
-        <p className="text-base font-black text-[#0F172A] dark:text-white mt-2">{t('featuresMockup.invoice.total')}</p>
+        <p className="text-xs md:text-base font-black text-[#0F172A] dark:text-white mt-1 md:mt-2">{t('featuresMockup.invoice.total')}</p>
       </div>
-      <div className="text-right font-bold text-[#0F172A] dark:text-white space-y-2">
+      <div className="text-right font-bold text-[#0F172A] dark:text-white space-y-1 md:space-y-2">
         <p>12,500 DH</p>
         <p>2,500 DH</p>
-        <p className="text-base font-black text-[#18adf2] mt-2">15,000 DH</p>
+        <p className="text-xs md:text-base font-black text-[#18adf2] mt-1 md:mt-2">15,000 DH</p>
       </div>
     </div>
   </SpotlightCard>
@@ -65,18 +65,18 @@ const InvoiceMockup = () => {
 const TvaMockup = () => {
   const { t } = useLanguage();
   return (
-  <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 dark:border-[#526e9c]/30 p-6 md:p-8 rounded-2xl flex flex-col gap-8 text-sm text-[#0F172A] dark:text-white h-auto shadow-2xl relative overflow-hidden">
+  <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 dark:border-[#526e9c]/30 p-4 md:p-8 rounded-2xl flex flex-col gap-6 md:gap-8 text-xs md:text-sm text-[#0F172A] dark:text-white h-auto shadow-2xl relative overflow-hidden">
     {/* Grid Background inside mockup */}
     <div className="absolute inset-0 bg-[linear-gradient(to_right,#526e9c15_1px,transparent_1px),linear-gradient(to_bottom,#526e9c15_1px,transparent_1px)] bg-[size:1rem_1rem] opacity-30 z-0" />
     
-    <div className="relative z-10 flex justify-between items-start">
+    <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start gap-4">
       <div>
-        <h3 className="font-bold text-[#94A3B8] uppercase text-xs tracking-widest mb-2">{t('featuresMockup.tva.title')}</h3>
-        <p className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-[#18adf2]">
-          <AnimatedCounter value={45200} /> <span className="text-lg text-[#526e9c]">DH</span>
+        <h3 className="font-bold text-[#94A3B8] uppercase text-[10px] md:text-xs tracking-widest mb-1 md:mb-2">{t('featuresMockup.tva.title')}</h3>
+        <p className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-[#18adf2]">
+          <AnimatedCounter value={45200} /> <span className="text-sm md:text-lg text-[#526e9c]">DH</span>
         </p>
       </div>
-      <Badge pulse variant="success">{t('featuresMockup.tva.sync')}</Badge>
+      <Badge pulse variant="success" className="text-[10px] md:text-xs py-0.5 px-2 md:py-1 md:px-3">{t('featuresMockup.tva.sync')}</Badge>
     </div>
     
     <div className="relative z-10 space-y-5">
@@ -94,15 +94,15 @@ const TvaMockup = () => {
       </div>
     </div>
     
-    <div className="relative z-10 mt-auto bg-[#221ab7]/5 dark:bg-[#221ab7]/20 border border-[#221ab7]/20 dark:border-[#221ab7]/50 rounded-xl p-4 flex items-center justify-between backdrop-blur-md">
-      <div className="flex items-center gap-4">
-        <div className="p-2 rounded-lg bg-[#221ab7]/10 dark:bg-[#5048e5]/20 text-[#221ab7] dark:text-[#5048e5]"><Shield size={20} /></div>
+    <div className="relative z-10 mt-auto bg-[#221ab7]/5 dark:bg-[#221ab7]/20 border border-[#221ab7]/20 dark:border-[#221ab7]/50 rounded-xl p-3 md:p-4 flex items-center justify-between backdrop-blur-md">
+      <div className="flex items-center gap-3 md:gap-4">
+        <div className="p-1.5 md:p-2 rounded-lg bg-[#221ab7]/10 dark:bg-[#5048e5]/20 text-[#221ab7] dark:text-[#5048e5]"><Shield size={16} className="md:w-5 md:h-5" /></div>
         <div>
-          <p className="font-bold text-sm text-[#0F172A] dark:text-white">{t('featuresMockup.tva.ready')}</p>
-          <p className="text-xs text-[#526e9c] dark:text-[#94A3B8]">{t('featuresMockup.tva.compliant')}</p>
+          <p className="font-bold text-xs md:text-sm text-[#0F172A] dark:text-white">{t('featuresMockup.tva.ready')}</p>
+          <p className="text-[10px] md:text-xs text-[#526e9c] dark:text-[#94A3B8]">{t('featuresMockup.tva.compliant')}</p>
         </div>
       </div>
-      <div className="w-8 h-8 rounded-full bg-[#0F172A]/5 dark:bg-white/5 flex items-center justify-center hover:bg-[#0F172A]/10 dark:hover:bg-white/10 cursor-pointer transition-colors"><Download size={14} className="text-[#18adf2]" /></div>
+      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-[#0F172A]/5 dark:bg-white/5 flex items-center justify-center hover:bg-[#0F172A]/10 dark:hover:bg-white/10 cursor-pointer transition-colors"><Download size={12} className="md:w-3.5 md:h-3.5 text-[#18adf2]" /></div>
     </div>
   </SpotlightCard>
 );
@@ -111,19 +111,19 @@ const TvaMockup = () => {
 const CrmMockup = () => {
   const { t } = useLanguage();
   return (
-  <SpotlightCard className="w-full h-auto bg-white dark:bg-[#0F172A] border border-[#526e9c]/20 p-6 md:p-8 rounded-3xl flex flex-col gap-6 shadow-2xl relative overflow-hidden">
-    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none z-0" />
+  <SpotlightCard className="w-full h-auto bg-white dark:bg-[#0F172A] border border-[#526e9c]/20 p-4 md:p-8 rounded-2xl md:rounded-3xl flex flex-col gap-4 md:gap-6 shadow-2xl relative overflow-hidden">
+    <div className="absolute top-0 right-0 w-48 md:w-64 h-48 md:h-64 bg-emerald-500/10 rounded-full blur-[60px] md:blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none z-0" />
     
-    <div className="flex justify-between items-center mb-2 z-10">
-       <h3 className="font-black text-xl text-[#0F172A] dark:text-white tracking-tight">{t('featuresMockup.crm.title')}</h3>
-       <div className="flex gap-2.5">
-         <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
-         <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
-         <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
+    <div className="flex justify-between items-center mb-1 md:mb-2 z-10">
+       <h3 className="font-black text-lg md:text-xl text-[#0F172A] dark:text-white tracking-tight">{t('featuresMockup.crm.title')}</h3>
+       <div className="flex gap-1.5 md:gap-2.5">
+         <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
+         <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
+         <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
        </div>
     </div>
     
-    <div className="space-y-3 z-10 flex-1 flex flex-col justify-center">
+    <div className="space-y-2 md:space-y-3 z-10 flex-1 flex flex-col justify-center">
       {[
         { name: 'Othmane B.', company: 'Atlas Tech', amount: '12.5K', status: t('featuresMockup.crm.paid'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
         { name: 'Karim F.', company: 'FinInvest', amount: '45.0K', status: t('featuresMockup.crm.pending'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
@@ -135,18 +135,18 @@ const CrmMockup = () => {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: i * 0.1 }}
-          className="flex items-center justify-between text-sm bg-[#F8FAFC] dark:bg-white/5 border border-[#526e9c]/10 dark:border-white/5 p-4 rounded-xl hover:bg-[#526e9c]/5 dark:hover:bg-white/10 transition-colors cursor-pointer group"
+          className="flex items-center justify-between text-xs md:text-sm bg-[#F8FAFC] dark:bg-white/5 border border-[#526e9c]/10 dark:border-white/5 p-3 md:p-4 rounded-xl hover:bg-[#526e9c]/5 dark:hover:bg-white/10 transition-colors cursor-pointer group"
         >
-          <div className="flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black ${client.color} border group-hover:scale-110 transition-transform`}>{client.name[0]}</div>
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-black ${client.color} border group-hover:scale-110 transition-transform text-xs md:text-base`}>{client.name[0]}</div>
             <div>
-              <p className="font-bold text-[#0F172A] dark:text-white text-base">{client.company}</p>
-              <p className="text-xs text-[#526e9c] dark:text-[#94A3B8]">{client.name}</p>
+              <p className="font-bold text-[#0F172A] dark:text-white text-sm md:text-base">{client.company}</p>
+              <p className="text-[10px] md:text-xs text-[#526e9c] dark:text-[#94A3B8]">{client.name}</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="font-black text-[#0F172A] dark:text-white text-base">{client.amount} MAD</p>
-            <p className={`text-xs font-bold mt-1 ${client.color.split(' ')[0]}`}>{client.status}</p>
+            <p className="font-black text-[#0F172A] dark:text-white text-sm md:text-base">{client.amount} MAD</p>
+            <p className={`text-[10px] md:text-xs font-bold mt-0.5 md:mt-1 ${client.color.split(' ')[0]}`}>{client.status}</p>
           </div>
         </motion.div>
       ))}
@@ -171,14 +171,14 @@ export default function Features() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="flex flex-col lg:flex-row items-center gap-16"
+        className="flex flex-col lg:flex-row items-center gap-10 md:gap-16"
       >
-        <div className="flex-1 space-y-8">
-          <Badge variant="info" pulse><FileText size={14} /> {t('features.badge1')}</Badge>
-          <h2 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tighter">
+        <div className="flex-1 space-y-6 md:space-y-8">
+          <Badge variant="info" pulse className="text-[10px] md:text-xs"><FileText size={12} className="md:w-3.5 md:h-3.5"/> {t('features.badge1')}</Badge>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] md:leading-[1.1] tracking-tighter">
             {t('features.title1_1')} <span className="text-[#18adf2]">{t('features.title1_2')}</span>
           </h2>
-          <p className="text-lg text-[#526e9c] dark:text-[#94A3B8] leading-relaxed max-w-md">
+          <p className="text-base md:text-lg text-[#526e9c] dark:text-[#94A3B8] leading-relaxed max-w-md">
             {t('features.desc1')}
           </p>
           <Button variant="ghost" className="px-0 hover:bg-transparent text-[#18adf2] hover:text-[#138bc2] !justify-start group">
@@ -214,14 +214,14 @@ export default function Features() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="flex flex-col lg:flex-row-reverse items-center gap-16"
+        className="flex flex-col lg:flex-row-reverse items-center gap-10 md:gap-16 mt-24 md:mt-0"
       >
-        <div className="flex-1 space-y-8">
-          <Badge variant="primary" pulse><Activity size={14} /> {t('features.badge2')}</Badge>
-          <h2 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tighter">
+        <div className="flex-1 space-y-6 md:space-y-8">
+          <Badge variant="primary" pulse className="text-[10px] md:text-xs"><Activity size={12} className="md:w-3.5 md:h-3.5"/> {t('features.badge2')}</Badge>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] md:leading-[1.1] tracking-tighter">
             {t('features.title2_1')} <span className="text-[#221ab7] dark:text-[#5048e5]">{t('features.title2_2')}</span>
           </h2>
-          <p className="text-lg text-[#526e9c] dark:text-[#94A3B8] leading-relaxed max-w-md">
+          <p className="text-base md:text-lg text-[#526e9c] dark:text-[#94A3B8] leading-relaxed max-w-md">
             {t('features.desc2')}
           </p>
           <ul className="space-y-3">
@@ -272,16 +272,16 @@ export default function Features() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="relative overflow-hidden rounded-[2.5rem] md:rounded-[3rem] bg-white dark:bg-[#080C16] border border-[#526e9c]/20 p-8 md:p-16 flex flex-col md:flex-row items-center gap-16 group shadow-[0_30px_100px_-20px_rgba(15,23,42,0.1)] dark:shadow-none"
+        className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-white dark:bg-[#080C16] border border-[#526e9c]/20 p-6 md:p-16 flex flex-col md:flex-row items-center gap-10 md:gap-16 group shadow-[0_30px_100px_-20px_rgba(15,23,42,0.1)] dark:shadow-none mt-24 md:mt-0"
       >
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent opacity-50" />
         
-        <div className="flex-1 space-y-6 z-10">
-          <Badge variant="success" pulse><Users size={14} /> {t('features.badge3')}</Badge>
-          <h2 className="text-4xl md:text-5xl font-black text-[#0F172A] dark:text-white leading-tight">
+        <div className="flex-1 space-y-5 md:space-y-6 z-10">
+          <Badge variant="success" pulse className="text-[10px] md:text-xs"><Users size={12} className="md:w-3.5 md:h-3.5"/> {t('features.badge3')}</Badge>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#0F172A] dark:text-white leading-tight">
             {t('features.title3_1')} <span className="text-emerald-500">{t('features.title3_2')}</span>
           </h2>
-          <p className="text-lg text-[#94A3B8] leading-relaxed max-w-sm">
+          <p className="text-base md:text-lg text-[#94A3B8] leading-relaxed max-w-sm">
             {t('features.desc3')}
           </p>
           <Button variant="primary" className="bg-emerald-500 hover:bg-emerald-600 text-white mt-4 border-none shadow-[0_0_30px_rgba(16,185,129,0.3)]">

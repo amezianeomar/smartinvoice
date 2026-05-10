@@ -27,8 +27,8 @@ export default function Navbar({ isDark, setIsDark }) {
       <nav 
         className={`mt-0 transition-all duration-500 ease-in-out pointer-events-auto flex items-center justify-between
           ${isScrolled 
-            ? 'mt-4 w-[90%] md:w-[75%] py-3 px-6 md:px-8 rounded-full bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 shadow-xl' 
-            : 'w-full py-6 md:py-8 px-6 md:px-12 bg-transparent border-transparent'
+            ? 'mt-4 w-[95%] md:w-[75%] py-2 md:py-3 px-4 md:px-8 rounded-full bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 shadow-xl' 
+            : 'w-full py-4 md:py-8 px-4 md:px-12 bg-transparent border-transparent'
           }`}
       >
         {/* Logo Section */}
@@ -36,9 +36,9 @@ export default function Navbar({ isDark, setIsDark }) {
           <img 
             src="/images/logo-icon.png" 
             alt="Logo" 
-            className={`object-contain transition-all duration-500 group-hover:rotate-6 ${isScrolled ? 'w-12 h-12' : 'w-16 h-16'}`} 
+            className={`object-contain transition-all duration-500 group-hover:rotate-6 ${isScrolled ? 'w-8 h-8 md:w-12 md:h-12' : 'w-10 h-10 md:w-16 md:h-16'}`} 
           />
-          <span className={`font-black tracking-tighter uppercase transition-all duration-500 ${isScrolled ? 'text-lg' : 'text-2xl'}`}>
+          <span className={`font-black tracking-tighter uppercase transition-all duration-500 ${isScrolled ? 'text-base md:text-lg' : 'text-lg md:text-2xl'}`}>
             SI<span className="text-[#18adf2]">-</span>PRO
           </span>
         </div>
@@ -50,7 +50,7 @@ export default function Navbar({ isDark, setIsDark }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 md:gap-4">
+        <div className="flex items-center gap-1.5 md:gap-4">
           <LanguageSwitcher />
 
           <button 

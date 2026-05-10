@@ -11,8 +11,8 @@ export default function Footer() {
       {/* ================================================== */}
       {/* 1. THE PREMIUM CALL TO ACTION (Linear/Vercel Style) */}
       {/* ================================================== */}
-      <div className="max-w-6xl mx-auto px-6 mb-32">
-        <div className="relative rounded-[3rem] overflow-hidden bg-[#080C16] border border-[#526e9c]/20 p-12 md:p-24 text-center flex flex-col items-center shadow-2xl group">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 mb-20 md:mb-32">
+        <div className="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-[#080C16] border border-[#526e9c]/20 p-8 md:p-24 text-center flex flex-col items-center shadow-2xl group">
 
           {/* Animated Glowing Orbs */}
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#18adf2] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse" />
@@ -30,22 +30,22 @@ export default function Footer() {
               {t('footer.ctaBadge')}
             </div>
 
-            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 leading-[1.1] max-w-3xl">
+            <h2 className="text-4xl md:text-7xl font-black text-white tracking-tighter mb-4 md:mb-6 leading-[1.1] max-w-3xl">
               {t('footer.ctaTitle1')} <br/>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#18adf2] to-[#5048e5]">{t('footer.ctaTitle2')}</span>
             </h2>
 
-            <p className="text-[#94A3B8] text-lg md:text-xl mb-12 max-w-2xl leading-relaxed">
+            <p className="text-[#94A3B8] text-sm md:text-xl mb-8 md:mb-12 max-w-2xl leading-relaxed">
               {t('footer.ctaDesc')}
             </p>
 
             {/* Premium Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <Link to="/register" className="px-10 py-5 rounded-2xl font-black text-white bg-gradient-to-r from-[#221ab7] to-[#18adf2] hover:scale-105 transition-transform shadow-[0_0_40px_-10px_rgba(24,173,242,0.6)] flex items-center justify-center gap-3 group/btn">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
+              <Link to="/register" className="px-6 py-4 md:px-10 md:py-5 rounded-xl md:rounded-2xl font-black text-white bg-gradient-to-r from-[#221ab7] to-[#18adf2] hover:scale-105 transition-transform shadow-[0_0_40px_-10px_rgba(24,173,242,0.6)] flex items-center justify-center gap-2 md:gap-3 group/btn text-sm md:text-base">
                 {t('footer.ctaBtn1')}
-                <ArrowRight size={20} className="transition-transform group-hover/btn:translate-x-2" />
+                <ArrowRight size={18} className="transition-transform group-hover/btn:translate-x-2 md:w-5 md:h-5" />
               </Link>
-              <Link to="/register" className="px-10 py-5 rounded-2xl font-bold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-colors backdrop-blur-md flex items-center justify-center">
+              <Link to="/register" className="px-6 py-4 md:px-10 md:py-5 rounded-xl md:rounded-2xl font-bold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-colors backdrop-blur-md flex items-center justify-center text-sm md:text-base">
                 {t('footer.ctaBtn2')}
               </Link>
             </div>

@@ -29,7 +29,7 @@ export default function LogoMarquee() {
         }
       `}} />
 
-      <p className="text-center text-xs font-black text-[#526e9c] uppercase tracking-[0.3em] opacity-50 mb-16">
+      <p className="text-center text-xs font-black text-[#526e9c] uppercase tracking-[0.2em] md:tracking-[0.3em] opacity-50 mb-12 md:mb-16 px-4">
         Trusted by forward-thinking businesses across Morocco
       </p>
 

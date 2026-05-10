@@ -59,7 +59,7 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <div className="relative w-full min-h-screen bg-[#F8FAFC] dark:bg-[#080C16] text-[#0F172A] dark:text-[#F8FAFC] transition-colors duration-500 font-sans selection:bg-[#18adf2]/10 selection:text-[#18adf2]">
+    <div className="relative w-full min-h-screen overflow-x-hidden bg-[#F8FAFC] dark:bg-[#080C16] text-[#0F172A] dark:text-[#F8FAFC] transition-colors duration-500 font-sans selection:bg-[#18adf2]/10 selection:text-[#18adf2]">
 
       {/* Global animations */}
       <style dangerouslySetInnerHTML={{
