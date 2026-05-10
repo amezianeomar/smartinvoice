@@ -27,6 +27,7 @@ export default function AuthPage({ initialMode = 'login' }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [apiErrors, setApiErrors] = useState({});
 
@@ -44,7 +45,7 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     const result = isLogin 
       ? await login({ email, password })
-      : await register({ name, email, password });
+      : await register({ name, email, password, password_confirmation: passwordConfirmation });
 
     if (result.success) {
       if (result.user?.role === 'admin') {
@@ -216,6 +217,22 @@ export default function AuthPage({ initialMode = 'login' }) {
                           ))}
                         </motion.div>
                       )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Confirmer mot de passe</label>
+                      <div className="relative group/input">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Lock size={16} /></div>
+                        <input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          value={passwordConfirmation} 
+                          onChange={(e) => setPasswordConfirmation(e.target.value)} 
+                          className={`w-full pl-11 pr-4 py-3 rounded-xl border ${apiErrors.password_confirmation ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none`} 
+                        />
+                        <div className="absolute inset-0 border border-[#18adf2] rounded-xl opacity-0 scale-95 group-focus-within/input:opacity-100 group-focus-within/input:scale-100 transition-all duration-300 pointer-events-none shadow-[0_0_15px_rgba(24,173,242,0.3)]" />
+                      </div>
+                      {apiErrors.password_confirmation && <p className="text-[10px] text-red-400 font-bold ml-1">{apiErrors.password_confirmation[0]}</p>}
                     </div>
 
                     <SubmitButton text="Créer mon compte" isLoading={isLoading} />

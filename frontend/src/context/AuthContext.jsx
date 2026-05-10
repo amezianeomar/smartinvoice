@@ -57,7 +57,8 @@ export const AuthProvider = ({ children }) => {
       const payload = { 
         nom: data.name,
         email: data.email,
-        password: data.password 
+        password: data.password,
+        password_confirmation: data.password_confirmation
       };
 
       const response = await api.post('/register', payload);
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       setUser(userData);
 
-      return { success: true };
+      return { success: true, user: userData };
     } catch (error) {
       return {
         success: false,
