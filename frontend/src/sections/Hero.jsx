@@ -75,7 +75,7 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="flex h-[650px] overflow-hidden">
+            <div className="flex h-auto md:h-[650px] overflow-hidden">
               {/* Sidebar */}
               <div className="w-64 border-r border-[#526e9c]/10 bg-[#F8FAFC]/30 dark:bg-[#0F172A]/30 p-6 flex flex-col gap-2 hidden md:flex shrink-0">
                 <p className="text-xs font-black text-[#526e9c] uppercase tracking-widest mb-4">{t('dashboardMockup.menu')}</p>
