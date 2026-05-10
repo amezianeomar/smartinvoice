@@ -89,7 +89,7 @@ export default function AuthPage({ initialMode = 'login' }) {
       </div>
 
       {/* Main Container */}
-      <div className={`relative w-full max-w-5xl ${isLogin ? 'h-[700px] lg:h-[650px]' : 'h-[900px] sm:h-[850px] lg:h-[650px]'} bg-[#0F172A]/80 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(34,26,183,0.2)] overflow-hidden flex flex-col lg:block transition-all duration-500`}>
+      <div className={`relative w-full max-w-5xl ${isLogin ? 'h-[700px] lg:h-[650px]' : 'h-[900px] sm:h-[850px] lg:h-[750px]'} bg-[#0F172A]/80 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(34,26,183,0.2)] overflow-hidden flex flex-col lg:block transition-all duration-500`}>
         
         {/* ========================================================= */}
         {/* 1. THE FORM PANEL (Slides Left/Right)                       */}
@@ -111,7 +111,7 @@ export default function AuthPage({ initialMode = 'login' }) {
             <Link to="/" className="text-white/50 hover:text-white"><ArrowLeft size={20}/></Link>
           </div>
 
-          <div className={`relative z-10 w-full max-w-sm mx-auto ${isLogin ? 'h-[500px]' : 'h-[700px] sm:h-[650px] lg:h-[550px]'} transition-all duration-500`}>
+          <div className={`relative z-10 w-full max-w-sm mx-auto ${isLogin ? 'h-[500px]' : 'h-[700px] sm:h-[650px] lg:h-[650px]'} transition-all duration-500`}>
             <AnimatePresence mode="wait">
               {isLogin ? (
                 /* --- LOGIN FORM CONTENT --- */
