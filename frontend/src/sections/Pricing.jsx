@@ -52,7 +52,7 @@ export default function Pricing() {
                 </li>
               ))}
             </ul>
-            <Link to="/register"><Button className="w-full py-4 text-base bg-white dark:bg-white text-[#221ab7] dark:text-[#5048e5] hover:scale-105 hover:bg-gray-50 transition-transform shadow-xl border-none">{t('pricing.pro.btn')}</Button></Link>
+            <Link to="/register"><Button className="w-full py-4 text-base !bg-white dark:!bg-white !text-[#221ab7] dark:!text-[#5048e5] hover:scale-105 hover:!bg-gray-50 transition-transform shadow-xl border-none">{t('pricing.pro.btn')}</Button></Link>
           </SpotlightCard>
           
           {/* Badge moved outside SpotlightCard to avoid overflow-hidden crop */}
