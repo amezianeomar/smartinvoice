@@ -10,38 +10,38 @@ export default function Testimonials() {
     {
       ...t('testimonials.t1'),
       color: '#18adf2',
-      baseClasses: '-rotate-6 -translate-x-4 -translate-y-2 z-10',
-      gridClasses: 'group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:-translate-y-[60%]',
+      baseClasses: 'md:-rotate-6 md:-translate-x-4 md:-translate-y-2 z-10',
+      gridClasses: 'md:group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:-translate-y-[60%]',
     },
     {
       ...t('testimonials.t2'),
       color: '#221ab7',
-      baseClasses: 'rotate-3 translate-x-2 -translate-y-4 z-30',
-      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:-translate-y-[60%]',
+      baseClasses: 'md:rotate-3 md:translate-x-2 md:-translate-y-4 z-30',
+      gridClasses: 'md:group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:-translate-y-[60%]',
     },
     {
       ...t('testimonials.t3'),
       color: '#10b981',
-      baseClasses: '-rotate-3 translate-x-6 translate-y-2 z-20',
-      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:-translate-y-[60%]',
+      baseClasses: 'md:-rotate-3 md:translate-x-6 md:translate-y-2 z-20',
+      gridClasses: 'md:group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:-translate-y-[60%]',
     },
     {
       ...t('testimonials.t4'),
       color: '#f59e0b',
-      baseClasses: 'rotate-6 -translate-x-8 translate-y-4 z-40',
-      gridClasses: 'group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:translate-y-[60%]',
+      baseClasses: 'md:rotate-6 md:-translate-x-8 md:translate-y-4 z-40',
+      gridClasses: 'md:group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:translate-y-[60%]',
     },
     {
       ...t('testimonials.t5'),
       color: '#8b5cf6',
-      baseClasses: '-rotate-12 -translate-x-2 translate-y-6 z-50',
-      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:translate-y-[60%]',
+      baseClasses: 'md:-rotate-12 md:-translate-x-2 md:translate-y-6 z-50',
+      gridClasses: 'md:group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:translate-y-[60%]',
     },
     {
       ...t('testimonials.t6'),
       color: '#ec4899',
-      baseClasses: 'rotate-12 translate-x-8 -translate-y-2 z-0',
-      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:translate-y-[60%]',
+      baseClasses: 'md:rotate-12 md:translate-x-8 md:-translate-y-2 z-0',
+      gridClasses: 'md:group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:translate-y-[60%]',
     },
   ];
   return (
@@ -68,13 +68,13 @@ export default function Testimonials() {
         </p>
       </div>
 
-      {/* The Container is tall enough to fit the 2 rows. 
-        'group' detects the hover.
+      {/* The Container is tall enough to fit the 2 rows on desktop. 
+        On mobile, it becomes a horizontal scrollable snap container.
       */}
-      <div className="relative flex justify-center items-center h-[800px] md:h-[700px] group cursor-pointer">
+      <div className="relative flex overflow-x-auto md:overflow-visible snap-x snap-mandatory py-10 md:py-0 px-6 md:px-0 gap-6 md:gap-0 justify-start md:justify-center items-center h-auto md:h-[700px] group cursor-pointer w-[100vw] -ml-6 md:w-auto md:ml-0 [&::-webkit-scrollbar]:hidden">
         
         {/* Placeholder text visible before hover, fades out on hover */}
-        <div className="absolute z-0 text-[#526e9c]/30 font-black text-2xl uppercase tracking-[0.5em] transition-opacity duration-500 group-hover:opacity-0">
+        <div className="absolute z-0 text-[#526e9c]/30 font-black text-2xl uppercase tracking-[0.5em] transition-opacity duration-500 group-hover:opacity-0 hidden md:block">
           {t('testimonials.hover')}
         </div>
 
@@ -82,9 +82,9 @@ export default function Testimonials() {
           <div
             key={i}
             className={`
-              absolute w-full max-w-[320px] p-8 rounded-[2rem] 
+              relative shrink-0 snap-center md:absolute w-[85vw] md:w-full max-w-[320px] p-8 rounded-[2rem] 
               bg-white/90 dark:bg-[#131B2C]/90 backdrop-blur-md
-              border border-[#526e9c]/20 shadow-2xl
+              border border-[#526e9c]/20 shadow-xl md:shadow-2xl
               transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]
               ${item.baseClasses}
               ${item.gridClasses}
