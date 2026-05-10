@@ -14,6 +14,58 @@ export const en = {
     btnPrimary: "Send my first invoice",
     btnSecondary: "See how it works"
   },
+  dashboardMockup: {
+    search: "Search...",
+    menu: "Menu",
+    dashboard: "Dashboard",
+    invoices: "Invoices",
+    clients: "Clients",
+    payments: "Payments",
+    settings: "Settings",
+    financialOverview: "Financial Overview",
+    fiscalYear: "Fiscal Year 2025 • MAD",
+    createInvoice: "Create invoice",
+    revenue: "Revenue (ARR)",
+    tvaCollected: "VAT Collected",
+    smes: "SMEs",
+    arrGrowth: "ARR Growth",
+    revLegend: "Revenue",
+    tvaLegend: "VAT",
+    activities: "Activities",
+    paid: "Paid",
+    pending: "Pending"
+  },
+  featuresMockup: {
+    invoice: {
+      title: "Invoice",
+      date: "April 12, 2026",
+      billedTo: "Billed to:",
+      desc: "Description",
+      amount: "Amount",
+      item1: "Annual SaaS Subscription",
+      item2: "Setup & Training",
+      subtotal: "Subtotal",
+      tax: "VAT (20%)",
+      total: "Total",
+      successPop: "Sent successfully",
+      invoiceNum: "Invoice #4092"
+    },
+    tva: {
+      title: "VAT Collected (Q1 2026)",
+      sync: "Synced",
+      cat1: "Services (20%)",
+      cat2: "Transport & Logistics (14%)",
+      cat3: "Accommodation (10%)",
+      ready: "Declaration Ready",
+      compliant: "DGI Compliant"
+    },
+    crm: {
+      title: "Client Directory",
+      paid: "Paid",
+      pending: "Pending",
+      late: "Overdue"
+    }
+  },
   features: {
     badge1: "Fast Workflow",
     title1_1: "Invoice in",

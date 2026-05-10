@@ -14,6 +14,58 @@ export const fr = {
     btnPrimary: "Envoyer ma première facture",
     btnSecondary: "Voir comment ça marche"
   },
+  dashboardMockup: {
+    search: "Rechercher...",
+    menu: "Menu",
+    dashboard: "Tableau de bord",
+    invoices: "Factures",
+    clients: "Clients",
+    payments: "Paiements",
+    settings: "Paramètres",
+    financialOverview: "Aperçu Financier",
+    fiscalYear: "Année fiscale 2025 • MAD",
+    createInvoice: "Créer une facture",
+    revenue: "Revenu (ARR)",
+    tvaCollected: "TVA Collectée",
+    smes: "PME",
+    arrGrowth: "Croissance ARR",
+    revLegend: "Revenu",
+    tvaLegend: "TVA",
+    activities: "Activités",
+    paid: "Payée",
+    pending: "Attente"
+  },
+  featuresMockup: {
+    invoice: {
+      title: "Facture",
+      date: "12 Avril 2026",
+      billedTo: "Facturé à:",
+      desc: "Description",
+      amount: "Montant",
+      item1: "Abonnement SaaS Annuel",
+      item2: "Setup & Formation",
+      subtotal: "Sous-total",
+      tax: "TVA (20%)",
+      total: "Total TTC",
+      successPop: "Envoyée avec succès",
+      invoiceNum: "Facture #4092"
+    },
+    tva: {
+      title: "TVA Collectée (Q1 2026)",
+      sync: "Synchronisé",
+      cat1: "Prestations de Service (20%)",
+      cat2: "Transport & Logistique (14%)",
+      cat3: "Hébergement (10%)",
+      ready: "Déclaration Prête",
+      compliant: "Conforme aux normes DGI"
+    },
+    crm: {
+      title: "Répertoire Clients",
+      paid: "Payé",
+      pending: "En Attente",
+      late: "Retard"
+    }
+  },
   features: {
     badge1: "Workflow Rapide",
     title1_1: "Facturez en",

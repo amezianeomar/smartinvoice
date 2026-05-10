@@ -8,7 +8,9 @@ import { useLanguage } from '../context/LanguageContext';
 // CODE-BASED UI MOCKUPS (Replacing Images)
 // ==========================================
 
-const InvoiceMockup = () => (
+const InvoiceMockup = () => {
+  const { t } = useLanguage();
+  return (
   <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 p-6 md:p-8 rounded-2xl flex flex-col gap-4 text-xs shadow-2xl h-auto">
     <div className="flex justify-between items-start border-b border-[#526e9c]/10 pb-4 relative z-10">
       <div>
@@ -17,38 +19,38 @@ const InvoiceMockup = () => (
         <p className="text-[#526e9c]">ICE: 000123456789</p>
       </div>
       <div className="text-right text-[#526e9c]">
-        <h3 className="text-xl md:text-2xl font-black text-[#18adf2] uppercase tracking-widest mb-1">Facture</h3>
+        <h3 className="text-xl md:text-2xl font-black text-[#18adf2] uppercase tracking-widest mb-1">{t('featuresMockup.invoice.title')}</h3>
         <p className="font-bold">FAC-2026-001</p>
-        <p>12 Avril 2026</p>
+        <p>{t('featuresMockup.invoice.date')}</p>
       </div>
     </div>
     <div className="bg-[#526e9c]/5 rounded-xl p-4 mt-2">
-      <p className="font-bold text-[#0F172A] dark:text-white text-sm mb-1">Facturé à:</p>
+      <p className="font-bold text-[#0F172A] dark:text-white text-sm mb-1">{t('featuresMockup.invoice.billedTo')}</p>
       <p className="text-[#526e9c] text-sm">TechCorp Maroc<br/>Casablanca, 20000</p>
     </div>
     <table className="w-full mt-4 text-sm relative z-10">
       <thead className="text-[#526e9c] border-b border-[#526e9c]/10">
         <tr>
-          <th className="text-left font-bold pb-3">Description</th>
-          <th className="text-right font-bold pb-3">Montant</th>
+          <th className="text-left font-bold pb-3">{t('featuresMockup.invoice.desc')}</th>
+          <th className="text-right font-bold pb-3">{t('featuresMockup.invoice.amount')}</th>
         </tr>
       </thead>
       <tbody className="text-[#0F172A] dark:text-white">
         <tr>
-          <td className="py-3 border-b border-[#526e9c]/5">Abonnement SaaS Annuel</td>
+          <td className="py-3 border-b border-[#526e9c]/5">{t('featuresMockup.invoice.item1')}</td>
           <td className="text-right py-3 border-b border-[#526e9c]/5 font-bold">10,000 DH</td>
         </tr>
         <tr>
-          <td className="py-3 border-b border-[#526e9c]/5">Setup & Formation</td>
+          <td className="py-3 border-b border-[#526e9c]/5">{t('featuresMockup.invoice.item2')}</td>
           <td className="text-right py-3 border-b border-[#526e9c]/5 font-bold">2,500 DH</td>
         </tr>
       </tbody>
     </table>
     <div className="flex justify-end gap-8 mt-4 pt-4 border-t-2 border-[#18adf2]/20 relative z-10">
       <div className="text-right text-[#526e9c] space-y-2">
-        <p>Sous-total</p>
-        <p>TVA (20%)</p>
-        <p className="text-base font-black text-[#0F172A] dark:text-white mt-2">Total TTC</p>
+        <p>{t('featuresMockup.invoice.subtotal')}</p>
+        <p>{t('featuresMockup.invoice.tax')}</p>
+        <p className="text-base font-black text-[#0F172A] dark:text-white mt-2">{t('featuresMockup.invoice.total')}</p>
       </div>
       <div className="text-right font-bold text-[#0F172A] dark:text-white space-y-2">
         <p>12,500 DH</p>
@@ -58,33 +60,36 @@ const InvoiceMockup = () => (
     </div>
   </SpotlightCard>
 );
+}
 
-const TvaMockup = () => (
+const TvaMockup = () => {
+  const { t } = useLanguage();
+  return (
   <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 dark:border-[#526e9c]/30 p-6 md:p-8 rounded-2xl flex flex-col gap-8 text-sm text-[#0F172A] dark:text-white h-auto shadow-2xl relative overflow-hidden">
     {/* Grid Background inside mockup */}
     <div className="absolute inset-0 bg-[linear-gradient(to_right,#526e9c15_1px,transparent_1px),linear-gradient(to_bottom,#526e9c15_1px,transparent_1px)] bg-[size:1rem_1rem] opacity-30 z-0" />
     
     <div className="relative z-10 flex justify-between items-start">
       <div>
-        <h3 className="font-bold text-[#94A3B8] uppercase text-xs tracking-widest mb-2">TVA Collectée (Q1 2026)</h3>
+        <h3 className="font-bold text-[#94A3B8] uppercase text-xs tracking-widest mb-2">{t('featuresMockup.tva.title')}</h3>
         <p className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-[#18adf2]">
           <AnimatedCounter value={45200} /> <span className="text-lg text-[#526e9c]">DH</span>
         </p>
       </div>
-      <Badge pulse variant="success">Synchronisé</Badge>
+      <Badge pulse variant="success">{t('featuresMockup.tva.sync')}</Badge>
     </div>
     
     <div className="relative z-10 space-y-5">
       <div>
-        <div className="flex justify-between text-xs font-bold mb-2"><span className="text-[#18adf2]">Prestations de Service (20%)</span><span>38,000 DH</span></div>
+        <div className="flex justify-between text-xs font-bold mb-2"><span className="text-[#18adf2]">{t('featuresMockup.tva.cat1')}</span><span>38,000 DH</span></div>
         <div className="h-2 w-full bg-[#0F172A]/5 dark:bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} whileInView={{ width: '85%' }} transition={{ duration: 1, delay: 0.2 }} className="h-full bg-[#18adf2] rounded-full"/></div>
       </div>
       <div>
-        <div className="flex justify-between text-xs font-bold mb-2"><span className="text-emerald-500 dark:text-emerald-400">Transport & Logistique (14%)</span><span>5,200 DH</span></div>
+        <div className="flex justify-between text-xs font-bold mb-2"><span className="text-emerald-500 dark:text-emerald-400">{t('featuresMockup.tva.cat2')}</span><span>5,200 DH</span></div>
         <div className="h-2 w-full bg-[#0F172A]/5 dark:bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} whileInView={{ width: '11%' }} transition={{ duration: 1, delay: 0.4 }} className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full"/></div>
       </div>
       <div>
-        <div className="flex justify-between text-xs font-bold mb-2"><span className="text-amber-500 dark:text-amber-400">Hébergement (10%)</span><span>2,000 DH</span></div>
+        <div className="flex justify-between text-xs font-bold mb-2"><span className="text-amber-500 dark:text-amber-400">{t('featuresMockup.tva.cat3')}</span><span>2,000 DH</span></div>
         <div className="h-2 w-full bg-[#0F172A]/5 dark:bg-white/5 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} whileInView={{ width: '4%' }} transition={{ duration: 1, delay: 0.6 }} className="h-full bg-amber-500 dark:bg-amber-400 rounded-full"/></div>
       </div>
     </div>
@@ -93,21 +98,24 @@ const TvaMockup = () => (
       <div className="flex items-center gap-4">
         <div className="p-2 rounded-lg bg-[#221ab7]/10 dark:bg-[#5048e5]/20 text-[#221ab7] dark:text-[#5048e5]"><Shield size={20} /></div>
         <div>
-          <p className="font-bold text-sm text-[#0F172A] dark:text-white">Déclaration Prête</p>
-          <p className="text-xs text-[#526e9c] dark:text-[#94A3B8]">Conforme aux normes DGI</p>
+          <p className="font-bold text-sm text-[#0F172A] dark:text-white">{t('featuresMockup.tva.ready')}</p>
+          <p className="text-xs text-[#526e9c] dark:text-[#94A3B8]">{t('featuresMockup.tva.compliant')}</p>
         </div>
       </div>
       <div className="w-8 h-8 rounded-full bg-[#0F172A]/5 dark:bg-white/5 flex items-center justify-center hover:bg-[#0F172A]/10 dark:hover:bg-white/10 cursor-pointer transition-colors"><Download size={14} className="text-[#18adf2]" /></div>
     </div>
   </SpotlightCard>
 );
+}
 
-const CrmMockup = () => (
+const CrmMockup = () => {
+  const { t } = useLanguage();
+  return (
   <SpotlightCard className="w-full h-auto bg-white dark:bg-[#0F172A] border border-[#526e9c]/20 p-6 md:p-8 rounded-3xl flex flex-col gap-6 shadow-2xl relative overflow-hidden">
     <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none z-0" />
     
     <div className="flex justify-between items-center mb-2 z-10">
-       <h3 className="font-black text-xl text-[#0F172A] dark:text-white tracking-tight">Répertoire Clients</h3>
+       <h3 className="font-black text-xl text-[#0F172A] dark:text-white tracking-tight">{t('featuresMockup.crm.title')}</h3>
        <div className="flex gap-2.5">
          <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
          <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
@@ -117,10 +125,10 @@ const CrmMockup = () => (
     
     <div className="space-y-3 z-10 flex-1 flex flex-col justify-center">
       {[
-        { name: 'Othmane B.', company: 'Atlas Tech', amount: '12.5K', status: 'Payé', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-        { name: 'Karim F.', company: 'FinInvest', amount: '45.0K', status: 'En Attente', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-        { name: 'Nadia R.', company: 'Studio M', amount: '8.2K', status: 'Payé', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-        { name: 'Tarik S.', company: 'LogiX', amount: '105.0K', status: 'Retard', color: 'text-red-400 bg-red-500/10 border-red-500/20' },
+        { name: 'Othmane B.', company: 'Atlas Tech', amount: '12.5K', status: t('featuresMockup.crm.paid'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+        { name: 'Karim F.', company: 'FinInvest', amount: '45.0K', status: t('featuresMockup.crm.pending'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+        { name: 'Nadia R.', company: 'Studio M', amount: '8.2K', status: t('featuresMockup.crm.paid'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+        { name: 'Tarik S.', company: 'LogiX', amount: '105.0K', status: t('featuresMockup.crm.late'), color: 'text-red-400 bg-red-500/10 border-red-500/20' },
       ].map((client, i) => (
         <motion.div 
           key={i} 
@@ -145,6 +153,7 @@ const CrmMockup = () => (
     </div>
   </SpotlightCard>
 );
+}
 
 
 // ==========================================
@@ -192,8 +201,8 @@ export default function Features() {
               <CheckCircle2 size={20} />
             </div>
             <div>
-              <p className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Facture #4092</p>
-              <p className="text-sm font-black text-[#0F172A] dark:text-white">Envoyée avec succès</p>
+              <p className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('featuresMockup.invoice.invoiceNum')}</p>
+              <p className="text-sm font-black text-[#0F172A] dark:text-white">{t('featuresMockup.invoice.successPop')}</p>
             </div>
           </motion.div>
         </div>

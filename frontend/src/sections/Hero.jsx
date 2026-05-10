@@ -67,7 +67,7 @@ export default function Hero() {
               </div>
               <div className="hidden md:flex items-center gap-3 bg-white dark:bg-[#131B2C] border border-[#526e9c]/20 px-4 py-1.5 rounded-md w-96 shadow-sm">
                 <Search size={14} className="text-[#526e9c]" />
-                <span className="text-xs text-[#526e9c] font-medium">Rechercher...</span>
+                <span className="text-xs text-[#526e9c] font-medium">{t('dashboardMockup.search')}</span>
               </div>
               <div className="flex items-center gap-4">
                 <Bell size={18} className="text-[#526e9c]" />
@@ -78,26 +78,26 @@ export default function Hero() {
             <div className="flex h-[650px] overflow-hidden">
               {/* Sidebar */}
               <div className="w-64 border-r border-[#526e9c]/10 bg-[#F8FAFC]/30 dark:bg-[#0F172A]/30 p-6 flex flex-col gap-2 hidden md:flex shrink-0">
-                <p className="text-xs font-black text-[#526e9c] uppercase tracking-widest mb-4">Menu</p>
+                <p className="text-xs font-black text-[#526e9c] uppercase tracking-widest mb-4">{t('dashboardMockup.menu')}</p>
                 <div className="flex items-center gap-3 bg-[#221ab7] dark:bg-[#5048e5] text-white px-4 py-3 rounded-xl shadow-md cursor-pointer">
                   <LayoutDashboard size={18} />
-                  <span className="font-bold text-sm">Tableau de bord</span>
+                  <span className="font-bold text-sm">{t('dashboardMockup.dashboard')}</span>
                 </div>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer"><FileText size={18} /><span className="font-bold text-sm">Factures</span></div>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer"><Users size={18} /><span className="font-bold text-sm">Clients</span></div>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer mb-auto"><Wallet size={18} /><span className="font-bold text-sm">Paiements</span></div>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer border-t border-[#526e9c]/10 pt-4"><Settings size={18} /><span className="font-bold text-sm">Paramètres</span></div>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer"><FileText size={18} /><span className="font-bold text-sm">{t('dashboardMockup.invoices')}</span></div>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer"><Users size={18} /><span className="font-bold text-sm">{t('dashboardMockup.clients')}</span></div>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer mb-auto"><Wallet size={18} /><span className="font-bold text-sm">{t('dashboardMockup.payments')}</span></div>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#526e9c] hover:bg-[#526e9c]/10 cursor-pointer border-t border-[#526e9c]/10 pt-4"><Settings size={18} /><span className="font-bold text-sm">{t('dashboardMockup.settings')}</span></div>
               </div>
 
               {/* Dashboard Content - Internal Scrollbar Removed for Landing Page Polish */}
               <div className="flex-1 p-8 overflow-hidden bg-white/50 dark:bg-transparent">
                 <div className="flex justify-between items-end mb-8">
                   <div>
-                    <h2 className="text-3xl font-black tracking-tight">Aperçu Financier</h2>
-                    <p className="text-[#526e9c] font-medium mt-1">Année fiscale 2025 • MAD</p>
+                    <h2 className="text-3xl font-black tracking-tight">{t('dashboardMockup.financialOverview')}</h2>
+                    <p className="text-[#526e9c] font-medium mt-1">{t('dashboardMockup.fiscalYear')}</p>
                   </div>
                   <button className="flex items-center gap-2 bg-[#221ab7] dark:bg-[#5048e5] text-white px-5 py-2.5 rounded-lg font-bold shadow-lg">
-                    <Plus size={18} /> Créer une facture
+                    <Plus size={18} /> {t('dashboardMockup.createInvoice')}
                   </button>
                 </div>
 
@@ -108,7 +108,7 @@ export default function Hero() {
                       <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400"><Activity size={20} /></div>
                       <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded-md"><TrendingUp size={12} /> +24%</span>
                     </div>
-                    <p className="text-sm font-bold text-[#526e9c] uppercase mb-1">Revenu (ARR)</p>
+                    <p className="text-sm font-bold text-[#526e9c] uppercase mb-1">{t('dashboardMockup.revenue')}</p>
                     <h3 className="text-2xl font-black"><AnimatedCounter value={6.2} />M MAD</h3>
                   </div>
                   <div className="bg-white dark:bg-[#1e293b] p-6 rounded-2xl border border-[#526e9c]/20 shadow-sm">
@@ -116,7 +116,7 @@ export default function Hero() {
                       <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400"><FileText size={20} /></div>
                       <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded-md"><TrendingUp size={12} /> +12%</span>
                     </div>
-                    <p className="text-sm font-bold text-[#526e9c] uppercase mb-1">TVA Collectée</p>
+                    <p className="text-sm font-bold text-[#526e9c] uppercase mb-1">{t('dashboardMockup.tvaCollected')}</p>
                     <h3 className="text-2xl font-black"><AnimatedCounter value={1.24} />M MAD</h3>
                   </div>
                   <div className="bg-white dark:bg-[#1e293b] p-6 rounded-2xl border border-[#526e9c]/20 shadow-sm">
@@ -124,8 +124,8 @@ export default function Hero() {
                       <div className="w-10 h-10 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400"><Users size={20} /></div>
                       <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded-md"><TrendingUp size={12} /> +45%</span>
                     </div>
-                    <p className="text-sm font-bold text-[#526e9c] uppercase mb-1">Clients</p>
-                    <h3 className="text-2xl font-black"><AnimatedCounter value={650} /> PME</h3>
+                    <p className="text-sm font-bold text-[#526e9c] uppercase mb-1">{t('dashboardMockup.clients')}</p>
+                    <h3 className="text-2xl font-black"><AnimatedCounter value={650} /> {t('dashboardMockup.smes')}</h3>
                   </div>
                 </div>
 
@@ -133,10 +133,10 @@ export default function Hero() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-2 bg-white dark:bg-[#1e293b] border border-[#526e9c]/20 rounded-2xl p-6 flex flex-col">
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="font-bold">Croissance ARR</h3>
+                      <h3 className="font-bold">{t('dashboardMockup.arrGrowth')}</h3>
                       <div className="flex gap-2 text-[10px] font-bold">
-                        <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#18adf2]"/> Revenu</span>
-                        <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#221ab7] dark:bg-[#5048e5]"/> TVA</span>
+                        <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#18adf2]"/> {t('dashboardMockup.revLegend')}</span>
+                        <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#221ab7] dark:bg-[#5048e5]"/> {t('dashboardMockup.tvaLegend')}</span>
                       </div>
                     </div>
                     <div className="flex-1 min-h-[150px] relative border-b border-l border-[#526e9c]/20 mb-2">
@@ -149,12 +149,12 @@ export default function Hero() {
                   </div>
 
                   <div className="bg-white dark:bg-[#1e293b] border border-[#526e9c]/20 rounded-2xl p-6">
-                    <h3 className="font-bold mb-6">Activités</h3>
+                    <h3 className="font-bold mb-6">{t('dashboardMockup.activities')}</h3>
                     <div className="flex flex-col gap-4">
                       {[
-                        { name: 'TechCorp S.A', amt: '4,500', status: 'Payée' },
-                        { name: 'Maroc Logistics', amt: '12,000', status: 'Payée' },
-                        { name: 'Studio Design', amt: '1,850', status: 'Attente' },
+                        { name: 'TechCorp S.A', amt: '4,500', status: t('dashboardMockup.paid') },
+                        { name: 'Maroc Logistics', amt: '12,000', status: t('dashboardMockup.paid') },
+                        { name: 'Studio Design', amt: '1,850', status: t('dashboardMockup.pending') },
                       ].map((inv, i) => (
                         <div key={i} className="flex justify-between items-center border-b border-[#526e9c]/10 pb-4 last:border-0">
                           <div className="flex gap-3 items-center">
