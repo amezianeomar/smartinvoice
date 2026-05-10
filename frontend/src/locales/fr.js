@@ -1,0 +1,123 @@
+export const fr = {
+  nav: {
+    features: "Fonctionnalités",
+    pricing: "Tarifs",
+    login: "Se Connecter",
+    start: "Démarrer",
+    startFree: "Démarrer Gratuitement"
+  },
+  hero: {
+    badge: "Plateforme de Facturation Intelligente",
+    title1: "Arrêtez de gérer vos factures.",
+    title2: "Commencez à les encaisser.",
+    subtitle: "Créez, envoyez et suivez vos factures en quelques secondes. Automatisez vos relances, gardez un œil sur vos paiements et maîtrisez votre trésorerie.",
+    btnPrimary: "Envoyer ma première facture",
+    btnSecondary: "Voir comment ça marche"
+  },
+  features: {
+    badge1: "Workflow Rapide",
+    title1_1: "Facturez en",
+    title1_2: "quelques secondes.",
+    desc1: "Votre temps est précieux. Créez, personnalisez et envoyez des factures professionnelles à vos clients avec un éditeur intuitif qui fait tout le travail pour vous.",
+    btn1: "Explorer l'éditeur",
+    
+    badge2: "Conformité Fiscale",
+    title2_1: "Moteur TVA",
+    title2_2: "Zéro Erreur.",
+    desc2: "L'algorithme de SI-PRO applique automatiquement les taux de TVA marocains exacts selon vos services. Fini les erreurs de calcul, soyez toujours en règle avec la DGI.",
+    list2_1: "Calculs automatiques 20%, 14%, 10%, 7%",
+    list2_2: "Génération des rapports DGI",
+    list2_3: "Export comptable en 1 clic",
+    
+    badge3: "CRM Intégré",
+    title3_1: "Gérez vos clients comme un",
+    title3_2: "Pro.",
+    desc3: "Centralisez l'ensemble des données de vos clients. Suivez leurs interactions, pilotez les encours et automatisez les relances d'impayés directement depuis SI-PRO.",
+    btn3: "Voir le dashboard"
+  },
+  pricing: {
+    title1: "Prêt à passer au",
+    title2: "niveau supérieur ?",
+    subtitle: "Choisissez le plan qui correspond à la taille de votre entreprise.",
+    starter: {
+      name: "Starter",
+      desc: "Parfait pour les freelances qui débutent.",
+      f1: "5 Factures / mois",
+      f2: "1 Utilisateur",
+      f3: "TVA Automatique",
+      f4: "Support par Email",
+      btn: "Commencer Gratuitement"
+    },
+    pro: {
+      badge: "Plus Populaire",
+      name: "Professional",
+      desc: "Tout ce dont une PME a besoin pour scaler.",
+      f1: "Factures Illimitées",
+      f2: "5 Utilisateurs",
+      f3: "CRM Clients Avancé",
+      f4: "Rapports Fiscaux",
+      f5: "Support 24/7",
+      btn: "Essai Gratuit de 14 Jours"
+    },
+    business: {
+      name: "Business",
+      desc: "Pour les grandes structures et franchises.",
+      f1: "Utilisateurs Illimités",
+      f2: "Multi-Sociétés",
+      f3: "API Accès Complet",
+      f4: "Gestionnaire Dédié",
+      btn: "Contacter la Vente"
+    },
+    month: "DH/mois"
+  },
+  faq: {
+    badge: "Questions Fréquentes",
+    title1: "Tout ce que vous devez",
+    title2: "savoir.",
+    q1: "Comment fonctionne le calcul automatique de la TVA ?",
+    a1: "Notre moteur fiscal est codé avec les derniers taux de TVA marocains en vigueur (20%, 14%, 10%, 7%). Il détecte la nature de votre service ou produit et applique automatiquement le bon taux sur vos factures, sans aucune erreur possible.",
+    q2: "Est-ce que je peux relier SI-PRO à mon compte bancaire ?",
+    a2: "Pour les utilisateurs Business, l'intégration bancaire via API est possible. Pour les offres Starter et Pro, vous pouvez pointer vos paiements manuellement ou utiliser nos liens de paiement en ligne sécurisés.",
+    q3: "Mes données sont-elles sécurisées ?",
+    a3: "Totalement. Nous utilisons un chiffrement de bout en bout et nos serveurs sont hébergés sur une infrastructure cloud respectant les plus hauts standards de sécurité (norme ISO 27001).",
+    q4: "Puis-je annuler mon abonnement à tout moment ?",
+    a4: "Oui, notre offre est sans engagement (sauf pour certains contrats Business annuels). Vous pouvez résilier votre abonnement mensuel directement depuis vos paramètres en un clic."
+  },
+  testimonials: {
+    badge: "Approuvé par des experts",
+    title1: "Ils ont automatisé leur",
+    title2: "croissance avec SI-PRO.",
+    subtitle: "Survolez les cartes pour découvrir ce que nos utilisateurs pensent de nous.",
+    hover: "Survolez-moi",
+    t1: { name: "Yassine Benali", role: "Freelance Designer", quote: "Avant SI-PRO, je passais mes dimanches à faire des factures. Maintenant, c'est réglé en 5 minutes." },
+    t2: { name: "Driss El Amrani", role: "CEO Nord-Sud Logistics", quote: "Le moteur automatisé de TVA nous a sauvé de plusieurs erreurs fiscales majeures. Indispensable." },
+    t3: { name: "Sofia Mansouri", role: "Tanger Media", quote: "Mes clients reçoivent des factures ultra pro et je suis payée beaucoup plus rapidement qu'avant." },
+    t4: { name: "Amine Tazi", role: "Fondateur E-com", quote: "La gestion des clients et le suivi des paiements en attente ont sauvé la trésorerie de ma startup." },
+    t5: { name: "Kenza Alaoui", role: "Consultante IT", quote: "L'interface est tellement fluide. C'est le premier logiciel SaaS marocain qui a un standard international." },
+    t6: { name: "Omar Berrada", role: "Gérant PME", quote: "Pouvoir avoir un œil sur mon ARR et ma TVA collectée en temps réel me permet de dormir tranquille." }
+  },
+  footer: {
+    ctaBadge: "Rejoignez 650+ PME Marocaines",
+    ctaTitle1: "Passez à la vitesse",
+    ctaTitle2: "supérieure.",
+    ctaDesc: "Arrêtez de courir après vos paiements. Automatisez votre facturation, suivez votre trésorerie et gagnez des heures chaque semaine.",
+    ctaBtn1: "Démarrer Gratuitement",
+    ctaBtn2: "Voir la Démo",
+    desc: "La plateforme de facturation intelligente conçue pour les freelances et PME marocaines. Simplifiez vos finances dès aujourd'hui.",
+    col1: "Produit",
+    col1_1: "Fonctionnalités",
+    col1_2: "Tarifs",
+    col1_3: "Moteur TVA",
+    col1_4: "API",
+    col2: "Ressources",
+    col2_1: "Documentation",
+    col2_2: "Blog",
+    col2_3: "Centre d'aide",
+    col3: "Légal",
+    col3_1: "Mentions Légales",
+    col3_2: "Confidentialité",
+    col3_3: "CGV",
+    copyright: "© 2026 SmartInvoice Pro. Tous droits réservés.",
+    madeIn: "à Tanger"
+  }
+};

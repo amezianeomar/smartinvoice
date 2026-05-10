@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, animate } from 'framer-motion';
 
+export { LanguageSwitcher } from './LanguageSwitcher';
+
 export function Button({ 
   children, 
   variant = 'primary', 

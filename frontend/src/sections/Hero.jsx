@@ -4,8 +4,10 @@ import {
 } from 'lucide-react';
 import { Button, AnimatedCounter, MagneticWrapper } from '../components/ui';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Hero() {
+  const { t } = useLanguage();
   return (
     <section className="relative w-full overflow-visible">
       {/* 1. BACKGROUND GRIDS & GLOWS (Localized to Hero) */}
@@ -22,29 +24,29 @@ export default function Hero() {
         <main className="flex flex-col items-center pt-4 pb-12 text-center z-20">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full border border-[#526e9c]/30 bg-[#526e9c]/10 text-xs font-bold uppercase tracking-widest text-[#526e9c] dark:text-[#94A3B8] backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-[#18adf2] animate-pulse"></span>
-            Plateforme de Facturation Intelligente
+            {t('hero.badge')}
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.05] mb-6 max-w-4xl">
-            Arrêtez de gérer vos factures.<br/>
-            <span className="bg-[linear-gradient(110deg,#18adf2,45%,#5048e5,55%,#18adf2)] bg-[length:250%_100%] animate-[background-position_3s_infinite_linear] bg-clip-text text-transparent transition-colors duration-500">Commencez à les encaisser.</span>
+            {t('hero.title1')}<br/>
+            <span className="bg-[linear-gradient(110deg,#18adf2,45%,#5048e5,55%,#18adf2)] bg-[length:250%_100%] animate-[background-position_3s_infinite_linear] bg-clip-text text-transparent transition-colors duration-500">{t('hero.title2')}</span>
           </h1>
 
           <p className="text-lg md:text-xl text-[#526e9c] dark:text-[#94A3B8] mb-10 max-w-2xl leading-relaxed">
-            Créez, envoyez et suivez vos factures en quelques secondes. Automatisez vos relances, gardez un œil sur vos paiements et maîtrisez votre trésorerie.
+            {t('hero.subtitle')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center z-50">
             <MagneticWrapper>
               <Link to="/register">
                 <Button size="lg" className="w-full sm:w-auto shadow-[0_10px_30px_rgba(34,26,183,0.3)] shrink-0">
-                  Envoyer ma première facture
+                  {t('hero.btnPrimary')}
                 </Button>
               </Link>
             </MagneticWrapper>
             <MagneticWrapper>
               <Button variant="outline" size="lg" className="w-full sm:w-auto shrink-0">
-                Voir comment ça marche
+                {t('hero.btnSecondary')}
               </Button>
             </MagneticWrapper>
           </div>

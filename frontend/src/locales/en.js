@@ -1,0 +1,123 @@
+export const en = {
+  nav: {
+    features: "Features",
+    pricing: "Pricing",
+    login: "Log in",
+    start: "Get Started",
+    startFree: "Start for Free"
+  },
+  hero: {
+    badge: "Smart Invoicing Platform",
+    title1: "Stop managing invoices.",
+    title2: "Start collecting them.",
+    subtitle: "Create, send, and track your invoices in seconds. Automate your reminders, keep an eye on your payments, and master your cash flow.",
+    btnPrimary: "Send my first invoice",
+    btnSecondary: "See how it works"
+  },
+  features: {
+    badge1: "Fast Workflow",
+    title1_1: "Invoice in",
+    title1_2: "seconds.",
+    desc1: "Your time is valuable. Create, customize, and send professional invoices to your clients with an intuitive editor that does all the work for you.",
+    btn1: "Explore the editor",
+    
+    badge2: "Tax Compliance",
+    title2_1: "Zero-Error",
+    title2_2: "VAT Engine.",
+    desc2: "SI-PRO's algorithm automatically applies the exact Moroccan VAT rates based on your services. No more calculation errors, always be compliant with the DGI.",
+    list2_1: "Automatic calculations 20%, 14%, 10%, 7%",
+    list2_2: "DGI reports generation",
+    list2_3: "1-click accounting export",
+    
+    badge3: "Integrated CRM",
+    title3_1: "Manage clients like a",
+    title3_2: "Pro.",
+    desc3: "Centralize all your client data. Track interactions, manage outstanding balances, and automate overdue reminders directly from SI-PRO.",
+    btn3: "View dashboard"
+  },
+  pricing: {
+    title1: "Ready to step up to the",
+    title2: "next level?",
+    subtitle: "Choose the plan that fits your business size.",
+    starter: {
+      name: "Starter",
+      desc: "Perfect for starting freelancers.",
+      f1: "5 Invoices / month",
+      f2: "1 User",
+      f3: "Automatic VAT",
+      f4: "Email Support",
+      btn: "Start for Free"
+    },
+    pro: {
+      badge: "Most Popular",
+      name: "Professional",
+      desc: "Everything an SME needs to scale.",
+      f1: "Unlimited Invoices",
+      f2: "5 Users",
+      f3: "Advanced Client CRM",
+      f4: "Tax Reports",
+      f5: "24/7 Support",
+      btn: "14-Day Free Trial"
+    },
+    business: {
+      name: "Business",
+      desc: "For large structures and franchises.",
+      f1: "Unlimited Users",
+      f2: "Multi-Company",
+      f3: "Full API Access",
+      f4: "Dedicated Manager",
+      btn: "Contact Sales"
+    },
+    month: "MAD/month"
+  },
+  faq: {
+    badge: "Frequently Asked Questions",
+    title1: "Everything you need to",
+    title2: "know.",
+    q1: "How does the automatic VAT calculation work?",
+    a1: "Our tax engine is coded with the latest active Moroccan VAT rates (20%, 14%, 10%, 7%). It detects the nature of your service or product and automatically applies the correct rate to your invoices, without any possible error.",
+    q2: "Can I link SI-PRO to my bank account?",
+    a2: "For Business users, API banking integration is possible. For Starter and Pro plans, you can reconcile payments manually or use our secure online payment links.",
+    q3: "Is my data secure?",
+    a3: "Absolutely. We use end-to-end encryption and our servers are hosted on a cloud infrastructure complying with the highest security standards (ISO 27001).",
+    q4: "Can I cancel my subscription at any time?",
+    a4: "Yes, our offer is commitment-free (except for some annual Business contracts). You can cancel your monthly subscription directly from your settings in one click."
+  },
+  testimonials: {
+    badge: "Approved by experts",
+    title1: "They automated their",
+    title2: "growth with SI-PRO.",
+    subtitle: "Hover over the cards to see what our users think of us.",
+    hover: "Hover me",
+    t1: { name: "Yassine Benali", role: "Freelance Designer", quote: "Before SI-PRO, I spent my Sundays making invoices. Now, it's done in 5 minutes." },
+    t2: { name: "Driss El Amrani", role: "CEO Nord-Sud Logistics", quote: "The automated VAT engine saved us from several major tax errors. Essential." },
+    t3: { name: "Sofia Mansouri", role: "Tanger Media", quote: "My clients receive ultra-pro invoices and I get paid much faster than before." },
+    t4: { name: "Amine Tazi", role: "E-com Founder", quote: "Managing clients and tracking pending payments saved my startup's cash flow." },
+    t5: { name: "Kenza Alaoui", role: "IT Consultant", quote: "The interface is so smooth. It's the first Moroccan SaaS with an international standard." },
+    t6: { name: "Omar Berrada", role: "SME Manager", quote: "Being able to keep an eye on my ARR and collected VAT in real-time lets me sleep peacefully." }
+  },
+  footer: {
+    ctaBadge: "Join 650+ Moroccan SMEs",
+    ctaTitle1: "Shift into",
+    ctaTitle2: "higher gear.",
+    ctaDesc: "Stop chasing payments. Automate your invoicing, track your cash flow, and save hours every week.",
+    ctaBtn1: "Start for Free",
+    ctaBtn2: "Watch Demo",
+    desc: "The smart invoicing platform designed for Moroccan freelancers and SMEs. Simplify your finances today.",
+    col1: "Product",
+    col1_1: "Features",
+    col1_2: "Pricing",
+    col1_3: "VAT Engine",
+    col1_4: "API",
+    col2: "Resources",
+    col2_1: "Documentation",
+    col2_2: "Blog",
+    col2_3: "Help Center",
+    col3: "Legal",
+    col3_1: "Legal Notice",
+    col3_2: "Privacy",
+    col3_3: "T&Cs",
+    copyright: "© 2026 SmartInvoice Pro. All rights reserved.",
+    madeIn: "in Tangier"
+  }
+};

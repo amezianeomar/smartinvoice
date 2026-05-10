@@ -1,39 +1,29 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, MessageCircleQuestion } from 'lucide-react';
-
-const faqs = [
-  {
-    question: "Comment fonctionne le calcul automatique de la TVA ?",
-    answer: "Notre moteur fiscal est codé avec les derniers taux de TVA marocains en vigueur (20%, 14%, 10%, 7%). Il détecte la nature de votre service ou produit et applique automatiquement le bon taux sur vos factures, sans aucune erreur possible."
-  },
-  {
-    question: "Est-ce que je peux relier SI-PRO à mon compte bancaire ?",
-    answer: "Pour les utilisateurs Business, l'intégration bancaire via API est possible. Pour les offres Starter et Pro, vous pouvez pointer vos paiements manuellement ou utiliser nos liens de paiement en ligne sécurisés."
-  },
-  {
-    question: "Mes données sont-elles sécurisées ?",
-    answer: "Totalement. Nous utilisons un chiffrement de bout en bout et nos serveurs sont hébergés sur une infrastructure cloud respectant les plus hauts standards de sécurité (norme ISO 27001)."
-  },
-  {
-    question: "Puis-je annuler mon abonnement à tout moment ?",
-    answer: "Oui, notre offre est sans engagement (sauf pour certains contrats Business annuels). Vous pouvez résilier votre abonnement mensuel directement depuis vos paramètres en un clic."
-  }
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export default function FAQ() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState(0);
+
+  const faqs = [
+    { question: t('faq.q1'), answer: t('faq.a1') },
+    { question: t('faq.q2'), answer: t('faq.a2') },
+    { question: t('faq.q3'), answer: t('faq.a3') },
+    { question: t('faq.q4'), answer: t('faq.a4') }
+  ];
 
   return (
     <section className="relative py-32 px-6 max-w-4xl mx-auto z-20">
       <div className="text-center mb-16">
         <span className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-[#18adf2]/20 bg-[#18adf2]/10 text-xs font-bold uppercase tracking-widest text-[#18adf2]">
           <MessageCircleQuestion size={14} />
-          Questions Fréquentes
+          {t('faq.badge')}
         </span>
         <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">
-          Tout ce que vous devez <br className="hidden md:block" />
-          <span className="text-[#221ab7] dark:text-[#18adf2]">savoir.</span>
+          {t('faq.title1')} <br className="hidden md:block" />
+          <span className="text-[#221ab7] dark:text-[#18adf2]">{t('faq.title2')}</span>
         </h2>
       </div>
 

@@ -1,62 +1,49 @@
 import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-// We need exactly 6 testimonials to make the 3x2 grid
-const testimonials = [
-  // ROW 1
-  {
-    name: 'Yassine Benali',
-    role: 'Freelance Designer',
-    quote: "Avant SI-PRO, je passais mes dimanches à faire des factures. Maintenant, c'est réglé en 5 minutes.",
-    color: '#18adf2',
-    baseClasses: '-rotate-6 -translate-x-4 -translate-y-2 z-10', // Messy pile position
-    gridClasses: 'group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:-translate-y-[60%]', // Top Left
-  },
-  {
-    name: 'Driss El Amrani',
-    role: 'CEO Nord-Sud Logistics',
-    quote: "Le moteur automatisé de TVA nous a sauvé de plusieurs erreurs fiscales majeures. Indispensable.",
-    color: '#221ab7',
-    baseClasses: 'rotate-3 translate-x-2 -translate-y-4 z-30',
-    gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:-translate-y-[60%]', // Top Center
-  },
-  {
-    name: 'Sofia Mansouri',
-    role: 'Tanger Media',
-    quote: "Mes clients reçoivent des factures ultra pro et je suis payée beaucoup plus rapidement qu'avant.",
-    color: '#10b981',
-    baseClasses: '-rotate-3 translate-x-6 translate-y-2 z-20',
-    gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:-translate-y-[60%]', // Top Right
-  },
-  // ROW 2
-  {
-    name: 'Amine Tazi',
-    role: 'Fondateur E-com',
-    quote: "La gestion des clients et le suivi des paiements en attente ont sauvé la trésorerie de ma startup.",
-    color: '#f59e0b',
-    baseClasses: 'rotate-6 -translate-x-8 translate-y-4 z-40',
-    gridClasses: 'group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:translate-y-[60%]', // Bottom Left
-  },
-  {
-    name: 'Kenza Alaoui',
-    role: 'Consultante IT',
-    quote: "L'interface est tellement fluide. C'est le premier logiciel SaaS marocain qui a un standard international.",
-    color: '#8b5cf6',
-    baseClasses: '-rotate-12 -translate-x-2 translate-y-6 z-50',
-    gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:translate-y-[60%]', // Bottom Center
-  },
-  {
-    name: 'Omar Berrada',
-    role: 'Gérant PME',
-    quote: "Pouvoir avoir un œil sur mon ARR et ma TVA collectée en temps réel me permet de dormir tranquille.",
-    color: '#ec4899',
-    baseClasses: 'rotate-12 translate-x-8 -translate-y-2 z-0',
-    gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:translate-y-[60%]', // Bottom Right
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Testimonials() {
+  const { t } = useLanguage();
+
+  const testimonials = [
+    {
+      ...t('testimonials.t1'),
+      color: '#18adf2',
+      baseClasses: '-rotate-6 -translate-x-4 -translate-y-2 z-10',
+      gridClasses: 'group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:-translate-y-[60%]',
+    },
+    {
+      ...t('testimonials.t2'),
+      color: '#221ab7',
+      baseClasses: 'rotate-3 translate-x-2 -translate-y-4 z-30',
+      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:-translate-y-[60%]',
+    },
+    {
+      ...t('testimonials.t3'),
+      color: '#10b981',
+      baseClasses: '-rotate-3 translate-x-6 translate-y-2 z-20',
+      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:-translate-y-[60%]',
+    },
+    {
+      ...t('testimonials.t4'),
+      color: '#f59e0b',
+      baseClasses: 'rotate-6 -translate-x-8 translate-y-4 z-40',
+      gridClasses: 'group-hover:rotate-0 md:group-hover:-translate-x-[105%] md:group-hover:translate-y-[60%]',
+    },
+    {
+      ...t('testimonials.t5'),
+      color: '#8b5cf6',
+      baseClasses: '-rotate-12 -translate-x-2 translate-y-6 z-50',
+      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-0 md:group-hover:translate-y-[60%]',
+    },
+    {
+      ...t('testimonials.t6'),
+      color: '#ec4899',
+      baseClasses: 'rotate-12 translate-x-8 -translate-y-2 z-0',
+      gridClasses: 'group-hover:rotate-0 md:group-hover:translate-x-[105%] md:group-hover:translate-y-[60%]',
+    },
+  ];
   return (
     <motion.section 
       initial={{ opacity: 0, y: 50 }}
@@ -70,14 +57,14 @@ export default function Testimonials() {
       <div className="text-center mb-16">
         <span className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
           <CheckCircle2 size={14} />
-          Approuvé par des experts
+          {t('testimonials.badge')}
         </span>
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6">
-          Ils ont automatisé leur <br />
-          <span className="text-[#221ab7] dark:text-[#18adf2]">croissance avec SI-PRO.</span>
+          {t('testimonials.title1')} <br />
+          <span className="text-[#221ab7] dark:text-[#18adf2]">{t('testimonials.title2')}</span>
         </h2>
         <p className="text-[#526e9c] dark:text-[#94A3B8] max-w-2xl mx-auto text-lg">
-          Survolez les cartes pour découvrir ce que nos utilisateurs pensent de nous.
+          {t('testimonials.subtitle')}
         </p>
       </div>
 
@@ -88,7 +75,7 @@ export default function Testimonials() {
         
         {/* Placeholder text visible before hover, fades out on hover */}
         <div className="absolute z-0 text-[#526e9c]/30 font-black text-2xl uppercase tracking-[0.5em] transition-opacity duration-500 group-hover:opacity-0">
-          Survolez-moi
+          {t('testimonials.hover')}
         </div>
 
         {testimonials.map((item, i) => (

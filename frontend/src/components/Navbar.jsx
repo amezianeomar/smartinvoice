@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Sun, Moon, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Button } from './ui';
+import { Button, LanguageSwitcher } from './ui';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ isDark, setIsDark }) {
+  const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -43,12 +45,14 @@ export default function Navbar({ isDark, setIsDark }) {
         
         {/* Navigation Links - Hidden on Mobile */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">Fonctionnalités</a>
-          <a href="#pricing" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">Tarifs</a>
+          <a href="#features" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">{t('nav.features')}</a>
+          <a href="#pricing" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">{t('nav.pricing')}</a>
         </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 md:gap-4">
+          <LanguageSwitcher />
+
           <button 
             onClick={() => setIsDark(!isDark)} 
             className="p-2 rounded-full bg-[#526e9c]/10 hover:bg-[#526e9c]/20 text-[#526e9c] transition-transform hover:scale-110"
@@ -63,7 +67,7 @@ export default function Navbar({ isDark, setIsDark }) {
           
           <Link to="/register" className="hidden md:block">
             <Button variant="primary" size={isScrolled ? 'sm' : 'md'} className="rounded-full px-6">
-              Démarrer
+              {t('nav.start')}
             </Button>
           </Link>
 
@@ -87,11 +91,11 @@ export default function Navbar({ isDark, setIsDark }) {
             className="pointer-events-auto absolute top-[110%] w-[90%] left-[5%] p-2"
           >
             <div className="rounded-3xl bg-white/95 dark:bg-[#131B2C]/95 backdrop-blur-xl border border-[#526e9c]/20 shadow-2xl p-6 flex flex-col gap-6">
-              <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">Fonctionnalités</a>
-              <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">Tarifs</a>
-              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#526e9c]">Se Connecter</Link>
+              <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">{t('nav.features')}</a>
+              <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">{t('nav.pricing')}</a>
+              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#526e9c]">{t('nav.login')}</Link>
               <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full">Démarrer Gratuitement</Button>
+                <Button className="w-full">{t('nav.startFree')}</Button>
               </Link>
             </div>
           </motion.div>

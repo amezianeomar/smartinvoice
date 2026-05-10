@@ -2,6 +2,7 @@ import React from 'react';
 import { FileText, Activity, Users, ArrowRight, CheckCircle2, Terminal, Shield, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Badge, Button, SpotlightCard, AnimatedCounter } from '../components/ui';
+import { useLanguage } from '../context/LanguageContext';
 
 // ==========================================
 // CODE-BASED UI MOCKUPS (Replacing Images)
@@ -151,6 +152,7 @@ const CrmMockup = () => (
 // ==========================================
 
 export default function Features() {
+  const { t } = useLanguage();
   return (
     <div className="relative max-w-7xl mx-auto px-6 py-32 z-10 space-y-40">
       
@@ -163,15 +165,15 @@ export default function Features() {
         className="flex flex-col lg:flex-row items-center gap-16"
       >
         <div className="flex-1 space-y-8">
-          <Badge variant="info" pulse><FileText size={14} /> Workflow Rapide</Badge>
+          <Badge variant="info" pulse><FileText size={14} /> {t('features.badge1')}</Badge>
           <h2 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tighter">
-            Facturez en <span className="text-[#18adf2]">quelques secondes.</span>
+            {t('features.title1_1')} <span className="text-[#18adf2]">{t('features.title1_2')}</span>
           </h2>
           <p className="text-lg text-[#526e9c] dark:text-[#94A3B8] leading-relaxed max-w-md">
-            Votre temps est précieux. Créez, personnalisez et envoyez des factures professionnelles à vos clients avec un éditeur intuitif qui fait tout le travail pour vous.
+            {t('features.desc1')}
           </p>
           <Button variant="ghost" className="px-0 hover:bg-transparent text-[#18adf2] hover:text-[#138bc2] !justify-start group">
-            Explorer l'éditeur <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
+            {t('features.btn1')} <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
 
@@ -206,15 +208,15 @@ export default function Features() {
         className="flex flex-col lg:flex-row-reverse items-center gap-16"
       >
         <div className="flex-1 space-y-8">
-          <Badge variant="primary" pulse><Activity size={14} /> Conformité Fiscale</Badge>
+          <Badge variant="primary" pulse><Activity size={14} /> {t('features.badge2')}</Badge>
           <h2 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tighter">
-            Moteur TVA <span className="text-[#221ab7] dark:text-[#5048e5]">Zéro Erreur.</span>
+            {t('features.title2_1')} <span className="text-[#221ab7] dark:text-[#5048e5]">{t('features.title2_2')}</span>
           </h2>
           <p className="text-lg text-[#526e9c] dark:text-[#94A3B8] leading-relaxed max-w-md">
-            L'algorithme de SI-PRO applique automatiquement les taux de TVA marocains exacts selon vos services. Fini les erreurs de calcul, soyez toujours en règle avec la DGI.
+            {t('features.desc2')}
           </p>
           <ul className="space-y-3">
-            {['Calculs automatiques 20%, 14%, 10%, 7%', 'Génération des rapports DGI', 'Export comptable en 1 clic'].map((item, i) => (
+            {[t('features.list2_1'), t('features.list2_2'), t('features.list2_3')].map((item, i) => (
               <li key={i} className="flex items-center gap-3 text-sm font-bold text-[#526e9c] dark:text-[#94A3B8]">
                 <Shield size={16} className="text-[#221ab7] dark:text-[#5048e5] shrink-0" /> {item}
               </li>
@@ -266,15 +268,15 @@ export default function Features() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent opacity-50" />
         
         <div className="flex-1 space-y-6 z-10">
-          <Badge variant="success" pulse><Users size={14} /> CRM Intégré</Badge>
+          <Badge variant="success" pulse><Users size={14} /> {t('features.badge3')}</Badge>
           <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
-            Gérez vos clients comme un <span className="text-emerald-500">Pro.</span>
+            {t('features.title3_1')} <span className="text-emerald-500">{t('features.title3_2')}</span>
           </h2>
           <p className="text-lg text-[#94A3B8] leading-relaxed max-w-sm">
-            Centralisez l'ensemble des données de vos clients. Suivez leurs interactions, pilotez les encours et automatisez les relances d'impayés directement depuis SI-PRO.
+            {t('features.desc3')}
           </p>
           <Button variant="primary" className="bg-emerald-500 hover:bg-emerald-600 text-white mt-4 border-none shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-            Voir le dashboard
+            {t('features.btn3')}
           </Button>
         </div>
 

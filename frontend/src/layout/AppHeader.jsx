@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
 import { Bell, Search, Menu, UserCircle, X, Command, Sun, Moon, Settings, LogOut, CreditCard } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { LanguageSwitcher } from "../components/ui";
 
 export default function AppHeader({ isDark, setIsDark }) {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -63,6 +64,7 @@ export default function AppHeader({ isDark, setIsDark }) {
           </div>
           
           <div className="flex items-center gap-3 lg:hidden shrink-0">
+             <LanguageSwitcher />
              <button 
                onClick={() => setIsDark(!isDark)} 
                className="w-9 h-9 flex items-center justify-center text-[#526e9c] hover:bg-[#526e9c]/10 rounded-full transition-colors relative"
@@ -75,6 +77,7 @@ export default function AppHeader({ isDark, setIsDark }) {
         
         <div className="hidden lg:flex items-center justify-end w-full gap-4 px-5 py-4 lg:px-0">
           <div className="flex items-center gap-2 relative">
+            <LanguageSwitcher />
             <button 
               onClick={() => setIsDark(!isDark)} 
               className="w-10 h-10 flex items-center justify-center text-[#526e9c] hover:bg-[#526e9c]/10 rounded-full transition-colors relative"
