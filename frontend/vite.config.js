@@ -10,9 +10,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://smartinvoice-zyb2.onrender.com',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       }
     }
   }
