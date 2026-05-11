@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Search, UserPlus, Mail, Phone, MapPin, MoreHorizontal, Building2, Users, Loader2 } from 'lucide-react';
+import { Search, UserPlus, Mail, Phone, MapPin, MoreHorizontal, Building2, Users, Loader2, Trash2, Edit2 } from 'lucide-react';
 import { EmptyState, TableSkeleton } from '../components/ui/States';
 import useClients from '../hooks/useClients';
 
@@ -15,7 +15,8 @@ export default function ClientsList() {
       adresse: '',
    });
 
-   const { clients, isLoading, error, createClient } = useClients();
+   const [editingClientId, setEditingClientId] = useState(null);
+   const { clients, isLoading, error, createClient, deleteClient, updateClient } = useClients();
 
    const filteredClients = useMemo(() => {
       const q = searchTerm.trim().toLowerCase();
@@ -42,15 +43,25 @@ export default function ClientsList() {
       setCreateError('');
 
       try {
-         await createClient({
-            nom: form.nom.trim(),
-            email: form.email.trim() || null,
-            telephone: form.telephone.trim() || null,
-            adresse: form.adresse.trim() || null,
-         });
+         if (editingClientId) {
+            await updateClient(editingClientId, {
+               nom: form.nom.trim(),
+               email: form.email.trim() || null,
+               telephone: form.telephone.trim() || null,
+               adresse: form.adresse.trim() || null,
+            });
+         } else {
+            await createClient({
+               nom: form.nom.trim(),
+               email: form.email.trim() || null,
+               telephone: form.telephone.trim() || null,
+               adresse: form.adresse.trim() || null,
+            });
+         }
 
          setForm({ nom: '', email: '', telephone: '', adresse: '' });
          setShowCreateForm(false);
+         setEditingClientId(null);
       } catch (err) {
          setCreateError(err.response?.data?.message || 'Impossible de creer ce client.');
       } finally {
@@ -67,10 +78,14 @@ export default function ClientsList() {
          </div>
              <button
                   type="button"
-                  onClick={() => setShowCreateForm((prev) => !prev)}
+                  onClick={() => {
+                     setForm({ nom: '', email: '', telephone: '', adresse: '' });
+                     setEditingClientId(null);
+                     setShowCreateForm((prev) => !prev);
+                  }}
                   className="bg-[#0F172A] dark:bg-white text-white dark:text-[#0F172A] px-5 py-2.5 rounded-xl font-bold shadow-lg hover:bg-[#221ab7] dark:hover:bg-[#18adf2] transition-colors flex items-center gap-2"
              >
-            <UserPlus size={18} /> Nouveau Client
+            <UserPlus size={18} /> {editingClientId ? 'Annuler Edit' : 'Nouveau Client'}
          </button>
       </div>
 
@@ -115,7 +130,10 @@ export default function ClientsList() {
                <div className="mt-4 flex justify-end gap-3">
                   <button
                      type="button"
-                     onClick={() => setShowCreateForm(false)}
+                     onClick={() => {
+                        setShowCreateForm(false);
+                        setEditingClientId(null);
+                     }}
                      className="px-4 py-2.5 rounded-xl font-bold text-[#526e9c] bg-[#526e9c]/10 hover:bg-[#526e9c]/20 transition-colors"
                   >
                      Annuler
@@ -125,7 +143,7 @@ export default function ClientsList() {
                      disabled={isSaving}
                      className="px-4 py-2.5 rounded-xl font-bold text-white bg-[#0F172A] hover:bg-[#221ab7] transition-colors disabled:opacity-60 flex items-center gap-2"
                   >
-                     {isSaving && <Loader2 size={16} className="animate-spin" />} Ajouter
+                     {isSaving && <Loader2 size={16} className="animate-spin" />} {editingClientId ? 'Mettre à jour' : 'Ajouter'}
                   </button>
                </div>
             </form>
@@ -191,9 +209,24 @@ export default function ClientsList() {
                          <span className="flex items-center gap-1.5"><MapPin size={13}/> {cli.adresse || '-'}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                         <button className="p-2 text-[#526e9c] hover:bg-[#18adf2]/10 hover:text-[#18adf2] rounded-lg transition-colors inline-block" title="Plus d'actions">
-                            <MoreHorizontal size={20} />
-                         </button>
+                         <div className="flex justify-center gap-2">
+                            <button onClick={() => {
+                               setEditingClientId(cli.id);
+                               setForm({
+                                  nom: cli.nom,
+                                  email: cli.email || '',
+                                  telephone: cli.telephone || '',
+                                  adresse: cli.adresse || ''
+                               });
+                               setShowCreateForm(true);
+                               window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }} className="p-2 text-[#526e9c] hover:bg-[#18adf2]/10 hover:text-[#18adf2] rounded-lg transition-colors inline-block" title="Modifier le client">
+                               <Edit2 size={20} />
+                            </button>
+                            <button onClick={() => { if(window.confirm('Voulez-vous vraiment supprimer ce client ?')) deleteClient(cli.id) }} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors inline-block" title="Supprimer le client">
+                               <Trash2 size={20} />
+                            </button>
+                         </div>
                       </td>
                    </tr>
                 ))}

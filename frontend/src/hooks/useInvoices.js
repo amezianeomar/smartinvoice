@@ -59,6 +59,13 @@ export default function useInvoices() {
     window.URL.revokeObjectURL(blobUrl);
   }, []);
 
+  const viewInvoicePdf = useCallback(async (invoice) => {
+    const res = await api.get(`/invoices/${invoice.id}/pdf`, { responseType: 'blob' });
+    const blobUrl = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+    window.open(blobUrl, '_blank');
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+  }, []);
+
   const sendInvoiceEmail = useCallback(async (invoiceId) => {
     const res = await api.post(`/invoices/${invoiceId}/send-email`);
 
@@ -80,6 +87,7 @@ export default function useInvoices() {
     createInvoice,
     deleteInvoice,
     downloadInvoicePdf,
+    viewInvoicePdf,
     sendInvoiceEmail,
   };
 }
