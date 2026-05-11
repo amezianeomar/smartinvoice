@@ -91,6 +91,13 @@ export default function AuthPage({ initialMode = 'login' }) {
       {/* Main Container */}
       <div className={`relative w-full max-w-5xl ${isLogin ? 'h-[700px] lg:h-[650px]' : 'h-[900px] sm:h-[850px] lg:h-[750px]'} bg-[#0F172A]/80 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(34,26,183,0.2)] overflow-hidden flex flex-col lg:block transition-all duration-500`}>
         
+        {/* Global Desktop Back button (Always on top) */}
+        <div className="hidden lg:flex absolute top-8 right-8 z-[100] pointer-events-auto">
+          <a href="/" className="flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 text-sm font-bold bg-[#080C16]/50 px-5 py-2.5 rounded-full backdrop-blur-xl border border-white/10 shadow-2xl hover:bg-white/10 hover:scale-105">
+            <ArrowLeft size={16} /> Retour
+          </a>
+        </div>
+
         {/* ========================================================= */}
         {/* 1. THE FORM PANEL (Slides Left/Right)                       */}
         {/* ========================================================= */}
@@ -108,7 +115,7 @@ export default function AuthPage({ initialMode = 'login' }) {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#221ab7] to-[#18adf2] text-white flex items-center justify-center font-black">S</div>
               <span className="font-black tracking-tighter text-white uppercase">SI-PRO</span>
             </div>
-            <button type="button" onClick={() => navigate('/')} className="text-white/50 hover:text-white"><ArrowLeft size={20}/></button>
+            <a href="/" className="text-white/50 hover:text-white z-50 pointer-events-auto"><ArrowLeft size={20}/></a>
           </div>
 
           <div className={`relative z-10 w-full max-w-sm mx-auto ${isLogin ? 'h-[500px]' : 'h-[700px] sm:h-[650px] lg:h-[650px]'} transition-all duration-500`}>
@@ -266,12 +273,6 @@ export default function AuthPage({ initialMode = 'login' }) {
           
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-40 mix-blend-overlay" />
           
-          <div className="absolute top-10 left-10 flex items-center gap-6 z-20">
-            <button type="button" onClick={() => navigate('/')} className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm font-bold bg-white/10 px-4 py-2 rounded-full backdrop-blur-md">
-              <ArrowLeft size={16} /> Retour
-            </button>
-          </div>
-
           <div className="relative w-full h-full flex flex-col items-center justify-center p-16 text-center z-20">
             
             <AnimatePresence mode="wait">
