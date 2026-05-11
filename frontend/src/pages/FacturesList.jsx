@@ -18,6 +18,7 @@ export default function FacturesList() {
       error,
       deleteInvoice,
       downloadInvoicePdf,
+      viewInvoicePdf,
       sendInvoiceEmail,
    } = useInvoices();
 
@@ -102,6 +103,45 @@ export default function FacturesList() {
       }
    };
 
+   const handleView = async (invoice) => {
+      setBusyInvoiceId(invoice.id);
+      setFeedback('');
+
+      try {
+         await viewInvoicePdf(invoice);
+      } catch (err) {
+         setFeedback(err.response?.data?.message || 'Echec de prévisualisation PDF.');
+      } finally {
+         setBusyInvoiceId(null);
+      }
+   };
+
+   const handleExportCSV = () => {
+      if (!filteredInvoices.length) return;
+      const headers = ['N° Facture', 'Client', 'Création', 'Échéance', 'Montant TTC', 'Statut'];
+      const csvContent = [
+         headers.join(','),
+         ...filteredInvoices.map(inv => [
+            inv.numero,
+            `"${inv.client?.nom || ''}"`,
+            formatDate(inv.date_emission),
+            formatDate(inv.date_echeance),
+            inv.total_ttc,
+            inv.statut
+         ].join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `factures_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+   };
+
   const getStatusStyle = (status) => {
       switch (normalizedStatus(status)) {
          case 'payee':
@@ -139,7 +179,7 @@ export default function FacturesList() {
              >
                 <Filter size={18} /> Filtrer
              </button>
-             <button type="button" className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
+             <button type="button" onClick={handleExportCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
                 <Download size={18} /> Exporter (CSV)
              </button>
           </div>
@@ -187,7 +227,7 @@ export default function FacturesList() {
                          <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors"><FileText size={18}/></div>
-                               <span className="font-bold text-[#0F172A] dark:text-white truncate">{inv.numero}</span>
+                               <button onClick={() => handleView(inv)} className="font-bold text-[#18adf2] hover:underline text-left truncate">{inv.numero}</button>
                             </div>
                          </td>
                          <td className="px-6 py-4 text-[#526e9c] font-medium">{inv.client?.nom || '-'}</td>
@@ -201,6 +241,7 @@ export default function FacturesList() {
                          </td>
                          <td className="px-6 py-4">
                             <InvoiceActions
+                              onView={() => handleView(inv)}
                               onDownload={() => handleDownload(inv)}
                               onSendEmail={() => handleSendEmail(inv)}
                               onDelete={() => handleDelete(inv)}
