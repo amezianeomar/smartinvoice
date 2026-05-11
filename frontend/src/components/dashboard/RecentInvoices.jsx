@@ -1,7 +1,12 @@
 import React from 'react';
-import { MoreHorizontal, FileText } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import useInvoices from '../../hooks/useInvoices';
 
 export default function RecentInvoices({ invoices = [] }) {
+  const navigate = useNavigate();
+  const { downloadInvoicePdf } = useInvoices();
+  const [busyId, React_useState] = React.useState(null);
 
   const normalizedStatus = (statut) => {
     const value = String(statut || '').toLowerCase();
@@ -34,7 +39,7 @@ export default function RecentInvoices({ invoices = [] }) {
            <h3 className="text-xl font-black text-[#0F172A] dark:text-white tracking-tight">Factures Récentes</h3>
            <p className="text-[#526e9c] text-sm">Les 5 dernières factures générées</p>
         </div>
-        <button className="text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2 rounded-xl">
+        <button onClick={() => navigate('/dashboard/factures')} className="text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2 rounded-xl">
           Voir tout
         </button>
       </div>
@@ -59,7 +64,10 @@ export default function RecentInvoices({ invoices = [] }) {
                       <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors">
                          <FileText size={18} />
                       </div>
-                      <span className="font-bold text-[#0F172A] dark:text-white">{invoice.numero}</span>
+                      <button onClick={async () => {
+                         React_useState(invoice.id);
+                         try { await downloadInvoicePdf(invoice); } catch (e) { console.error(e); } finally { React_useState(null); }
+                      }} className="font-bold text-[#18adf2] hover:underline text-left">{invoice.numero}</button>
                    </div>
                 </td>
                 <td className="py-4 text-[#526e9c] font-medium">{invoice.client?.nom || '-'}</td>
@@ -71,8 +79,15 @@ export default function RecentInvoices({ invoices = [] }) {
                   </span>
                 </td>
                 <td className="py-4 text-right pr-2">
-                  <button className="p-2 text-[#526e9c] hover:text-[#18adf2] hover:bg-[#18adf2]/10 rounded-xl transition-colors inline-block">
-                    <MoreHorizontal size={20} />
+                  <button 
+                     onClick={async () => {
+                        React_useState(invoice.id);
+                        try { await downloadInvoicePdf(invoice); } catch (e) { console.error(e); } finally { React_useState(null); }
+                     }}
+                     disabled={busyId === invoice.id}
+                     className="p-2 text-[#526e9c] hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-colors inline-block disabled:opacity-50"
+                  >
+                    <Download size={20} />
                   </button>
                 </td>
               </tr>

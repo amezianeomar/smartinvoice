@@ -4,9 +4,11 @@ import { useSidebar } from "../context/SidebarContext";
 import { Bell, Search, Menu, UserCircle, X, Command, Sun, Moon, Settings, LogOut, CreditCard } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { LanguageSwitcher } from "../components/ui";
+import { useAuth } from "../context/AuthContext";
 
 export default function AppHeader({ isDark, setIsDark }) {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const { user, logout } = useAuth();
   const inputRef = useRef(null);
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -106,29 +108,15 @@ export default function AppHeader({ isDark, setIsDark }) {
                  >
                     <div className="flex justify-between items-center px-4 py-3 border-b border-[#526e9c]/10">
                        <h4 className="font-black text-[#0F172A] dark:text-white">Notifications</h4>
-                       <span className="text-[10px] bg-[#18adf2]/10 text-[#18adf2] font-bold px-2 py-0.5 rounded-full">2 Nouvelles</span>
+                       <span className="text-[10px] bg-[#18adf2]/10 text-[#18adf2] font-bold px-2 py-0.5 rounded-full">0 Nouvelle</span>
                     </div>
-                    <div className="flex flex-col">
-                       <button className="flex items-start gap-3 p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-[#526e9c]/10 text-left">
-                          <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 mt-0.5"><CreditCard size={14}/></div>
-                          <div>
-                             <p className="text-sm font-bold text-[#0F172A] dark:text-white">Facture Payée !</p>
-                             <p className="text-xs text-[#526e9c] mt-0.5">Nexus Tech IT a réglé la facture FAC-2026-001 de 12 500,00 MAD.</p>
-                             <span className="text-[10px] text-[#526e9c]/70 font-bold mt-2 block">Il y a 5 min</span>
-                          </div>
-                          <div className="w-2 h-2 rounded-full bg-[#18adf2] shrink-0 mt-2"></div>
-                       </button>
-                       <button className="flex items-start gap-3 p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left">
-                          <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0 mt-0.5"><Bell size={14}/></div>
-                          <div>
-                             <p className="text-sm font-bold text-[#0F172A] dark:text-white">Rappel Automatique</p>
-                             <p className="text-xs text-[#526e9c] mt-0.5">Le relance automatique a été envoyée à Agence Digitale.</p>
-                             <span className="text-[10px] text-[#526e9c]/70 font-bold mt-2 block">Il y a 2h</span>
-                          </div>
-                       </button>
+                    <div className="flex flex-col items-center justify-center py-8">
+                       <Bell size={24} className="text-[#526e9c]/50 mb-2" />
+                       <p className="text-sm font-bold text-[#0F172A] dark:text-white">Aucune notification</p>
+                       <p className="text-xs text-[#526e9c] mt-1">Vous êtes à jour !</p>
                     </div>
                     <div className="p-2 border-t border-[#526e9c]/10">
-                       <button className="w-full py-2 text-sm font-bold text-[#18adf2] hover:bg-[#18adf2]/10 rounded-xl transition-colors">Tout marquer comme lu</button>
+                       <button onClick={() => setIsNotifOpen(false)} className="w-full py-2 text-sm font-bold text-[#526e9c] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">Fermer</button>
                     </div>
                  </motion.div>
                )}
@@ -143,12 +131,16 @@ export default function AppHeader({ isDark, setIsDark }) {
                onClick={() => { setIsUserOpen(!isUserOpen); setIsNotifOpen(false); }}
                className={`flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full transition-colors border group ${isUserOpen ? 'bg-black/5 dark:bg-white/5 border-[#526e9c]/20' : 'hover:bg-black/5 dark:hover:bg-white/5 border-transparent hover:border-[#526e9c]/20'}`}
              >
-               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#221ab7] to-[#18adf2] flex items-center justify-center text-white shadow-md group-hover:shadow-[#18adf2]/30 transition-shadow">
-                  <UserCircle size={20}/>
+               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#221ab7] to-[#18adf2] flex items-center justify-center text-white shadow-md group-hover:shadow-[#18adf2]/30 transition-shadow overflow-hidden">
+                  {(user?.logo_url || user?.logo_path) ? (
+                      <img src={user.logo_url || user.logo_path} alt="Logo" className="w-full h-full object-cover" />
+                  ) : (
+                      <UserCircle size={20}/>
+                  )}
                </div>
                <div className="flex flex-col text-left">
-                  <span className="text-sm font-bold text-[#0F172A] dark:text-white leading-none">Amine Tazi</span>
-                  <span className="text-[10px] font-bold text-[#526e9c] uppercase mt-0.5">Admin</span>
+                  <span className="text-sm font-bold text-[#0F172A] dark:text-white leading-none">{user?.nom || user?.name || 'Utilisateur'}</span>
+                  <span className="text-[10px] font-bold text-[#526e9c] uppercase mt-0.5">{user?.role === 'admin' ? 'Admin' : 'Membre'}</span>
                </div>
              </button>
 
@@ -169,9 +161,9 @@ export default function AppHeader({ isDark, setIsDark }) {
                        <CreditCard size={16} className="text-[#526e9c]" /> Abonnement Pro
                     </Link>
                     <div className="h-[1px] bg-[#526e9c]/10 my-1 w-[calc(100%-1rem)] mx-auto"></div>
-                    <Link to="/" className="flex items-center gap-3 w-full p-3 text-sm font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-colors">
+                    <button onClick={logout} className="flex items-center gap-3 w-full p-3 text-sm font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-colors text-left">
                        <LogOut size={16} /> Déconnexion
-                    </Link>
+                    </button>
                  </motion.div>
                )}
             </AnimatePresence>
