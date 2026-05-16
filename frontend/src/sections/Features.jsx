@@ -14,7 +14,7 @@ const InvoiceMockup = () => {
   <SpotlightCard className="w-full bg-white dark:bg-[#080C16] border border-[#526e9c]/20 p-4 md:p-8 rounded-2xl flex flex-col gap-3 md:gap-4 text-[10px] md:text-xs shadow-2xl h-auto">
     <div className="flex justify-between items-start border-b border-[#526e9c]/10 pb-3 md:pb-4 relative z-10">
       <div>
-        <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-[#221ab7] to-[#18adf2] text-white font-black flex items-center justify-center mb-2 md:mb-3 shadow-md text-[10px] md:text-sm">S</div>
+        <img src="/images/logo-icon.png" alt="SmartInvoice Logo" className="w-6 h-6 md:w-8 md:h-8 object-contain mb-2 md:mb-3 drop-shadow-md" />
         <p className="font-bold text-[#0F172A] dark:text-white text-xs md:text-sm">SI-PRO S.A.R.L</p>
         <p className="text-[#526e9c]">ICE: 000123456789</p>
       </div>
