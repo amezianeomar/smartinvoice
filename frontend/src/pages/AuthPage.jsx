@@ -3,6 +3,7 @@ import { Mail, Lock, User, ArrowRight, Zap, ArrowLeft, Loader2 } from 'lucide-re
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -23,6 +24,7 @@ const staggerItem = {
 };
 
 export default function AuthPage({ initialMode = 'login' }) {
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -94,7 +96,7 @@ export default function AuthPage({ initialMode = 'login' }) {
         {/* Global Desktop Back button (Always on top) */}
         <div className="hidden lg:flex absolute top-8 right-8 z-[100] pointer-events-auto">
           <a href="/" className="flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 text-sm font-bold bg-[#080C16]/50 px-5 py-2.5 rounded-full backdrop-blur-xl border border-white/10 shadow-2xl hover:bg-white/10 hover:scale-105">
-            <ArrowLeft size={16} /> Retour
+            <ArrowLeft size={16} /> {t("auth.back")}
           </a>
         </div>
 
@@ -112,7 +114,7 @@ export default function AuthPage({ initialMode = 'login' }) {
           {/* Desktop Back button in Form (Mobile only visible) */}
           <div className="lg:hidden flex justify-between items-center absolute top-8 left-8 right-8 z-20">
              <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#221ab7] to-[#18adf2] text-white flex items-center justify-center font-black">S</div>
+              <img src="/images/logo-icon.png" alt="SmartInvoice Logo" className="w-8 h-8 object-contain" />
               <span className="font-black tracking-tighter text-white uppercase">SI-PRO</span>
             </div>
             <a href="/" className="text-white/50 hover:text-white z-50 pointer-events-auto"><ArrowLeft size={20}/></a>
@@ -128,41 +130,42 @@ export default function AuthPage({ initialMode = 'login' }) {
                   initial="hidden" animate="visible" exit="exit" 
                   className="absolute inset-0 flex flex-col"
                 >
-                  <motion.h2 variants={staggerItem} className="text-3xl font-black text-white mb-2">Connexion</motion.h2>
-                  <motion.p variants={staggerItem} className="text-[#94A3B8] mb-8">Accédez à votre tableau de bord SI-PRO.</motion.p>
+                  <motion.h2 variants={staggerItem} className="text-3xl font-black text-white mb-2">{t('auth.loginTitle')}</motion.h2>
+                  <motion.p variants={staggerItem} className="text-[#94A3B8] mb-8">{t('auth.loginSubtitle')}</motion.p>
                   
                   <motion.div variants={staggerItem} className="grid grid-cols-2 gap-4 mb-6">
                     <SocialButton icon={GitHubIcon} text="GitHub" />
                     <SocialButton icon={GoogleIcon} text="Google" />
                   </motion.div>
                   
-                  <motion.div variants={staggerItem}><Divider text="Ou avec votre email" /></motion.div>
+                  <motion.div variants={staggerItem}><Divider text={t("auth.orEmail")} /></motion.div>
 
                   <motion.form variants={staggerItem} className="space-y-4 mt-6" onSubmit={handleSubmit}>
                     <InputField 
                       icon={Mail} 
-                      label="Adresse Email" 
+                      label={t("auth.emailLabel")} 
                       type="email" 
-                      placeholder="amine@entreprise.ma" 
+                      placeholder={t("auth.emailPlaceholder")} 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       error={apiErrors.email?.[0] || apiErrors.general}
                     />
                     <InputField 
                       icon={Lock} 
-                      label="Mot de passe" 
+                      label={t("auth.passwordLabel")} 
                       type="password" 
-                      placeholder="••••••••" 
-                      forgotLink 
+                      placeholder={t("auth.passwordPlaceholder")} 
+                      forgotLink
+                      forgotText={t("auth.forgot")} 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       error={apiErrors.password?.[0]}
                     />
-                    <SubmitButton text="Se Connecter" isLoading={isLoading} />
+                    <SubmitButton text={t("auth.loginBtn")} isLoading={isLoading} />
                   </motion.form>
 
                   <motion.p variants={staggerItem} className="lg:hidden text-center text-sm text-[#94A3B8] mt-8">
-                    Nouveau ? <button onClick={() => setIsLogin(false)} className="text-[#18adf2] font-bold">Créer un compte</button>
+                    {t("auth.newText")} <button onClick={() => setIsLogin(false)} className="text-[#18adf2] font-bold">{t("auth.createAccountLink")}</button>
                   </motion.p>
                 </motion.div>
               ) : (
@@ -173,43 +176,43 @@ export default function AuthPage({ initialMode = 'login' }) {
                   initial="hidden" animate="visible" exit="exit" 
                   className="absolute inset-0 flex flex-col"
                 >
-                  <motion.h2 variants={staggerItem} className="text-3xl font-black text-white mb-2">Créer un compte</motion.h2>
-                  <motion.p variants={staggerItem} className="text-[#94A3B8] mb-8">Rejoignez 650+ PME Marocaines aujourd'hui.</motion.p>
+                  <motion.h2 variants={staggerItem} className="text-3xl font-black text-white mb-2">{t('auth.registerTitle')}</motion.h2>
+                  <motion.p variants={staggerItem} className="text-[#94A3B8] mb-8">{t('auth.registerSubtitle')}</motion.p>
                   
                   <motion.div variants={staggerItem} className="grid grid-cols-2 gap-4 mb-6">
                     <SocialButton icon={GitHubIcon} text="GitHub" />
                     <SocialButton icon={GoogleIcon} text="Google" />
                   </motion.div>
                   
-                  <motion.div variants={staggerItem}><Divider text="Ou avec votre email" /></motion.div>
+                  <motion.div variants={staggerItem}><Divider text={t("auth.orEmail")} /></motion.div>
 
                   <motion.form variants={staggerItem} className="space-y-4 mt-6" onSubmit={handleSubmit}>
                     <InputField 
                       icon={User} 
-                      label="Nom Complet" 
+                      label={t("auth.nameLabel")} 
                       type="text" 
-                      placeholder="Amine Tazi" 
+                      placeholder={t("auth.namePlaceholder")} 
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       error={apiErrors.name?.[0]}
                     />
                     <InputField 
                       icon={Mail} 
-                      label="Adresse Email" 
+                      label={t("auth.emailLabel")} 
                       type="email" 
-                      placeholder="amine@entreprise.ma" 
+                      placeholder={t("auth.emailPlaceholder")} 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       error={apiErrors.email?.[0]}
                     />
                     
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Mot de passe</label>
+                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t("auth.passwordLabel")}</label>
                       <div className="relative group/input">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Lock size={16} /></div>
                         <input 
                           type="password" 
-                          placeholder="••••••••" 
+                          placeholder={t("auth.passwordPlaceholder")} 
                           value={password} 
                           onChange={(e) => setPassword(e.target.value)} 
                           className={`w-full pl-11 pr-4 py-3 rounded-xl border ${apiErrors.password ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none`} 
@@ -227,12 +230,12 @@ export default function AuthPage({ initialMode = 'login' }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Confirmer mot de passe</label>
+                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t("auth.confirmPasswordLabel")}</label>
                       <div className="relative group/input">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Lock size={16} /></div>
                         <input 
                           type="password" 
-                          placeholder="••••••••" 
+                          placeholder={t("auth.passwordPlaceholder")} 
                           value={passwordConfirmation} 
                           onChange={(e) => setPasswordConfirmation(e.target.value)} 
                           className={`w-full pl-11 pr-4 py-3 rounded-xl border ${apiErrors.password_confirmation ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none`} 
@@ -242,11 +245,11 @@ export default function AuthPage({ initialMode = 'login' }) {
                       {apiErrors.password_confirmation && <p className="text-[10px] text-red-400 font-bold ml-1">{apiErrors.password_confirmation[0]}</p>}
                     </div>
 
-                    <SubmitButton text="Créer mon compte" isLoading={isLoading} />
+                    <SubmitButton text={t("auth.registerBtn")} isLoading={isLoading} />
                   </motion.form>
 
                   <motion.p variants={staggerItem} className="lg:hidden text-center text-sm text-[#94A3B8] mt-8">
-                    Déjà membre ? <button onClick={() => setIsLogin(true)} className="text-[#18adf2] font-bold">Se connecter</button>
+                    {t("auth.alreadyMemberText")} <button onClick={() => setIsLogin(true)} className="text-[#18adf2] font-bold">{t("auth.loginLink")}</button>
                   </motion.p>
                 </motion.div>
               )}
@@ -287,15 +290,15 @@ export default function AuthPage({ initialMode = 'login' }) {
                   <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 5, repeat: Infinity }} className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center mb-8 shadow-2xl">
                     <Zap size={32} className="text-[#18adf2]" />
                   </motion.div>
-                  <h2 className="text-5xl font-black text-white mb-6 leading-tight">Nouveau ici ?</h2>
+                  <h2 className="text-5xl font-black text-white mb-6 leading-tight">{t("auth.overlayNewTitle")}</h2>
                   <p className="text-white/80 text-lg mb-10 max-w-sm">
-                    Inscrivez-vous pour découvrir comment automatiser votre facturation et gagner un temps précieux chaque jour.
+                    {t("auth.overlayNewSubtitle")}
                   </p>
                   <button 
                     onClick={() => setIsLogin(false)}
                     className="px-10 py-4 rounded-xl font-black text-white border-2 border-white/30 bg-white/10 backdrop-blur-md hover:bg-white hover:text-[#221ab7] transition-all duration-300 w-full max-w-xs shadow-xl"
                   >
-                    Créer un compte
+                    {t("auth.overlayNewBtn")}
                   </button>
                 </motion.div>
               ) : (
@@ -306,16 +309,16 @@ export default function AuthPage({ initialMode = 'login' }) {
                   exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.3 } }}
                   className="flex flex-col items-center"
                 >
-                  <div className="w-20 h-20 rounded-2xl bg-[#221ab7]/40 backdrop-blur-xl border border-[#221ab7]/50 flex items-center justify-center mb-8 shadow-2xl text-white font-black text-4xl">S</div>
-                  <h2 className="text-5xl font-black text-white mb-6 leading-tight">Content de <br/>vous revoir !</h2>
+                  <img src="/images/logo-icon.png" alt="SmartInvoice Logo" className="w-20 h-20 object-contain mb-8 drop-shadow-[0_0_15px_rgba(24,173,242,0.4)]" />
+                  <h2 className="text-5xl font-black text-white mb-6 leading-tight">{t("auth.overlayWelcomeTitle1")} <br/>{t("auth.overlayWelcomeTitle2")}</h2>
                   <p className="text-white/80 text-lg mb-10 max-w-sm">
-                    Connectez-vous pour accéder à votre tableau de bord et suivre l'évolution de votre trésorerie.
+                    {t("auth.overlayWelcomeSubtitle")}
                   </p>
                   <button 
                     onClick={() => setIsLogin(true)}
                     className="px-10 py-4 rounded-xl font-black text-white border-2 border-white/30 bg-white/10 backdrop-blur-md hover:bg-white hover:text-[#221ab7] transition-all duration-300 w-full max-w-xs shadow-xl"
                   >
-                    Se connecter
+                    {t("auth.overlayWelcomeBtn")}
                   </button>
                 </motion.div>
               )}
@@ -333,12 +336,12 @@ export default function AuthPage({ initialMode = 'login' }) {
 // HELPER COMPONENTS
 // ============================================================================
 
-function InputField({ icon: Icon, label, type, placeholder, forgotLink, value, onChange, error }) {
+function InputField({ icon: Icon, label, type, placeholder, forgotLink, forgotText, value, onChange, error }) {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center">
         <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{label}</label>
-        {forgotLink && <a href="#" className="text-xs font-bold text-[#18adf2] hover:text-white transition-colors hover:underline">Oublié ?</a>}
+        {forgotLink && <a href="#" className="text-xs font-bold text-[#18adf2] hover:text-white transition-colors hover:underline">{forgotText || 'Oublié ?'}</a>}
       </div>
       <div className="relative group/input">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors z-10"><Icon size={16} /></div>
