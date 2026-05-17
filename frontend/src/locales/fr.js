@@ -170,7 +170,7 @@ export const fr = {
     col3_2: "Confidentialité",
     col3_3: "CGV",
     copyright: "© 2026 SmartInvoice Pro. Tous droits réservés.",
-    madeIn: "à Tanger"
+    madeIn: "Conçu avec dévouement et ambition par les futurs développeurs AMEZIANE & ELKHARRAZ."
   },
   auth: {
     loginTitle: "Connexion",
