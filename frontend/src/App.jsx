@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext.jsx';
 
 import LandingPage from './pages/LandingPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
+import OAuthCallback from './pages/OAuthCallback.jsx';
 import Onboarding from './pages/Onboarding.jsx';
 import SelectPlan from './pages/SelectPlan.jsx';
 import Checkout from './pages/Checkout.jsx';
@@ -95,6 +96,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<LandingPage isDark={isDark} setIsDark={setIsDark} />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
         
         {/* Redirect to dashboard if already logged in (or onboarding if not finished) */}
         <Route 
