@@ -381,7 +381,7 @@ function Divider({ text }) {
 
 function SocialButton({ icon: Icon, text, onClick }) {
   return (
-    <button className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors text-sm font-bold text-white group relative overflow-hidden">
+    <button type="button" onClick={onClick} className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors text-sm font-bold text-white group relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-[150%] group-hover:animate-[shimmer_1.5s_infinite]" />
       <Icon /> {text}
     </button>
