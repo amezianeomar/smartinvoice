@@ -1,6 +1,8 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function MonthlySalesChart({ stats }) {
+  const { t } = useLanguage();
   // Map backend stats to the format expected by the chart
   // stats is an array like: [{ month: "2026-04", total: 1000, sent: 1000, paid: 500, count: 2 }]
   const formatMonth = (dateStr) => {
@@ -34,17 +36,17 @@ export default function MonthlySalesChart({ stats }) {
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 relative z-10">
         <div>
-           <h3 className="text-xl font-black text-[#0F172A] dark:text-white tracking-tight">Flux de Trésorerie (6 Mois)</h3>
-           <p className="text-[#526e9c] text-sm">Factures Envoyées vs Factures Payées</p>
+           <h3 className="text-xl font-black text-[#0F172A] dark:text-white tracking-tight">{t('dashboard.cashFlow')}</h3>
+           <p className="text-[#526e9c] text-sm">{t('dashboard.cashFlowSubtitle')}</p>
         </div>
         <div className="flex items-center gap-4 text-sm font-bold bg-[#526e9c]/5 px-4 py-2 rounded-xl border border-[#526e9c]/10">
            <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-[#18adf2] shadow-[0_0_8px_rgba(24,173,242,0.6)]"></div>
-              <span className="text-[#526e9c] dark:text-gray-300">Envoyées</span>
+              <span className="text-[#526e9c] dark:text-gray-300">{t('dashboard.sent')}</span>
            </div>
            <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-[#221ab7] shadow-[0_0_8px_rgba(34,26,183,0.6)]"></div>
-              <span className="text-[#526e9c] dark:text-gray-300">Payées</span>
+              <span className="text-[#526e9c] dark:text-gray-300">{t('dashboard.paid')}</span>
            </div>
         </div>
       </div>

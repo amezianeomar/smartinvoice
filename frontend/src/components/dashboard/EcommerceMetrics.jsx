@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, AlertCircle, Banknote, DollarSign, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function EcommerceMetrics({ stats }) {
+  const { t } = useLanguage();
   const monthly = stats?.monthly_stats ?? [];
 
   // ── MoM helper ─────────────────────────────────────────────────────────────
@@ -36,7 +38,7 @@ export default function EcommerceMetrics({ stats }) {
   // higherIsBetter is stored here so the render can apply business colour logic.
   const metrics = [
     {
-      title:          "Chiffre d'Affaires",
+      title:          t('dashboard.revenue'),
       value:          (stats?.total_revenue || 0).toLocaleString('fr-MA'),
       currency:       true,
       mom:            revMoM,
@@ -46,7 +48,7 @@ export default function EcommerceMetrics({ stats }) {
       path:           '/dashboard/statistiques',
     },
     {
-      title:          'Factures Totales',
+      title:          t('dashboard.totalInvoices'),
       value:          stats?.invoice_count || 0,
       currency:       false,
       mom:            countMoM,
@@ -56,7 +58,7 @@ export default function EcommerceMetrics({ stats }) {
       path:           '/dashboard/factures',
     },
     {
-      title:          'En attente de paiement',
+      title:          t('dashboard.pendingPayment'),
       value:          (stats?.pending_amount || 0).toLocaleString('fr-MA'),
       currency:       true,
       mom:            pendingMoM,
@@ -66,7 +68,7 @@ export default function EcommerceMetrics({ stats }) {
       path:           '/dashboard/factures?filter=attente',
     },
     {
-      title:          'Solde Net Réel',
+      title:          t('dashboard.netRealBalance'),
       value:          ((stats?.total_revenue || 0) - (stats?.pending_amount || 0)).toLocaleString('fr-MA'),
       currency:       true,
       mom:            netMoM,
@@ -148,7 +150,7 @@ export default function EcommerceMetrics({ stats }) {
 
             {/* Hover footer */}
             <div className="mt-4 pt-4 border-t border-[#526e9c]/10 flex items-center gap-2 text-xs font-bold text-[#526e9c] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:text-[#18adf2] transition-all duration-300 relative z-10">
-              <span>Voir détails</span>
+              <span>{t('dashboard.viewDetails') || 'Voir détails'}</span>
               <ArrowRight size={14} />
             </div>
           </Link>

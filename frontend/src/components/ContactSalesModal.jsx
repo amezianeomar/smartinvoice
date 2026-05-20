@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import api from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 // ---------------------------------------------------------------------------
 // Toast — lightweight self-dismissing notification, no external deps
@@ -75,6 +76,7 @@ function InputField({ id, label, type = 'text', placeholder, value, onChange, re
 // ContactSalesModal
 // ---------------------------------------------------------------------------
 export default function ContactSalesModal({ isOpen, onClose }) {
+  const { t } = useLanguage();
   const INITIAL_FORM = { name: '', email: '', company: '', message: '' };
 
   const [form, setForm]       = useState(INITIAL_FORM);
@@ -108,7 +110,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
       await api.post('/contact-sales', form);
 
       setToast({
-        message: 'Message sent successfully. Our team will contact you soon.',
+        message: t('contactSales.success'),
         type: 'success',
       });
       setForm(INITIAL_FORM);
@@ -120,7 +122,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
       const laravelMessage = error.response?.data?.message;
       const firstError = laravelErrors
         ? Object.values(laravelErrors).flat()[0]
-        : laravelMessage || 'Something went wrong. Please try again.';
+        : laravelMessage || t('contactSales.errorFallback');
       setToast({ message: firstError, type: 'error' });
     } finally {
       setLoading(false);
@@ -135,7 +137,7 @@ export default function ContactSalesModal({ isOpen, onClose }) {
       {/* Backdrop                                                            */}
       {/* ------------------------------------------------------------------ */}
       <div
-        className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center px-4"
+        className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4"
         onClick={onClose}
         aria-modal="true"
         role="dialog"
@@ -179,19 +181,19 @@ export default function ContactSalesModal({ isOpen, onClose }) {
           {/* Header */}
           <div className="mb-8">
             <span className="inline-block text-[10px] font-black uppercase tracking-[0.2em] text-[#18adf2] mb-3">
-              Enterprise Plan
+              {t('contactSales.plan')}
             </span>
             <h2
               id="contact-sales-title"
               className="text-2xl md:text-3xl font-black text-white leading-tight"
             >
-              Let's talk about your{' '}
+              {t('contactSales.title1')}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#18adf2] to-[#5048e5]">
-                business needs.
+                {t('contactSales.title2')}
               </span>
             </h2>
             <p className="mt-2 text-sm text-slate-500">
-              Fill in the form below and our team will get back to you within 24 hours.
+              {t('contactSales.subtitle')}
             </p>
           </div>
 
@@ -200,17 +202,17 @@ export default function ContactSalesModal({ isOpen, onClose }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <InputField
                 id="cs-name"
-                label="Full Name"
-                placeholder="Amine Tazi"
+                label={t('contactSales.nameLabel')}
+                placeholder={t('contactSales.namePlaceholder')}
                 value={form.name}
                 onChange={handleChange('name')}
                 required
               />
               <InputField
                 id="cs-email"
-                label="Work Email"
+                label={t('contactSales.emailLabel')}
                 type="email"
-                placeholder="amine@company.ma"
+                placeholder={t('contactSales.emailPlaceholder')}
                 value={form.email}
                 onChange={handleChange('email')}
                 required
@@ -219,8 +221,8 @@ export default function ContactSalesModal({ isOpen, onClose }) {
 
             <InputField
               id="cs-company"
-              label="Company Name"
-              placeholder="Nord-Sud Logistics"
+              label={t('contactSales.companyLabel')}
+              placeholder={t('contactSales.companyPlaceholder')}
               value={form.company}
               onChange={handleChange('company')}
               required
@@ -229,12 +231,12 @@ export default function ContactSalesModal({ isOpen, onClose }) {
             {/* Message textarea */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="cs-message" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                Message <span className="text-[#18adf2]">*</span>
+                {t('contactSales.messageLabel')} <span className="text-[#18adf2]">*</span>
               </label>
               <textarea
                 id="cs-message"
                 rows={4}
-                placeholder="Tell us about your team size, current challenges, and what you'd like to achieve with SmartInvoice Pro..."
+                placeholder={t('contactSales.messagePlaceholder')}
                 value={form.message}
                 onChange={handleChange('message')}
                 required
@@ -270,12 +272,12 @@ export default function ContactSalesModal({ isOpen, onClose }) {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                   </svg>
-                  Sending…
+                  {t('contactSales.sending')}
                 </>
               ) : (
                 <>
                   <Send size={15} />
-                  Send Message
+                  {t('contactSales.send')}
                 </>
               )}
             </button>

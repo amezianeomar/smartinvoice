@@ -92,8 +92,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // OAuth Login method
+  const oauthLogin = (newToken) => {
+    sessionStorage.setItem('token', newToken);
+    setToken(newToken);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, oauthLogin }}>
       {children}
     </AuthContext.Provider>
   );

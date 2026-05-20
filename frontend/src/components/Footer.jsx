@@ -108,8 +108,8 @@ export default function Footer() {
 
       {/* 3. COPYRIGHT BAR */}
       <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-[#526e9c]/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-[#526e9c]">
-        <p>{t('footer.copyright')}</p>
-        <p className="flex items-center gap-1">
+        <p className="text-center md:text-left">{t('footer.copyright')}</p>
+        <p className="text-center md:text-right">
            {t('footer.madeIn')}
         </p>
       </div>

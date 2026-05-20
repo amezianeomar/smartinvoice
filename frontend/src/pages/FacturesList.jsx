@@ -1,16 +1,27 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Filter, Download, FileText, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
 import { EmptyState, TableSkeleton } from '../components/ui/States';
 import useInvoices from '../hooks/useInvoices';
 import InvoiceActions from '../components/invoices/InvoiceActions';
+import ResendConfirmationModal from '../components/invoices/ResendConfirmationModal';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function FacturesList() {
+   const { t } = useLanguage();
    const navigate = useNavigate();
-   const [searchTerm, setSearchTerm] = useState('');
+   const location = useLocation();
+   const [searchTerm, setSearchTerm] = useState(location.state?.search || '');
+
+   useEffect(() => {
+      if (location.state?.search) {
+         setSearchTerm(location.state.search);
+      }
+   }, [location.state?.search]);
    const [activeStatus, setActiveStatus] = useState('all');
    const [feedback, setFeedback] = useState('');
    const [busyInvoiceId, setBusyInvoiceId] = useState(null);
+   const [resendInvoice, setResendInvoice] = useState(null);
 
    const {
       invoices,
@@ -70,7 +81,16 @@ export default function FacturesList() {
       }
    };
 
-   const handleSendEmail = async (invoice) => {
+   const handleSendEmail = (invoice) => {
+      const status = normalizedStatus(invoice.statut);
+      if (status === 'envoyee' || status === 'payee') {
+         setResendInvoice(invoice);
+      } else {
+         executeSendEmail(invoice);
+      }
+   };
+
+   const executeSendEmail = async (invoice) => {
       setBusyInvoiceId(invoice.id);
       setFeedback('');
 
@@ -81,11 +101,12 @@ export default function FacturesList() {
          setFeedback(err.response?.data?.message || 'Echec de l envoi email.');
       } finally {
          setBusyInvoiceId(null);
+         setResendInvoice(null);
       }
    };
 
    const handleDelete = async (invoice) => {
-      const shouldDelete = window.confirm(`Supprimer la facture ${invoice.numero} ?`);
+      const shouldDelete = window.confirm(t('invoicesList.deleteConfirm').replace('{numero}', invoice.numero));
       if (!shouldDelete) {
          return;
       }
@@ -118,7 +139,14 @@ export default function FacturesList() {
 
    const handleExportCSV = () => {
       if (!filteredInvoices.length) return;
-      const headers = ['N° Facture', 'Client', 'Création', 'Échéance', 'Montant TTC', 'Statut'];
+      const headers = [
+        t('invoicesList.invoiceNumber'),
+        t('invoicesList.client'),
+        t('invoicesList.creation'),
+        t('invoicesList.dueDate'),
+        t('invoicesList.amount'),
+        t('invoicesList.status')
+      ];
       const csvContent = [
          headers.join(','),
          ...filteredInvoices.map(inv => [
@@ -145,11 +173,11 @@ export default function FacturesList() {
   const getStatusStyle = (status) => {
       switch (normalizedStatus(status)) {
          case 'payee':
-            return { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'border-emerald-500/20', icon: <CheckCircle size={14} />, label: 'Payee' };
+            return { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'border-emerald-500/20', icon: <CheckCircle size={14} />, label: t('invoicesList.paid') };
          case 'envoyee':
-            return { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20', icon: <Clock size={14} />, label: 'Envoyee' };
+            return { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20', icon: <Clock size={14} />, label: t('invoicesList.sent') };
          case 'brouillon':
-            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: 'Brouillon' };
+            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: t('invoicesList.draft') };
          default:
             return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: status || 'N/A' };
     }
@@ -159,8 +187,8 @@ export default function FacturesList() {
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
          <div>
-            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">Mes Factures</h1>
-            <p className="text-[#526e9c] text-sm font-medium">Gérez, filtrez et exportez toutes vos factures envoyées.</p>
+            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('invoicesList.title')}</h1>
+            <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>
          </div>
       </div>
 
@@ -169,7 +197,7 @@ export default function FacturesList() {
         <div className="p-4 md:p-6 border-b border-[#526e9c]/10 gap-4 flex flex-col md:flex-row justify-between items-center bg-white/30 dark:bg-black/10">
           <div className="relative w-full md:w-96 group">
              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#526e9c] transition-colors group-focus-within:text-[#18adf2]"><Search size={18} /></span>
-             <input type="text" placeholder="Rechercher par N°, Client..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />
+             <input type="text" placeholder={t('invoicesList.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />
           </div>
           <div className="flex gap-3 w-full md:w-auto">
              <button
@@ -177,10 +205,10 @@ export default function FacturesList() {
                 onClick={() => setActiveStatus((prev) => (prev === 'all' ? 'envoyee' : 'all'))}
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors text-sm font-bold shadow-sm"
              >
-                <Filter size={18} /> Filtrer
+                <Filter size={18} /> {t('invoicesList.filter')}
              </button>
              <button type="button" onClick={handleExportCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
-                <Download size={18} /> Exporter (CSV)
+                <Download size={18} /> {t('invoicesList.export')}
              </button>
           </div>
         </div>
@@ -199,9 +227,9 @@ export default function FacturesList() {
              <div className="flex-1 flex items-center justify-center">
                 <EmptyState 
                    icon={FileText} 
-                   title="Aucune Facture" 
-                   description="Vous n'avez pas encore généré de factures. Commencez à facturer vos clients dès maintenant." 
-                   actionText="Nouvelle Facture"
+                   title={t('invoicesList.emptyTitle')} 
+                   description={t('invoicesList.emptyDesc')} 
+                   actionText={t('invoicesList.emptyAction')}
                    actionIcon={Plus}
                    onAction={() => navigate('/dashboard/factures/nouvelle')}
                 />
@@ -210,13 +238,13 @@ export default function FacturesList() {
           <table className="w-full text-left whitespace-nowrap min-w-[900px]">
              <thead>
                 <tr className="bg-[#526e9c]/5 text-[11px] uppercase tracking-widest text-[#526e9c] border-b border-[#526e9c]/20">
-                   <th className="px-6 py-4 font-bold">N° Facture</th>
-                   <th className="px-6 py-4 font-bold">Client</th>
-                   <th className="px-6 py-4 font-bold">Création</th>
-                   <th className="px-6 py-4 font-bold">Échéance</th>
-                   <th className="px-6 py-4 font-bold">Montant TTC</th>
-                   <th className="px-6 py-4 font-bold">Statut</th>
-                   <th className="px-6 py-4 font-bold text-center">Actions</th>
+                   <th className="px-6 py-4 font-bold">{t('invoicesList.invoiceNumber')}</th>
+                   <th className="px-6 py-4 font-bold">{t('invoicesList.client')}</th>
+                   <th className="px-6 py-4 font-bold">{t('invoicesList.creation')}</th>
+                   <th className="px-6 py-4 font-bold">{t('invoicesList.dueDate')}</th>
+                   <th className="px-6 py-4 font-bold">{t('invoicesList.amount')}</th>
+                   <th className="px-6 py-4 font-bold">{t('invoicesList.status')}</th>
+                   <th className="px-6 py-4 font-bold text-center">{t('invoicesList.actions')}</th>
                 </tr>
              </thead>
              <tbody className="divide-y divide-[#526e9c]/10">
@@ -259,16 +287,23 @@ export default function FacturesList() {
         {/* Pagination */}
         {!isLoading && filteredInvoices.length > 0 && (
         <div className="p-4 border-t border-[#526e9c]/10 flex items-center justify-between text-sm text-[#526e9c]">
-           <span>Affichant 1 a {filteredInvoices.length} sur {invoices.length} factures</span>
+           <span>{t('invoicesList.showing').replace('{filtered}', filteredInvoices.length).replace('{total}', invoices.length)}</span>
            <div className="flex gap-2">
-              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>Précédent</button>
+              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.previous')}</button>
               <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 bg-[#18adf2]/10 text-[#18adf2] font-bold">1</button>
-              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>Suivant</button>
+              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.next')}</button>
            </div>
         </div>
         )}
 
       </div>
+
+      <ResendConfirmationModal
+        isOpen={!!resendInvoice}
+        invoice={resendInvoice}
+        onClose={() => setResendInvoice(null)}
+        onConfirm={() => executeSendEmail(resendInvoice)}
+      />
     </div>
   );
 }

@@ -3,10 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, FileText, BarChart3, Settings, LogOut, FilePlus, ChevronDown, Shield } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function AppSidebar() {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const { logout, user } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
 
   // Accordion state management
@@ -21,26 +23,26 @@ export default function AppSidebar() {
   const isActivePath = (path) => location.pathname === path || location.pathname.startsWith(`${path}/`) && path !== '/dashboard';
 
   const navItems = [
-    { name: "Tableau de Bord", icon: <LayoutDashboard size={22} />, path: "/dashboard" },
+    { name: t('sidebar.dashboard'), icon: <LayoutDashboard size={22} />, path: "/dashboard" },
     { 
-      name: "Factures", 
+      name: t('sidebar.invoices'), 
       icon: <FileText size={22} />, 
       children: [
-        { name: "Toutes les Factures", path: "/dashboard/factures" },
-        { name: "Devis", path: "/dashboard/devis" },
-        { name: "Paiements", path: "/dashboard/paiements" },
+        { name: t('sidebar.allInvoices'), path: "/dashboard/factures" },
+        { name: t('sidebar.quotes'), path: "/dashboard/devis" },
+        { name: t('sidebar.payments'), path: "/dashboard/paiements" },
       ]
     },
     { 
-      name: "Clients", 
+      name: t('sidebar.clients'), 
       icon: <Users size={22} />, 
       children: [
-        { name: "Tous les Clients", path: "/dashboard/clients" },
-        { name: "Catalogue", path: "/dashboard/catalogue" },
+        { name: t('sidebar.allClients'), path: "/dashboard/clients" },
+        { name: t('sidebar.catalog'), path: "/dashboard/catalogue" },
       ]
     },
     { 
-      name: "Rapports & TVA", 
+      name: t('sidebar.reportsVat'), 
       icon: <BarChart3 size={22} />, 
       path: "/dashboard/statistiques",
       isPro: true 
@@ -49,8 +51,8 @@ export default function AppSidebar() {
 
 
   const bottomItems = [
-    { name: "Paramètres", icon: <Settings size={22} />, path: "/dashboard/parametres" },
-    { name: "Déconnexion", icon: <LogOut size={22} className="text-red-500" />, onClick: logout },
+    { name: t('sidebar.settings'), icon: <Settings size={22} />, path: "/dashboard/parametres" },
+    { name: t('sidebar.logout'), icon: <LogOut size={22} className="text-red-500" />, onClick: logout },
   ];
 
   const renderItem = (item) => {
@@ -158,12 +160,12 @@ export default function AppSidebar() {
                   className="flex items-center justify-center gap-3 w-full py-3 rounded-xl font-bold transition-all duration-300 shadow-[0_0_15px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 hover:-translate-y-0.5 bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white"
                >
                   <FilePlus size={22} className="shrink-0" />
-                  {(isExpanded || isHovered || isMobileOpen) && <span className="whitespace-nowrap">Créer Facture</span>}
+                  {(isExpanded || isHovered || isMobileOpen) && <span className="whitespace-nowrap">{t('sidebar.createInvoice')}</span>}
                </Link>
             </div>
 
             <span className="text-[10px] font-bold text-[#526e9c] uppercase tracking-wider pl-4 mb-1 hidden md:block">
-              {(isExpanded || isHovered || isMobileOpen) ? "Menu Principal" : "..."}
+              {(isExpanded || isHovered || isMobileOpen) ? t('sidebar.mainMenu') : "..."}
             </span>
             
             {navItems.map(renderItem)}

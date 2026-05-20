@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import MonthlySalesChart from '../components/dashboard/MonthlySalesChart';
 import api from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 // Helper to format values elegantly
 function formatNumber(value) {
@@ -43,6 +44,7 @@ function StatCard({ icon, label, value, sub, accentClass, glowClass, isCurrency 
 
 // ─── Donut Chart (CSS conic-gradient based on database values) ───
 function DonutChart({ donutData, totalInvoices }) {
+  const { t } = useLanguage();
   const paidVal = donutData?.find(item => item.name === 'Payées')?.value ?? 0;
   const pendingVal = donutData?.find(item => item.name === 'En attente')?.value ?? 0;
   const overdueVal = donutData?.find(item => item.name === 'En retard')?.value ?? 0;
@@ -62,24 +64,23 @@ function DonutChart({ donutData, totalInvoices }) {
   return (
     <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 p-6 shadow-xl flex flex-col items-center justify-center relative overflow-hidden h-full">
       <h3 className="text-lg font-black text-[#0F172A] dark:text-white self-start mb-4">
-        Répartition Statuts
+        {t('stats.statusDistribution')}
       </h3>
 
       <div className="relative w-44 h-44 my-4">
         <div className="w-full h-full rounded-full" style={{ background: gradient }} />
         <div className="absolute inset-0 m-auto w-28 h-28 bg-[#F8FAFC] dark:bg-[#080C16] rounded-full flex flex-col items-center justify-center shadow-inner">
           <span className="text-2xl font-black text-[#0F172A] dark:text-white">{totalInvoices}</span>
-          <span className="text-[10px] text-[#526e9c] uppercase font-bold text-center leading-tight mt-0.5">
-            Factures<br />Générées
+          <span className="text-[10px] text-[#526e9c] uppercase font-bold text-center leading-tight mt-0.5" dangerouslySetInnerHTML={{ __html: t('stats.generatedInvoices').replace(' ', '<br />') }}>
           </span>
         </div>
       </div>
 
       <div className="w-full mt-6 space-y-3">
         {[
-          { label: 'Payées',      pct: paid,    color: 'bg-emerald-500' },
-          { label: 'En attente',  pct: pending, color: 'bg-amber-500'   },
-          { label: 'En retard',   pct: overdue, color: 'bg-red-500'     },
+          { label: t('dashboard.paid'),      pct: paid,    color: 'bg-emerald-500' },
+          { label: t('dashboard.pendingPayment'),  pct: pending, color: 'bg-amber-500'   },
+          { label: t('stats.overdue'),   pct: overdue, color: 'bg-red-500'     },
         ].map(({ label, pct, color }) => (
           <div key={label} className="flex justify-between items-center text-sm font-bold">
             <div className="flex items-center gap-2">
@@ -96,6 +97,7 @@ function DonutChart({ donutData, totalInvoices }) {
 
 // ─── SVG Line Chart (Revenue evolution without flatlining) ───
 function RevenueLineChart({ chartData }) {
+  const { t } = useLanguage();
   const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
   const year = new Date().getFullYear();
 
@@ -142,13 +144,13 @@ function RevenueLineChart({ chartData }) {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h3 className="text-xl font-black text-[#0F172A] dark:text-white tracking-tight">
-            Évolution du Chiffre d'Affaires
+            {t('stats.revenueEvolution')}
           </h3>
-          <p className="text-[#526e9c] text-sm">Factures payées sur l'année {year} (en MAD)</p>
+          <p className="text-[#526e9c] text-sm">{t('stats.revenueEvolutionSub').replace('{year}', year)}</p>
         </div>
         <div className="flex items-center gap-2 text-xs font-bold text-[#526e9c] bg-[#526e9c]/5 px-3 py-1.5 rounded-xl border border-[#526e9c]/10">
           <div className="w-2.5 h-2.5 rounded-full bg-[#18adf2]" />
-          Payées
+          {t('dashboard.paid')}
         </div>
       </div>
 
@@ -254,6 +256,7 @@ function RevenueLineChart({ chartData }) {
 
 // ─── Main Statistiques Page ───
 export default function Statistiques() {
+  const { t } = useLanguage();
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -265,11 +268,11 @@ export default function Statistiques() {
         if (res.data.success) {
           setStats(res.data.data);
         } else {
-          setError('Impossible de charger les statistiques.');
+          setError(t('stats.error'));
         }
       } catch (err) {
         console.error('Advanced statistics fetch error:', err);
-        setError('Erreur réseau. Veuillez réessayer.');
+        setError(t('stats.networkError'));
       } finally {
         setIsLoading(false);
       }
@@ -282,7 +285,7 @@ export default function Statistiques() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="animate-spin text-[#18adf2]" size={40} />
-          <p className="text-[#526e9c] font-medium text-sm">Calcul de vos statistiques en temps réel...</p>
+          <p className="text-[#526e9c] font-medium text-sm">{t('stats.loading')}</p>
         </div>
       </div>
     );
@@ -306,10 +309,10 @@ export default function Statistiques() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">
-          Statistiques Avancées
+          {t('stats.advanced')}
         </h1>
         <p className="text-[#526e9c] text-sm font-medium">
-          Analysez vos performances financières et l'état de votre trésorerie.
+          {t('stats.advancedSubtitle')}
         </p>
       </div>
 
@@ -317,7 +320,7 @@ export default function Statistiques() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           icon={<TrendingUp size={24} className="text-[#18adf2]" />}
-          label="Revenus Encaissés"
+          label={t('stats.revenueCollected')}
           value={formatNumber(cards.revenus_encaisses)}
           isCurrency={true}
           accentClass="bg-[#18adf2]/10"
@@ -325,7 +328,7 @@ export default function Statistiques() {
         />
         <StatCard
           icon={<Clock size={24} className="text-amber-500" />}
-          label="En Attente"
+          label={t('stats.pending')}
           value={formatNumber(cards.en_attente)}
           isCurrency={true}
           accentClass="bg-amber-500/10"
@@ -333,14 +336,14 @@ export default function Statistiques() {
         />
         <StatCard
           icon={<FileText size={24} className="text-[#221ab7]" />}
-          label="Total Factures"
+          label={t('stats.totalInvoices')}
           value={cards.total_factures}
           accentClass="bg-[#221ab7]/10"
           glowClass="bg-[#221ab7]/10"
         />
         <StatCard
           icon={<Users size={24} className="text-emerald-500" />}
-          label="Clients Actifs"
+          label={t('stats.activeClients')}
           value={cards.clients_actifs}
           accentClass="bg-emerald-500/10"
           glowClass="bg-emerald-500/10"
@@ -355,11 +358,11 @@ export default function Statistiques() {
           <div className="w-12 h-12 rounded-xl bg-[#18adf2]/10 flex items-center justify-center text-[#18adf2] mb-4">
             <TrendingUp size={24} />
           </div>
-          <h4 className="text-sm font-bold text-[#526e9c] uppercase tracking-wider">Taux de Recouvrement</h4>
+          <h4 className="text-sm font-bold text-[#526e9c] uppercase tracking-wider">{t('stats.collectionRate')}</h4>
           <div className="mt-2 flex items-end justify-between">
             <span className="text-3xl font-black text-[#0F172A] dark:text-white">{cards.taux_recouvrement}%</span>
             <span className="flex items-center gap-1 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">
-              <ArrowUpRight size={14} /> Payé/Total
+              <ArrowUpRight size={14} /> {t('stats.paidTotal')}
             </span>
           </div>
           <div className="mt-4 h-1.5 bg-[#526e9c]/10 rounded-full overflow-hidden">
@@ -376,11 +379,11 @@ export default function Statistiques() {
           <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 mb-4">
             <TrendingDown size={24} />
           </div>
-          <h4 className="text-sm font-bold text-[#526e9c] uppercase tracking-wider">Taux d'Impayés</h4>
+          <h4 className="text-sm font-bold text-[#526e9c] uppercase tracking-wider">{t('stats.defaultRate')}</h4>
           <div className="mt-2 flex items-end justify-between">
             <span className="text-3xl font-black text-[#0F172A] dark:text-white">{cards.taux_impayes}%</span>
             <span className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-md ${cards.taux_impayes === 0 ? 'text-emerald-500 bg-emerald-500/10' : 'text-red-500 bg-red-500/10'}`}>
-              <ArrowUpRight size={14} /> En retard
+              <ArrowUpRight size={14} /> {t('stats.overdue')}
             </span>
           </div>
           <div className="mt-4 h-1.5 bg-[#526e9c]/10 rounded-full overflow-hidden">
@@ -397,16 +400,16 @@ export default function Statistiques() {
           <div className="w-12 h-12 rounded-xl bg-[#221ab7]/10 flex items-center justify-center text-[#221ab7] mb-4">
             <Activity size={24} />
           </div>
-          <h4 className="text-sm font-bold text-[#526e9c] uppercase tracking-wider">Couverture Clients</h4>
+          <h4 className="text-sm font-bold text-[#526e9c] uppercase tracking-wider">{t('stats.clientCoverage')}</h4>
           <div className="mt-2 flex items-end justify-between">
             <span className="text-3xl font-black text-[#0F172A] dark:text-white">
               {cards.couverture_clients}
             </span>
             <span className="flex items-center gap-1 text-xs font-bold text-[#18adf2] bg-[#18adf2]/10 px-2 py-1 rounded-md">
-              <ArrowUpRight size={14} /> Fact./Client
+              <ArrowUpRight size={14} /> {t('stats.invoicesPerClient')}
             </span>
           </div>
-          <p className="mt-2 text-xs text-[#526e9c]">Moyenne de factures par client</p>
+          <p className="mt-2 text-xs text-[#526e9c]">{t('stats.coverageDesc')}</p>
         </div>
       </div>
 
