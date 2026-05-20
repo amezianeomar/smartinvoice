@@ -5,9 +5,11 @@ import MonthlySalesChart from '../components/dashboard/MonthlySalesChart';
 import RecentInvoices from '../components/dashboard/RecentInvoices';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Loader2, RefreshCcw } from 'lucide-react';
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data, isLoading, error, refresh } = useDashboard();
@@ -16,7 +18,7 @@ export default function Dashboard() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <Loader2 size={48} className="text-[#18adf2] animate-spin mb-4" />
-        <p className="text-[#526e9c] font-bold animate-pulse">Chargement de vos données...</p>
+        <p className="text-[#526e9c] font-bold animate-pulse">{t('dashboard.loading')}</p>
       </div>
     );
   }
@@ -24,13 +26,13 @@ export default function Dashboard() {
   if (error) {
     return (
       <div className="p-12 rounded-3xl bg-red-500/10 border border-red-500/20 text-center">
-        <h2 className="text-xl font-black text-red-500 mb-4">Oups ! Une erreur est survenue</h2>
+        <h2 className="text-xl font-black text-red-500 mb-4">{t('dashboard.errorTitle')}</h2>
         <p className="text-red-400 mb-8">{error}</p>
         <button 
           onClick={refresh}
           className="flex items-center gap-2 mx-auto px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors"
         >
-          <RefreshCcw size={18} /> Réessayer
+          <RefreshCcw size={18} /> {t('dashboard.retry')}
         </button>
       </div>
     );
@@ -40,14 +42,14 @@ export default function Dashboard() {
     <>
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
          <div>
-            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">Aperçu Général</h1>
-            <p className="text-[#526e9c] text-sm font-medium">Suivez l'évolution de vos factures et de votre trésorerie.</p>
+            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('dashboard.generalOverview')}</h1>
+            <p className="text-[#526e9c] text-sm font-medium">{t('dashboard.overviewSubtitle')}</p>
          </div>
          <button 
             onClick={() => navigate('/dashboard/factures/nouvelle')}
             className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-5 py-2.5 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all hover:scale-105 active:scale-95"
          >
-            + Nouvelle Facture
+            {t('dashboard.newInvoiceBtn')}
          </button>
       </div>
       
@@ -68,10 +70,10 @@ export default function Dashboard() {
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#221ab7]/20 to-[#18adf2]/20 flex items-center justify-center mb-6 border border-[#18adf2]/20 relative z-10">
                        <span className="text-4xl group-hover:scale-110 transition-transform duration-300">🚀</span>
                     </div>
-                    <h3 className="text-xl font-black text-[#0F172A] dark:text-white mb-3 relative z-10 tracking-tight">Passez à la vitesse <span className="text-[#18adf2]">supérieure</span></h3>
-                    <p className="text-[#526e9c] text-sm mb-8 max-w-[200px] relative z-10">Automatisez vos relances et encaissez vos factures 2x plus vite.</p>
+                    <h3 className="text-xl font-black text-[#0F172A] dark:text-white mb-3 relative z-10 tracking-tight">{t('upgrade.title1')} <span className="text-[#18adf2]">{t('upgrade.title2')}</span></h3>
+                    <p className="text-[#526e9c] text-sm mb-8 max-w-[200px] relative z-10">{t('upgrade.subtitle')}</p>
                     <button onClick={() => navigate('/select-plan')} className="w-full py-3.5 rounded-xl border-2 border-[#18adf2]/30 text-[#18adf2] font-bold hover:bg-[#18adf2]/10 transition-colors relative z-10">
-                       Découvrir l'offre Pro
+                       {t('upgrade.btn')}
                     </button>
                  </div>
               ) : (
@@ -79,8 +81,8 @@ export default function Dashboard() {
                     <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center mb-6 border border-white/30 backdrop-blur-md">
                        <span className="text-4xl">⭐</span>
                     </div>
-                    <h3 className="text-2xl font-black mb-2 tracking-tight">Membre Pro</h3>
-                    <p className="text-white/80 text-sm mb-6 max-w-[200px]">Vous profitez de toutes les fonctionnalités premium de SmartInvoice.</p>
+                    <h3 className="text-2xl font-black mb-2 tracking-tight">{t('upgrade.proMember')}</h3>
+                    <p className="text-white/80 text-sm mb-6 max-w-[200px]">{t('upgrade.proDesc')}</p>
                  </div>
               )}
            </div>

@@ -5,10 +5,12 @@ import { Bell, Search, Menu, UserCircle, X, Command, Sun, Moon, Settings, LogOut
 import { AnimatePresence, motion } from "framer-motion";
 import { LanguageSwitcher } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function AppHeader({ isDark, setIsDark }) {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const inputRef = useRef(null);
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -56,7 +58,7 @@ export default function AppHeader({ isDark, setIsDark }) {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Rechercher une facture, client..."
+                placeholder={t('header.searchPlaceholder')}
                 className="w-full pl-11 pr-14 py-2.5 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 rounded-md border border-[#526e9c]/20 bg-[#526e9c]/5 px-2 py-1 text-[10px] font-bold text-[#526e9c]">
@@ -107,16 +109,16 @@ export default function AppHeader({ isDark, setIsDark }) {
                    className="absolute top-[120%] right-0 w-80 bg-white/95 dark:bg-[#131B2C]/95 backdrop-blur-3xl border border-[#526e9c]/20 shadow-2xl rounded-2xl overflow-hidden"
                  >
                     <div className="flex justify-between items-center px-4 py-3 border-b border-[#526e9c]/10">
-                       <h4 className="font-black text-[#0F172A] dark:text-white">Notifications</h4>
-                       <span className="text-[10px] bg-[#18adf2]/10 text-[#18adf2] font-bold px-2 py-0.5 rounded-full">0 Nouvelle</span>
+                       <h4 className="font-black text-[#0F172A] dark:text-white">{t('header.notifications')}</h4>
+                       <span className="text-[10px] bg-[#18adf2]/10 text-[#18adf2] font-bold px-2 py-0.5 rounded-full">0 {t('header.new')}</span>
                     </div>
                     <div className="flex flex-col items-center justify-center py-8">
                        <Bell size={24} className="text-[#526e9c]/50 mb-2" />
-                       <p className="text-sm font-bold text-[#0F172A] dark:text-white">Aucune notification</p>
-                       <p className="text-xs text-[#526e9c] mt-1">Vous êtes à jour !</p>
+                       <p className="text-sm font-bold text-[#0F172A] dark:text-white">{t('header.noNotifications')}</p>
+                       <p className="text-xs text-[#526e9c] mt-1">{t('header.upToDate')}</p>
                     </div>
                     <div className="p-2 border-t border-[#526e9c]/10">
-                       <button onClick={() => setIsNotifOpen(false)} className="w-full py-2 text-sm font-bold text-[#526e9c] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">Fermer</button>
+                       <button onClick={() => setIsNotifOpen(false)} className="w-full py-2 text-sm font-bold text-[#526e9c] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">{t('header.close')}</button>
                     </div>
                  </motion.div>
                )}
@@ -139,8 +141,8 @@ export default function AppHeader({ isDark, setIsDark }) {
                   )}
                </div>
                <div className="flex flex-col text-left">
-                  <span className="text-sm font-bold text-[#0F172A] dark:text-white leading-none">{user?.nom || user?.name || 'Utilisateur'}</span>
-                  <span className="text-[10px] font-bold text-[#526e9c] uppercase mt-0.5">{user?.role === 'admin' ? 'Admin' : 'Membre'}</span>
+                  <span className="text-sm font-bold text-[#0F172A] dark:text-white leading-none">{user?.nom || user?.name || t('header.userFallback')}</span>
+                  <span className="text-[10px] font-bold text-[#526e9c] uppercase mt-0.5">{user?.role === 'admin' ? t('header.adminRole') : t('header.memberRole')}</span>
                </div>
              </button>
 
@@ -155,14 +157,14 @@ export default function AppHeader({ isDark, setIsDark }) {
                    className="absolute top-[120%] right-0 w-60 bg-white/95 dark:bg-[#131B2C]/95 backdrop-blur-3xl border border-[#526e9c]/20 shadow-2xl rounded-2xl overflow-hidden p-2 flex flex-col gap-1"
                  >
                     <Link to="/dashboard/parametres" className="flex items-center gap-3 w-full p-3 text-sm font-bold text-[#0F172A] dark:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">
-                       <Settings size={16} className="text-[#526e9c]" /> Profil & Paramètres
+                       <Settings size={16} className="text-[#526e9c]" /> {t('header.profileSettings')}
                     </Link>
                     <Link to="/dashboard/parametres" className="flex items-center gap-3 w-full p-3 text-sm font-bold text-[#0F172A] dark:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors">
-                       <CreditCard size={16} className="text-[#526e9c]" /> Abonnement Pro
+                       <CreditCard size={16} className="text-[#526e9c]" /> {t('header.proSubscription')}
                     </Link>
                     <div className="h-[1px] bg-[#526e9c]/10 my-1 w-[calc(100%-1rem)] mx-auto"></div>
                     <button onClick={logout} className="flex items-center gap-3 w-full p-3 text-sm font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-colors text-left">
-                       <LogOut size={16} /> Déconnexion
+                       <LogOut size={16} /> {t('sidebar.logout')}
                     </button>
                  </motion.div>
                )}

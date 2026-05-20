@@ -200,5 +200,62 @@ export const fr = {
     overlayWelcomeTitle2: "vous revoir !",
     overlayWelcomeSubtitle: "Connectez-vous pour accéder à votre tableau de bord et suivre l'évolution de votre trésorerie.",
     overlayWelcomeBtn: "Se connecter"
+  },
+  sidebar: {
+    mainMenu: "Menu Principal",
+    dashboard: "Tableau de Bord",
+    invoices: "Factures",
+    allInvoices: "Toutes les Factures",
+    quotes: "Devis",
+    payments: "Paiements",
+    clients: "Clients",
+    allClients: "Tous les Clients",
+    catalog: "Catalogue",
+    reportsVat: "Rapports & TVA",
+    settings: "Paramètres",
+    logout: "Déconnexion",
+    createInvoice: "Créer Facture"
+  },
+  header: {
+    searchPlaceholder: "Rechercher une facture, client...",
+    notifications: "Notifications",
+    new: "Nouvelle",
+    noNotifications: "Aucune notification",
+    upToDate: "Vous êtes à jour !",
+    close: "Fermer",
+    profileSettings: "Profil & Paramètres",
+    proSubscription: "Abonnement Pro",
+    userFallback: "Utilisateur",
+    adminRole: "Admin",
+    memberRole: "Membre"
+  },
+  dashboard: {
+    generalOverview: "Aperçu Général",
+    overviewSubtitle: "Suivez l'évolution de vos factures et de votre trésorerie.",
+    newInvoiceBtn: "+ Nouvelle Facture",
+    revenue: "Chiffre d'Affaires",
+    totalInvoices: "Factures Totales",
+    pendingPayment: "En attente de paiement",
+    netRealBalance: "Solde net réel",
+    cashFlow: "Flux de Trésorerie (6 Mois)",
+    cashFlowSubtitle: "Factures Envoyées vs Factures Payées",
+    sent: "Envoyées",
+    paid: "Payées",
+    recentInvoices: "Factures Récentes",
+    amount: "Montant",
+    status: "Statut",
+    client: "Client",
+    date: "Date",
+    loading: "Chargement de vos données...",
+    errorTitle: "Oups ! Une erreur est survenue",
+    retry: "Réessayer"
+  },
+  upgrade: {
+    title1: "Passez à la vitesse",
+    title2: "supérieure",
+    subtitle: "Automatisez vos relances et encaissez vos factures 2x plus vite.",
+    btn: "Découvrir l'offre Pro",
+    proMember: "Membre Pro",
+    proDesc: "Vous profitez de toutes les fonctionnalités premium de SmartInvoice."
   }
 };
