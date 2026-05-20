@@ -10,14 +10,20 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Auth\OAuthController;
+use App\Http\Controllers\SearchController;
 
 // Public Auth Routes
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
 
 // OAuth Routes
-Route::get('/auth/{provider}/redirect', [\App\Http\Controllers\Auth\OAuthController::class, 'redirect']);
-Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\OAuthController::class, 'callback']);
+Route::get('/auth/{provider}/redirect', [OAuthController::class, 'redirect']);
+Route::get('/auth/{provider}/callback', [OAuthController::class, 'callback']);
+
+// Public Contact Route (no auth — 3 requests/min anti-spam)
+Route::post('/contact-sales', [ContactController::class, 'sendSalesEmail'])->middleware('throttle:3,1');
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -36,9 +42,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users', [SuperAdminController::class, 'getUsers']);
         Route::get('/ledger', [SuperAdminController::class, 'getLedger']);
         Route::get('/reports', [SuperAdminController::class, 'getFinancialReports']);
+        Route::get('/messages', [SuperAdminController::class, 'getMessages']);
     });
     
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard/stats', [DashboardController::class, 'getUserStats']);
+    Route::get('/dashboard/advanced-stats', [DashboardController::class, 'getAdvancedStats']);
+    Route::get('/search', [SearchController::class, 'search']);
 
     Route::apiResource('clients', ClientController::class);
     
