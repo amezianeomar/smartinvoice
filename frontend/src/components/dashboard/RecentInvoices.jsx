@@ -39,10 +39,10 @@ export default function RecentInvoices({ invoices = [] }) {
       <div className="flex items-center justify-between mb-8 relative z-10">
         <div>
            <h3 className="text-xl font-black text-[#0F172A] dark:text-white tracking-tight">{t('dashboard.recentInvoices')}</h3>
-           <p className="text-[#526e9c] text-sm">Les 5 dernières factures générées</p>
+           <p className="text-[#526e9c] text-sm">{t('dashboard.recentSubtitle') || 'Les 5 dernières factures générées'}</p>
         </div>
         <button onClick={() => navigate('/dashboard/factures')} className="text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2 rounded-xl">
-          Voir tout
+          {t('dashboard.viewAll') || 'Voir tout'}
         </button>
       </div>
 
@@ -50,12 +50,12 @@ export default function RecentInvoices({ invoices = [] }) {
         <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr className="border-b border-[#526e9c]/20 text-[11px] uppercase tracking-widest text-[#526e9c]">
-              <th className="pb-4 font-bold pl-2">N° Facture</th>
+              <th className="pb-4 font-bold pl-2">{t('dashboard.invoiceNumber') || 'N° Facture'}</th>
               <th className="pb-4 font-bold">{t('dashboard.client')}</th>
               <th className="pb-4 font-bold">{t('dashboard.date')}</th>
               <th className="pb-4 font-bold">{t('dashboard.amount')}</th>
               <th className="pb-4 font-bold">{t('dashboard.status')}</th>
-              <th className="pb-4 font-bold text-right pr-2">Action</th>
+              <th className="pb-4 font-bold text-right pr-2">{t('dashboard.action') || 'Action'}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#526e9c]/10">

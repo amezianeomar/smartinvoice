@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
-import { Bell, Search, Menu, UserCircle, X, Command, Sun, Moon, Settings, LogOut, CreditCard } from "lucide-react";
+import { Bell, Search, Menu, UserCircle, X, Command, Sun, Moon, Settings, LogOut, CreditCard, FileText, Users } from "lucide-react";
+import api from "../services/api";
+import HighlightText from "../components/ui/HighlightText";
 import { AnimatePresence, motion } from "framer-motion";
 import { LanguageSwitcher } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
@@ -15,6 +17,62 @@ export default function AppHeader({ isDark, setIsDark }) {
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState({ clients: [], invoices: [] });
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery.trim().length === 0) {
+        setSearchResults({ clients: [], invoices: [] });
+        setIsSearchOpen(false);
+        return;
+      }
+      setIsSearching(true);
+      api.get('/search', { params: { query: searchQuery } })
+        .then(res => {
+          setSearchResults(res.data?.data || { clients: [], invoices: [] });
+          setIsSearchOpen(true);
+          setSelectedIndex(-1);
+        })
+        .catch(console.error)
+        .finally(() => setIsSearching(false));
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  const allResults = [
+    ...searchResults.clients.map(c => ({ ...c, _type: 'client' })),
+    ...searchResults.invoices.map(i => ({ ...i, _type: 'invoice' }))
+  ];
+
+  const handleSearchKeyDown = (e) => {
+    if (!isSearchOpen || allResults.length === 0) return;
+    
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev < allResults.length - 1 ? prev + 1 : 0));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : allResults.length - 1));
+    } else if (e.key === "Enter" && selectedIndex >= 0) {
+      e.preventDefault();
+      const selected = allResults[selectedIndex];
+      if (selected._type === 'client') {
+        navigate(`/dashboard/clients`, { state: { search: selected.nom } });
+      } else {
+        navigate(`/dashboard/factures`, { state: { search: selected.numero } });
+      }
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      inputRef.current?.blur();
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -53,17 +111,81 @@ export default function AppHeader({ isDark, setIsDark }) {
           </Link>
 
           <div className="hidden lg:flex flex-1 pl-4">
-            <div className="relative w-full max-w-md group/input focus-within:z-10">
+            <div className="relative w-full max-w-md group/input focus-within:z-10" onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setIsSearchOpen(false); }}>
               <span className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Search size={18} /></span>
               <input
                 ref={inputRef}
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                onFocus={() => { if(searchQuery.trim().length > 0) setIsSearchOpen(true); }}
                 placeholder={t('header.searchPlaceholder')}
                 className="w-full pl-11 pr-14 py-2.5 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 rounded-md border border-[#526e9c]/20 bg-[#526e9c]/5 px-2 py-1 text-[10px] font-bold text-[#526e9c]">
                 <Command size={10} /><span>K</span>
               </button>
+              
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-[120%] left-0 w-full bg-white/95 dark:bg-[#131B2C]/95 backdrop-blur-3xl border border-[#526e9c]/20 shadow-2xl rounded-2xl overflow-hidden max-h-[80vh] overflow-y-auto"
+                  >
+                    {isSearching ? (
+                      <div className="p-4 text-center text-sm text-[#526e9c]">Recherche...</div>
+                    ) : allResults.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-[#526e9c]">Aucun résultat trouvé</div>
+                    ) : (
+                      <div className="p-2 flex flex-col gap-1">
+                        {searchResults.clients.length > 0 && (
+                          <div className="px-3 py-2 text-xs font-bold text-[#526e9c] uppercase tracking-wider">Clients</div>
+                        )}
+                        {searchResults.clients.map((client) => {
+                          const idx = allResults.findIndex(r => r.id === client.id && r._type === 'client');
+                          return (
+                            <button 
+                              key={`client-${client.id}`}
+                              tabIndex={-1}
+                              onClick={() => { navigate('/dashboard/clients', { state: { search: client.nom } }); setIsSearchOpen(false); setSearchQuery(""); }}
+                              className={`flex items-center gap-3 w-full p-3 text-sm font-bold text-left rounded-xl transition-colors ${idx === selectedIndex ? 'bg-[#18adf2]/10 text-[#18adf2]' : 'text-[#0F172A] dark:text-white hover:bg-black/5 dark:hover:bg-white/5'}`}
+                            >
+                              <div className="w-8 h-8 rounded-full bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] shrink-0"><Users size={16}/></div>
+                              <div className="flex flex-col min-w-0">
+                                <span className="truncate"><HighlightText text={client.nom} highlight={searchQuery} /></span>
+                                <span className="text-xs text-[#526e9c] font-normal truncate"><HighlightText text={client.entreprise || client.email || ''} highlight={searchQuery} /></span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                        {searchResults.invoices.length > 0 && (
+                          <div className="px-3 py-2 text-xs font-bold text-[#526e9c] uppercase tracking-wider mt-2">Factures</div>
+                        )}
+                        {searchResults.invoices.map((inv) => {
+                          const idx = allResults.findIndex(r => r.id === inv.id && r._type === 'invoice');
+                          return (
+                            <button 
+                              key={`inv-${inv.id}`}
+                              tabIndex={-1}
+                              onClick={() => { navigate('/dashboard/factures', { state: { search: inv.numero } }); setIsSearchOpen(false); setSearchQuery(""); }}
+                              className={`flex items-center gap-3 w-full p-3 text-sm font-bold text-left rounded-xl transition-colors ${idx === selectedIndex ? 'bg-[#18adf2]/10 text-[#18adf2]' : 'text-[#0F172A] dark:text-white hover:bg-black/5 dark:hover:bg-white/5'}`}
+                            >
+                              <div className="w-8 h-8 rounded-full bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] shrink-0"><FileText size={16}/></div>
+                              <div className="flex flex-col min-w-0">
+                                <span className="truncate"><HighlightText text={inv.numero} highlight={searchQuery} /></span>
+                                <span className="text-xs text-[#526e9c] font-normal truncate"><HighlightText text={inv.client?.nom || ''} highlight={searchQuery} /> • {inv.total_ttc} MAD</span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
           
