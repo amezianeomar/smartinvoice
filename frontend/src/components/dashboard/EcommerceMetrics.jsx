@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, AlertCircle, Banknote, DollarSign, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function EcommerceMetrics({ stats }) {
+  const { t } = useLanguage();
   const metrics = [
     {
-      title: "Chiffre d'Affaires",
+      title: t('dashboard.revenue'),
       value: `${(stats?.total_revenue || 0).toLocaleString('fr-MA')} MAD`,
       change: "+12.5%",
       isPositive: true,
@@ -14,7 +16,7 @@ export default function EcommerceMetrics({ stats }) {
       path: "/dashboard/statistiques"
     },
     {
-      title: "Factures Totales",
+      title: t('dashboard.totalInvoices'),
       value: stats?.invoice_count || 0,
       change: "+5.2%",
       isPositive: true,
@@ -23,7 +25,7 @@ export default function EcommerceMetrics({ stats }) {
       path: "/dashboard/factures"
     },
     {
-      title: "En attente de paiement",
+      title: t('dashboard.pendingPayment'),
       value: `${(stats?.pending_amount || 0).toLocaleString('fr-MA')} MAD`,
       change: "-2.4%",
       isPositive: false,

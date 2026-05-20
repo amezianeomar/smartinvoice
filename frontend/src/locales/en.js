@@ -200,5 +200,62 @@ export const en = {
     overlayWelcomeTitle2: "back!",
     overlayWelcomeSubtitle: "Log in to access your dashboard and track your cash flow evolution.",
     overlayWelcomeBtn: "Log in"
+  },
+  sidebar: {
+    mainMenu: "Main Menu",
+    dashboard: "Dashboard",
+    invoices: "Invoices",
+    allInvoices: "All Invoices",
+    quotes: "Quotes",
+    payments: "Payments",
+    clients: "Clients",
+    allClients: "All Clients",
+    catalog: "Catalog",
+    reportsVat: "Reports & VAT",
+    settings: "Settings",
+    logout: "Log out",
+    createInvoice: "Create Invoice"
+  },
+  header: {
+    searchPlaceholder: "Search for an invoice, client...",
+    notifications: "Notifications",
+    new: "New",
+    noNotifications: "No notifications",
+    upToDate: "You are up to date!",
+    close: "Close",
+    profileSettings: "Profile & Settings",
+    proSubscription: "Pro Subscription",
+    userFallback: "User",
+    adminRole: "Admin",
+    memberRole: "Member"
+  },
+  dashboard: {
+    generalOverview: "General Overview",
+    overviewSubtitle: "Track your invoices and cash flow evolution.",
+    newInvoiceBtn: "+ New Invoice",
+    revenue: "Revenue",
+    totalInvoices: "Total Invoices",
+    pendingPayment: "Pending Payment",
+    netRealBalance: "Net Real Balance",
+    cashFlow: "Cash Flow (6 Months)",
+    cashFlowSubtitle: "Sent Invoices vs Paid Invoices",
+    sent: "Sent",
+    paid: "Paid",
+    recentInvoices: "Recent Invoices",
+    amount: "Amount",
+    status: "Status",
+    client: "Client",
+    date: "Date",
+    loading: "Loading your data...",
+    errorTitle: "Oops! An error occurred",
+    retry: "Try again"
+  },
+  upgrade: {
+    title1: "Level up",
+    title2: "to Pro",
+    subtitle: "Automate your follow-ups and get paid 2x faster.",
+    btn: "Discover Pro Offer",
+    proMember: "Pro Member",
+    proDesc: "You enjoy all premium features of SmartInvoice."
   }
 };
