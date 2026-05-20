@@ -23,6 +23,7 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminUsers from './pages/AdminUsers.jsx';
 import AdminSettings from './pages/AdminSettings.jsx';
 import AdminReports from './pages/AdminReports.jsx';
+import AdminMessages from './pages/AdminMessages.jsx';
 
 /**
  * ProtectedRoute Wrapper
@@ -152,6 +153,7 @@ export default function App() {
            <Route path="utilisateurs" element={<AdminUsers />} />
            <Route path="parametres" element={<AdminSettings />} />
            <Route path="rapports" element={<AdminReports />} />
+           <Route path="messages" element={<AdminMessages />} />
         </Route>
       </Routes>
 

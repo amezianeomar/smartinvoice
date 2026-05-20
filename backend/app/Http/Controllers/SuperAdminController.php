@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Paiement;
+use App\Models\ContactMessage;
 
 class SuperAdminController extends Controller
 {
@@ -67,6 +68,16 @@ class SuperAdminController extends Controller
                 'monthly' => $monthlyRevenue,
                 'total' => $totalRevenue
             ]
+        ]);
+    }
+
+    public function getMessages(Request $request)
+    {
+        $messages = ContactMessage::latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $messages,
         ]);
     }
 }

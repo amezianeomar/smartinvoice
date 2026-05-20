@@ -93,11 +93,11 @@ export const en = {
     subtitle: "Choose the plan that fits your business size.",
     starter: {
       name: "Starter",
-      desc: "Perfect for starting freelancers.",
-      f1: "5 Invoices / month",
-      f2: "1 User",
+      desc: "Perfect for freelancers starting out.",
+      f1: "3 Invoices / day (24h quota)",
+      f2: "3 Emails / day (24h quota)",
       f3: "Automatic VAT",
-      f4: "Email Support",
+      f4: "Basic Support",
       btn: "Start for Free"
     },
     pro: {
@@ -105,19 +105,20 @@ export const en = {
       name: "Professional",
       desc: "Everything an SME needs to scale.",
       f1: "Unlimited Invoices",
-      f2: "5 Users",
-      f3: "Advanced Client CRM",
-      f4: "Tax Reports",
-      f5: "24/7 Support",
-      btn: "14-Day Free Trial"
+      f2: "Advanced Financial Reports",
+      f3: "Client CRM",
+      f4: "24/7 Support",
+      f5: "Automatic VAT",
+      btn: "Get Started"
     },
     business: {
       name: "Business",
       desc: "For large structures and franchises.",
+      price: "Sur Devis",
       f1: "Unlimited Users",
-      f2: "Multi-Company",
-      f3: "Full API Access",
-      f4: "Dedicated Manager",
+      f2: "Multi-Company Management",
+      f3: "Dedicated Account Manager",
+      f4: "Full API Access",
       btn: "Contact Sales"
     },
     month: "MAD/month"

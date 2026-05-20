@@ -94,10 +94,10 @@ export const fr = {
     starter: {
       name: "Starter",
       desc: "Parfait pour les freelances qui débutent.",
-      f1: "5 Factures / mois",
-      f2: "1 Utilisateur",
+      f1: "3 Factures / jour (quota 24h)",
+      f2: "3 Emails / jour (quota 24h)",
       f3: "TVA Automatique",
-      f4: "Support par Email",
+      f4: "Support de Base",
       btn: "Commencer Gratuitement"
     },
     pro: {
@@ -105,20 +105,21 @@ export const fr = {
       name: "Professional",
       desc: "Tout ce dont une PME a besoin pour scaler.",
       f1: "Factures Illimitées",
-      f2: "5 Utilisateurs",
-      f3: "CRM Clients Avancé",
-      f4: "Rapports Fiscaux",
-      f5: "Support 24/7",
-      btn: "Essai Gratuit de 14 Jours"
+      f2: "Rapports Financiers Avancés",
+      f3: "CRM Clients",
+      f4: "Support 24/7",
+      f5: "TVA Automatique",
+      btn: "Commencer"
     },
     business: {
       name: "Business",
       desc: "Pour les grandes structures et franchises.",
+      price: "Sur Devis",
       f1: "Utilisateurs Illimités",
-      f2: "Multi-Sociétés",
-      f3: "API Accès Complet",
-      f4: "Gestionnaire Dédié",
-      btn: "Contacter la Vente"
+      f2: "Gestion Multi-Sociétés",
+      f3: "Gestionnaire de Compte Dédié",
+      f4: "Accès API Complet",
+      btn: "Contacter les Ventes"
     },
     month: "DH/mois"
   },
