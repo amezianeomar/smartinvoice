@@ -256,6 +256,15 @@ export const en = {
     recentSubtitle: "Last 5 generated invoices",
     viewDetails: "View Details"
   },
+  
+    recentInvoicesSubtitle: "The last 5 generated invoices",
+    viewAll: "View all",
+    invoiceNo: "Invoice No.",
+    statusSent: "Sent",
+    statusDraft: "Draft",
+    statusPaid: "Paid",
+    statusCancelled: "Cancelled",
+    months: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
   upgrade: {
     title1: "Take your business to the",
     title2: "next level",
@@ -362,5 +371,41 @@ export const en = {
     send: "Send Message",
     success: "Message sent successfully. Our team will contact you soon.",
     errorFallback: "Something went wrong. Please try again."
+  }
+,
+  factures: {
+    title: "My Invoices",
+    subtitle: "Manage, filter and export all your sent invoices.",
+    searchPlaceholder: "Search by No., Client...",
+    filter: "Filter",
+    exportCsv: "Export (CSV)",
+    colInvoiceNo: "Invoice No.",
+    colClient: "Client",
+    colCreation: "Created At",
+    colDueDate: "Due Date",
+    colAmount: "Amount (TTC)",
+    colStatus: "Status",
+    colActions: "Actions",
+    emptyTitle: "No Invoices",
+    emptyDesc: "You haven't generated any invoices yet. Start invoicing your clients now.",
+    emptyAction: "New Invoice",
+    actionView: "View PDF",
+    actionDownload: "Download PDF",
+    actionEmail: "Send by email",
+    actionDelete: "Delete",
+    paginationShowing: "Showing",
+    paginationTo: "to",
+    paginationOf: "of",
+    paginationInvoices: "invoices",
+    prev: "Previous",
+    next: "Next",
+    deleteConfirm: "Delete invoice",
+    feedbackDownloaded: "PDF of {numero} downloaded.",
+    feedbackDownloadFail: "Failed to download PDF.",
+    feedbackEmailSent: "Invoice {numero} sent by email.",
+    feedbackEmailFail: "Failed to send email.",
+    feedbackDeleted: "Invoice {numero} deleted.",
+    feedbackDeleteFail: "Failed to delete.",
+    feedbackViewFail: "Failed to preview PDF."
   }
 };

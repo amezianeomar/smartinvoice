@@ -3,9 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Filter, Download, FileText, CheckCircle, Clock, AlertCircle, Plus } from 'lucide-react';
 import { EmptyState, TableSkeleton } from '../components/ui/States';
 import useInvoices from '../hooks/useInvoices';
+import { useLanguage } from '../context/LanguageContext';
 import InvoiceActions from '../components/invoices/InvoiceActions';
 import ResendConfirmationModal from '../components/invoices/ResendConfirmationModal';
-import { useLanguage } from '../context/LanguageContext';
 
 export default function FacturesList() {
    const { t } = useLanguage();
@@ -38,6 +38,7 @@ export default function FacturesList() {
       if (value === 'payee' || value === 'payée') return 'payee';
       if (value === 'envoyee' || value === 'envoyée') return 'envoyee';
       if (value === 'brouillon') return 'brouillon';
+      if (value === 'annulée' || value === 'annulee') return 'annulee';
       return value;
    };
 
@@ -177,8 +178,7 @@ export default function FacturesList() {
          case 'envoyee':
             return { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20', icon: <Clock size={14} />, label: t('invoicesList.sent') };
          case 'brouillon':
-            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: t('invoicesList.draft') };
-         default:
+            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: t('invoicesList.draft') };         default:
             return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: status || 'N/A' };
     }
   };
@@ -188,8 +188,7 @@ export default function FacturesList() {
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
          <div>
             <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('invoicesList.title')}</h1>
-            <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>
-         </div>
+            <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>         </div>
       </div>
 
       <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 shadow-xl overflow-hidden flex flex-col min-h-[600px]">
@@ -197,8 +196,7 @@ export default function FacturesList() {
         <div className="p-4 md:p-6 border-b border-[#526e9c]/10 gap-4 flex flex-col md:flex-row justify-between items-center bg-white/30 dark:bg-black/10">
           <div className="relative w-full md:w-96 group">
              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#526e9c] transition-colors group-focus-within:text-[#18adf2]"><Search size={18} /></span>
-             <input type="text" placeholder={t('invoicesList.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />
-          </div>
+             <input type="text" placeholder={t('invoicesList.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />          </div>
           <div className="flex gap-3 w-full md:w-auto">
              <button
                 type="button"
@@ -208,8 +206,7 @@ export default function FacturesList() {
                 <Filter size={18} /> {t('invoicesList.filter')}
              </button>
              <button type="button" onClick={handleExportCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
-                <Download size={18} /> {t('invoicesList.export')}
-             </button>
+                <Download size={18} /> {t('invoicesList.export')}             </button>
           </div>
         </div>
 
@@ -229,45 +226,43 @@ export default function FacturesList() {
                    icon={FileText} 
                    title={t('invoicesList.emptyTitle')} 
                    description={t('invoicesList.emptyDesc')} 
-                   actionText={t('invoicesList.emptyAction')}
-                   actionIcon={Plus}
+                   actionText={t('invoicesList.emptyAction')}                   actionIcon={Plus}
                    onAction={() => navigate('/dashboard/factures/nouvelle')}
                 />
              </div>
           ) : (
-          <table className="w-full text-left whitespace-nowrap min-w-[900px]">
+          <table className="w-full text-left whitespace-nowrap w-full min-w-max">
              <thead>
                 <tr className="bg-[#526e9c]/5 text-[11px] uppercase tracking-widest text-[#526e9c] border-b border-[#526e9c]/20">
-                   <th className="px-6 py-4 font-bold">{t('invoicesList.invoiceNumber')}</th>
-                   <th className="px-6 py-4 font-bold">{t('invoicesList.client')}</th>
-                   <th className="px-6 py-4 font-bold">{t('invoicesList.creation')}</th>
-                   <th className="px-6 py-4 font-bold">{t('invoicesList.dueDate')}</th>
-                   <th className="px-6 py-4 font-bold">{t('invoicesList.amount')}</th>
-                   <th className="px-6 py-4 font-bold">{t('invoicesList.status')}</th>
-                   <th className="px-6 py-4 font-bold text-center">{t('invoicesList.actions')}</th>
-                </tr>
+                   <th className="px-4 py-4 font-bold">{t('invoicesList.invoiceNumber')}</th>
+                   <th className="px-4 py-4 font-bold">{t('invoicesList.client')}</th>
+                   <th className="px-4 py-4 font-bold">{t('invoicesList.creation')}</th>
+                   <th className="px-4 py-4 font-bold">{t('invoicesList.dueDate')}</th>
+                   <th className="px-4 py-4 font-bold">{t('invoicesList.amount')}</th>
+                   <th className="px-4 py-4 font-bold">{t('invoicesList.status')}</th>
+                   <th className="px-4 py-4 font-bold text-center">{t('invoicesList.actions')}</th>                </tr>
              </thead>
              <tbody className="divide-y divide-[#526e9c]/10">
                 {filteredInvoices.map((inv) => {
                    const status = getStatusStyle(inv.statut);
                    return (
                       <tr key={inv.id} className="hover:bg-[#526e9c]/5 transition-colors group">
-                         <td className="px-6 py-4">
+                         <td className="px-4 py-4">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors"><FileText size={18}/></div>
                                <button onClick={() => handleView(inv)} className="font-bold text-[#18adf2] hover:underline text-left truncate">{inv.numero}</button>
                             </div>
                          </td>
-                         <td className="px-6 py-4 text-[#526e9c] font-medium">{inv.client?.nom || '-'}</td>
-                         <td className="px-6 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_emission)}</td>
-                         <td className="px-6 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_echeance)}</td>
-                         <td className="px-6 py-4 font-black text-[#0F172A] dark:text-white">{formatMoney(inv.total_ttc)}</td>
-                         <td className="px-6 py-4">
+                         <td className="px-4 py-4 text-[#526e9c] font-medium">{inv.client?.nom || '-'}</td>
+                         <td className="px-4 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_emission)}</td>
+                         <td className="px-4 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_echeance)}</td>
+                         <td className="px-4 py-4 font-black text-[#0F172A] dark:text-white">{formatMoney(inv.total_ttc)}</td>
+                         <td className="px-4 py-4">
                             <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border ${status.bg} ${status.text} ${status.border}`}>
                                {status.icon} {status.label}
                             </span>
                          </td>
-                         <td className="px-6 py-4">
+                         <td className="px-4 py-4">
                             <InvoiceActions
                               onView={() => handleView(inv)}
                               onDownload={() => handleDownload(inv)}
@@ -291,8 +286,7 @@ export default function FacturesList() {
            <div className="flex gap-2">
               <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.previous')}</button>
               <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 bg-[#18adf2]/10 text-[#18adf2] font-bold">1</button>
-              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.next')}</button>
-           </div>
+              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.next')}</button>           </div>
         </div>
         )}
 

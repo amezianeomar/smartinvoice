@@ -76,8 +76,7 @@ export default function EcommerceMetrics({ stats }) {
       icon:           <DollarSign size={24} className="text-emerald-500" />,
       bgIcon:         'bg-emerald-500/10',
       path:           '/dashboard/paiements',
-    },
-  ];
+    },  ];
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (

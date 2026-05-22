@@ -256,6 +256,15 @@ export const fr = {
     recentSubtitle: "Les 5 dernières factures générées",
     viewDetails: "Voir détails"
   },
+  
+    recentInvoicesSubtitle: "Les 5 dernières factures générées",
+    viewAll: "Voir tout",
+    invoiceNo: "N° Facture",
+    statusSent: "Envoyée",
+    statusDraft: "Brouillon",
+    statusPaid: "Payée",
+    statusCancelled: "Annulée",
+    months: ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEP", "OCT", "NOV", "DEC"],
   upgrade: {
     title1: "Passez à la vitesse",
     title2: "supérieure",
@@ -362,5 +371,41 @@ export const fr = {
     send: "Envoyer le Message",
     success: "Message envoyé avec succès. Notre équipe vous contactera bientôt.",
     errorFallback: "Une erreur est survenue. Veuillez réessayer."
+  }
+,
+  factures: {
+    title: "Mes Factures",
+    subtitle: "Gérez, filtrez et exportez toutes vos factures envoyées.",
+    searchPlaceholder: "Rechercher par N°, Client...",
+    filter: "Filtrer",
+    exportCsv: "Exporter (CSV)",
+    colInvoiceNo: "N° Facture",
+    colClient: "Client",
+    colCreation: "Création",
+    colDueDate: "Échéance",
+    colAmount: "Montant TTC",
+    colStatus: "Statut",
+    colActions: "Actions",
+    emptyTitle: "Aucune Facture",
+    emptyDesc: "Vous n'avez pas encore généré de factures. Commencez à facturer vos clients dès maintenant.",
+    emptyAction: "Nouvelle Facture",
+    actionView: "Voir PDF",
+    actionDownload: "Télécharger PDF",
+    actionEmail: "Envoyer par email",
+    actionDelete: "Supprimer",
+    paginationShowing: "Affichant",
+    paginationTo: "a",
+    paginationOf: "sur",
+    paginationInvoices: "factures",
+    prev: "Précédent",
+    next: "Suivant",
+    deleteConfirm: "Supprimer la facture",
+    feedbackDownloaded: "PDF de {numero} telecharge.",
+    feedbackDownloadFail: "Echec du telechargement PDF.",
+    feedbackEmailSent: "Facture {numero} envoyee par email.",
+    feedbackEmailFail: "Echec de l envoi email.",
+    feedbackDeleted: "Facture {numero} supprimee.",
+    feedbackDeleteFail: "Echec de suppression.",
+    feedbackViewFail: "Echec de prévisualisation PDF."
   }
 };

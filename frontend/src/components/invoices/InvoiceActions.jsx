@@ -1,5 +1,6 @@
 import React from 'react';
 import { Download, Mail, Trash2, Eye } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function InvoiceActions({
   onView,
@@ -8,12 +9,13 @@ export default function InvoiceActions({
   onDelete,
   busy = false,
 }) {
+  const { t } = useLanguage();
   return (
     <div className="flex items-center justify-center gap-2">
       <button
         type="button"
         className="p-2 text-[#526e9c] hover:bg-[#18adf2]/10 hover:text-[#18adf2] rounded-lg transition-colors disabled:opacity-50"
-        title="Voir PDF"
+        title={t("factures.actionView")}
         onClick={onView}
         disabled={busy}
       >
@@ -22,7 +24,7 @@ export default function InvoiceActions({
       <button
         type="button"
         className="p-2 text-[#526e9c] hover:bg-emerald-500/10 hover:text-emerald-500 rounded-lg transition-colors disabled:opacity-50"
-        title="Télécharger PDF"
+        title={t("factures.actionDownload")}
         onClick={onDownload}
         disabled={busy}
       >
@@ -31,7 +33,7 @@ export default function InvoiceActions({
       <button
         type="button"
         className="p-2 text-[#526e9c] hover:bg-[#18adf2]/10 hover:text-[#18adf2] rounded-lg transition-colors disabled:opacity-50"
-        title="Envoyer par email"
+        title={t("factures.actionEmail")}
         onClick={onSendEmail}
         disabled={busy}
       >
@@ -40,7 +42,7 @@ export default function InvoiceActions({
       <button
         type="button"
         className="p-2 text-[#526e9c] hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-colors disabled:opacity-50"
-        title="Supprimer"
+        title={t("factures.actionDelete")}
         onClick={onDelete}
         disabled={busy}
       >

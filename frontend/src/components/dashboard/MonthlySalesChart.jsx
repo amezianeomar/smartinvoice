@@ -8,7 +8,7 @@ export default function MonthlySalesChart({ stats }) {
   const formatMonth = (dateStr) => {
     if (!dateStr) return '';
     const [year, month] = dateStr.split('-');
-    const months = ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aout', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = t('dashboard.months', { returnObjects: true });
     return months[parseInt(month) - 1] || month;
   };
 

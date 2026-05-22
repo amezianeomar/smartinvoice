@@ -188,17 +188,16 @@ export default function ClientsList() {
           <table className="w-full text-left whitespace-nowrap min-w-[1000px]">
              <thead>
                 <tr className="bg-[#526e9c]/5 text-[11px] uppercase tracking-widest text-[#526e9c] border-b border-[#526e9c]/20">
-                   <th className="px-6 py-4 font-bold">{t('clientsList.company')}</th>
-                   <th className="px-6 py-4 font-bold">{t('clientsList.email')}</th>
-                   <th className="px-6 py-4 font-bold">{t('clientsList.phone')}</th>
-                   <th className="px-6 py-4 font-bold">{t('clientsList.address')}</th>
-                   <th className="px-6 py-4 font-bold text-center">{t('clientsList.actions')}</th>
-                </tr>
+                   <th className="px-4 py-4 font-bold">{t('clientsList.company')}</th>
+                   <th className="px-4 py-4 font-bold">{t('clientsList.email')}</th>
+                   <th className="px-4 py-4 font-bold">{t('clientsList.phone')}</th>
+                   <th className="px-4 py-4 font-bold">{t('clientsList.address')}</th>
+                   <th className="px-4 py-4 font-bold text-center">{t('clientsList.actions')}</th>                </tr>
              </thead>
              <tbody className="divide-y divide-[#526e9c]/10">
                 {filteredClients.map((cli) => (
                    <tr key={cli.id} className="hover:bg-[#526e9c]/5 transition-colors group">
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4">
                          <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#221ab7]/10 to-[#18adf2]/10 border border-[#18adf2]/20 flex items-center justify-center text-[#221ab7] dark:text-[#18adf2]">
                                <Building2 size={20}/>
@@ -209,16 +208,16 @@ export default function ClientsList() {
                             </div>
                          </div>
                       </td>
-                      <td className="px-6 py-4 text-[#526e9c] text-sm">
+                      <td className="px-4 py-4 text-[#526e9c] text-sm">
                          <span className="flex items-center gap-1.5"><Mail size={13}/> {cli.email || '-'}</span>
                       </td>
-                      <td className="px-6 py-4 text-[#526e9c] text-sm">
+                      <td className="px-4 py-4 text-[#526e9c] text-sm">
                          <span className="flex items-center gap-1.5"><Phone size={13}/> {cli.telephone || '-'}</span>
                       </td>
-                      <td className="px-6 py-4 text-[#526e9c] text-sm max-w-xs truncate">
+                      <td className="px-4 py-4 text-[#526e9c] text-sm max-w-xs truncate">
                          <span className="flex items-center gap-1.5"><MapPin size={13}/> {cli.adresse || '-'}</span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-4 py-4 text-center">
                          <div className="flex justify-center gap-2">
                             <button onClick={() => {
                                setEditingClientId(cli.id);
