@@ -264,7 +264,8 @@ export const fr = {
     statusDraft: "Brouillon",
     statusPaid: "Payée",
     statusCancelled: "Annulée",
-    months: ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEP", "OCT", "NOV", "DEC"],},  upgrade: {
+    months: ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEP", "OCT", "NOV", "DEC"],
+  upgrade: {
     title1: "Passez à la vitesse",
     title2: "supérieure",
     subtitle: "Automatisez vos relances et encaissez vos factures 2x plus vite.",

@@ -264,7 +264,8 @@ export const en = {
     statusDraft: "Draft",
     statusPaid: "Paid",
     statusCancelled: "Cancelled",
-    months: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],},  upgrade: {
+    months: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+  upgrade: {
     title1: "Take your business to the",
     title2: "next level",
     subtitle: "Automate your reminders and get paid 2x faster.",

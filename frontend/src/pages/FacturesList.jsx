@@ -6,7 +6,6 @@ import useInvoices from '../hooks/useInvoices';
 import { useLanguage } from '../context/LanguageContext';
 import InvoiceActions from '../components/invoices/InvoiceActions';
 import ResendConfirmationModal from '../components/invoices/ResendConfirmationModal';
-import { useLanguage } from '../context/LanguageContext';
 
 export default function FacturesList() {
    const { t } = useLanguage();
