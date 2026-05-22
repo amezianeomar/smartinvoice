@@ -15,6 +15,7 @@ export default function RecentInvoices({ invoices = [] }) {
     if (value === 'payee' || value === 'payée') return 'payee';
     if (value === 'envoyee' || value === 'envoyée') return 'envoyee';
     if (value === 'brouillon') return 'brouillon';
+    if (value === 'annulée' || value === 'annulee') return 'annulee';
     return value;
   };
 
@@ -23,7 +24,18 @@ export default function RecentInvoices({ invoices = [] }) {
       case 'payee': return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
       case 'envoyee': return "bg-amber-500/10 text-amber-500 border-amber-500/20";
       case 'brouillon': return "bg-[#526e9c]/10 text-[#526e9c] border-[#526e9c]/20";
+            case 'annulee': return "bg-red-500/10 text-red-500 border-red-500/20";
       default: return "bg-[#526e9c]/10 text-[#526e9c] border-[#526e9c]/20";
+    }
+  };
+
+    const getStatusLabel = (status) => {
+    switch (normalizedStatus(status)) {
+      case 'payee': return t('dashboard.statusPaid');
+      case 'envoyee': return t('dashboard.statusSent');
+      case 'brouillon': return t('dashboard.statusDraft');
+      case 'annulee': return t('dashboard.statusCancelled');
+      default: return status || 'N/A';
     }
   };
 
@@ -39,10 +51,10 @@ export default function RecentInvoices({ invoices = [] }) {
       <div className="flex items-center justify-between mb-8 relative z-10">
         <div>
            <h3 className="text-xl font-black text-[#0F172A] dark:text-white tracking-tight">{t('dashboard.recentInvoices')}</h3>
-           <p className="text-[#526e9c] text-sm">Les 5 dernières factures générées</p>
+           <p className="text-[#526e9c] text-sm">{t("dashboard.recentInvoicesSubtitle")}</p>
         </div>
         <button onClick={() => navigate('/dashboard/factures')} className="text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2 rounded-xl">
-          Voir tout
+          {t("dashboard.viewAll")}
         </button>
       </div>
 
@@ -50,12 +62,12 @@ export default function RecentInvoices({ invoices = [] }) {
         <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr className="border-b border-[#526e9c]/20 text-[11px] uppercase tracking-widest text-[#526e9c]">
-              <th className="pb-4 font-bold pl-2">N° Facture</th>
+              <th className="pb-4 font-bold pl-2">{t("dashboard.invoiceNo")}</th>
               <th className="pb-4 font-bold">{t('dashboard.client')}</th>
               <th className="pb-4 font-bold">{t('dashboard.date')}</th>
               <th className="pb-4 font-bold">{t('dashboard.amount')}</th>
               <th className="pb-4 font-bold">{t('dashboard.status')}</th>
-              <th className="pb-4 font-bold text-right pr-2">Action</th>
+              <th className="pb-4 font-bold text-right pr-2">{t("factures.colActions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#526e9c]/10">
@@ -77,7 +89,7 @@ export default function RecentInvoices({ invoices = [] }) {
                 <td className="py-4 font-black text-[#0F172A] dark:text-white">{formatMoney(invoice.total_ttc)}</td>
                 <td className="py-4">
                   <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${getStatusStyle(invoice.statut)}`}>
-                    {invoice.statut}
+                    {getStatusLabel(invoice.statut)}
                   </span>
                 </td>
                 <td className="py-4 text-right pr-2">

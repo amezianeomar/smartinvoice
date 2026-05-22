@@ -34,7 +34,7 @@ export default function EcommerceMetrics({ stats }) {
       path: "/dashboard/factures?filter=attente"
     },
     {
-      title: "Solde Net Réel",
+      title: t("dashboard.netRealBalance"),
       value: `${((stats?.total_revenue || 0) - (stats?.pending_amount || 0)).toLocaleString('fr-MA')} MAD`,
       change: "+8.2%",
       isPositive: true,
