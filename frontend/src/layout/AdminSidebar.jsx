@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, Settings, LogOut, Shield, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Users, Settings, LogOut, Shield, BarChart3, MessageSquare } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -15,6 +15,7 @@ export default function AdminSidebar() {
     { name: "Tableau de Bord Admin", icon: <LayoutDashboard size={22} />, path: "/admin" },
     { name: "Gestion Utilisateurs", icon: <Users size={22} />, path: "/admin/utilisateurs" },
     { name: "Rapports Financiers", icon: <BarChart3 size={22} />, path: "/admin/rapports" },
+    { name: "Messages Sales", icon: <MessageSquare size={22} />, path: "/admin/messages" },
   ];
 
   const bottomItems = [
