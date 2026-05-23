@@ -271,11 +271,7 @@ class InvoiceController extends Controller
                 'data' => null
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send invoice email',
-                'errors' => []
-            ], 500);
+            return response()->json(['error' => 'Mail failed', 'message' => $e->getMessage()], 500);
         }
     }
 }
