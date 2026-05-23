@@ -100,7 +100,7 @@ export default function AppSidebar() {
                 <button 
                   onClick={(e) => {
                     e.preventDefault();
-                    window.dispatchEvent(new CustomEvent('openUpgradeModal'));
+                    window.dispatchEvent(new CustomEvent('openUpgradeModal', { detail: { type: 'feature' } }));
                   }} 
                   className={containerClass}
                 >

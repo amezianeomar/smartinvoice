@@ -192,7 +192,8 @@ export default function ClientsList() {
                    <th className="px-4 py-4 font-bold">{t('clientsList.email')}</th>
                    <th className="px-4 py-4 font-bold">{t('clientsList.phone')}</th>
                    <th className="px-4 py-4 font-bold">{t('clientsList.address')}</th>
-                   <th className="px-4 py-4 font-bold text-center">{t('clientsList.actions')}</th>                </tr>
+                   <th className="px-4 py-4 font-bold text-center">{t('clientsList.actions')}</th>
+                </tr>
              </thead>
              <tbody className="divide-y divide-[#526e9c]/10">
                 {filteredClients.map((cli) => (

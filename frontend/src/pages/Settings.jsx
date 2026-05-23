@@ -3,14 +3,15 @@ import { User, Building, Save, Camera, CreditCard, Loader2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function Settings() {
   const { user, token, setAuthUser } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [settings, setSettings] = useState({
     nom: '',
@@ -20,54 +21,55 @@ export default function Settings() {
     patente: '',
     taux_tva_defaut: '20%',
     adresse_siege: '',
+    remove_watermark: false,
   });
   const [logoUrl, setLogoUrl] = useState(null);
   const [recentPayment, setRecentPayment] = useState(null);
+  
+  const queryClient = useQueryClient();
+
+  const { data: initialData, isLoading } = useQuery({
+    queryKey: ['settings'],
+    queryFn: async () => {
+      const response = await api.get('/settings');
+      return response.data.data;
+    },
+    enabled: !!token,
+  });
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await api.get('/settings');
-        const data = response.data.data;
-        setSettings({
-          nom: data.user.nom || '',
-          email: data.user.email || '',
-          type_entreprise: data.user.type_entreprise || '',
-          ice: data.user.ice || '',
-          patente: data.user.patente || '',
-          taux_tva_defaut: data.user.taux_tva_defaut || '20%',
-          adresse_siege: data.user.adresse_siege || '',
-        });
-        setLogoUrl(data.user.logo_path || data.user.logo_url);
-        setRecentPayment(data.recent_payment);
-      } catch (error) {
-        console.error("Failed to fetch settings", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (token) {
-      fetchSettings();
+    if (initialData) {
+      setSettings({
+        nom: initialData.user.nom || '',
+        email: initialData.user.email || '',
+        type_entreprise: initialData.user.type_entreprise || '',
+        ice: initialData.user.ice || '',
+        patente: initialData.user.patente || '',
+        taux_tva_defaut: initialData.user.taux_tva_defaut || '20%',
+        adresse_siege: initialData.user.adresse_siege || '',
+        remove_watermark: !!initialData.user.remove_watermark,
+      });
+      setLogoUrl(initialData.user.logo_path || initialData.user.logo_url);
+      setRecentPayment(initialData.recent_payment);
     }
-  }, [token]);
+  }, [initialData]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (payload) => {
+      const response = await api.put('/settings', payload);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.success && setAuthUser) {
+        setAuthUser(data.data);
+      }
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    }
+  });
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setIsSaving(true);
-    try {
-      const response = await api.put('/settings', settings);
-      if (response.data.success) {
-        // Optionally update the context user
-        if (setAuthUser) {
-           setAuthUser(response.data.data);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to update settings", error);
-    } finally {
-      setIsSaving(false);
-    }
+    await saveMutation.mutateAsync(settings);
   };
 
   const handleLogoUpload = async (e) => {
@@ -108,8 +110,8 @@ export default function Settings() {
             <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">Paramètres</h1>
             <p className="text-[#526e9c] text-sm font-medium">Gérez votre profil et les informations légales de votre entreprise.</p>
          </div>
-         <button onClick={handleSave} disabled={isSaving} className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-6 py-2.5 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all flex items-center gap-2 disabled:opacity-70">
-            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Sauvegarder
+         <button onClick={handleSave} disabled={saveMutation.isPending} className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-6 py-2.5 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all flex items-center gap-2 disabled:opacity-70">
+            {saveMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Sauvegarder
          </button>
       </div>
 
@@ -280,6 +282,32 @@ export default function Settings() {
                      </div>
                   </div>
                </form>
+            </div>
+
+            {/* Personnalisation PDF */}
+            <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 p-6 md:p-8 shadow-xl">
+               <h3 className="text-lg font-black text-[#0F172A] dark:text-white flex items-center gap-2 mb-6 border-b border-[#526e9c]/10 pb-4">
+                  {t('settingsPdf.title')}
+               </h3>
+               <div className="flex items-center justify-between p-4 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50">
+                  <div className="flex-1 pr-4">
+                     <h4 className="font-bold text-[#0F172A] dark:text-white">{t('settingsPdf.watermarkTitle')}</h4>
+                     <p className="text-sm text-[#526e9c] mt-1">
+                        {t('settingsPdf.watermarkDesc')}
+                        {!isPro && <span className="block mt-1 text-[#18adf2] font-semibold"><a href="/checkout">{t('settingsPdf.watermarkUpgrade')}</a></span>}
+                     </p>
+                  </div>
+                  <button 
+                     type="button"
+                     disabled={!isPro}
+                     onClick={() => isPro && setSettings({...settings, remove_watermark: !settings.remove_watermark})}
+                     className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${!isPro ? 'opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-700' : settings.remove_watermark ? 'bg-[#18adf2]' : 'bg-slate-300 dark:bg-slate-700'}`}
+                     role="switch"
+                     aria-checked={settings.remove_watermark}
+                  >
+                     <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${settings.remove_watermark ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </button>
+               </div>
             </div>
 
          </div>

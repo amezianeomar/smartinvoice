@@ -2,11 +2,16 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Zap, X, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
-export default function UpgradeModal({ isOpen, onClose }) {
+export default function UpgradeModal({ isOpen, onClose, type = 'quota' }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   if (!isOpen) return null;
+
+  // Determine the translation root based on the modal type
+  const tRoot = type === 'feature' ? 'modals.featureLocked' : 'modals.quotaReached';
 
   return (
     <AnimatePresence>
@@ -32,7 +37,7 @@ export default function UpgradeModal({ isOpen, onClose }) {
           
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors z-10 bg-white/10 dark:bg-black/10 backdrop-blur-md p-1.5 rounded-full"
+            className="absolute top-4 right-4 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors z-30 bg-white/10 dark:bg-black/10 backdrop-blur-md p-1.5 rounded-full"
           >
             <X size={20} />
           </button>
@@ -43,28 +48,28 @@ export default function UpgradeModal({ isOpen, onClose }) {
             </div>
 
             <h2 className="text-2xl font-black text-[#0F172A] dark:text-white mb-2 tracking-tight">
-              Limite Quotidienne Atteinte
+              {t(`${tRoot}.title`)}
             </h2>
             <p className="text-[#526e9c] text-sm mb-6">
-              Vous avez atteint votre limite de création. Veuillez patienter 24 heures ou passer à la version Pro pour un accès illimité.
+              {t(`${tRoot}.message`)}
             </p>
 
             <div className="w-full bg-[#526e9c]/5 rounded-2xl p-4 mb-8 text-left border border-[#526e9c]/10">
               <h3 className="text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider mb-3">
-                Avantages de SI-PRO
+                {t(`${tRoot}.advantagesTitle`)}
               </h3>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2 text-sm text-[#526e9c] font-medium">
                   <CheckCircle2 size={16} className="text-[#18adf2]" />
-                  Création de factures illimitée
+                  {t(`${tRoot}.adv1`)}
                 </li>
                 <li className="flex items-center gap-2 text-sm text-[#526e9c] font-medium">
                   <CheckCircle2 size={16} className="text-[#18adf2]" />
-                  Accès aux Statistiques Avancées
+                  {t(`${tRoot}.adv2`)}
                 </li>
                 <li className="flex items-center gap-2 text-sm text-[#526e9c] font-medium">
                   <CheckCircle2 size={16} className="text-[#18adf2]" />
-                  Personnalisation avancée
+                  {t(`${tRoot}.adv3`)}
                 </li>
               </ul>
             </div>
@@ -77,14 +82,14 @@ export default function UpgradeModal({ isOpen, onClose }) {
               className="w-full bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white rounded-xl py-3.5 font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group"
             >
               <Zap size={18} />
-              Passer à la version PRO
+              {t(`${tRoot}.upgradeBtn`)}
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
             <button 
               onClick={onClose}
-              className="w-full mt-3 py-3 text-sm font-bold text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors"
+              className="w-full mt-3 py-3 text-sm font-bold text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors relative z-20"
             >
-              Plus tard
+              {t(`${tRoot}.laterBtn`)}
             </button>
           </div>
         </motion.div>

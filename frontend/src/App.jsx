@@ -14,6 +14,8 @@ import Dashboard from './pages/Dashboard.jsx';
 import ComingSoon from './pages/ComingSoon.jsx';
 import CreateInvoiceForm from './pages/CreateInvoiceForm.jsx';
 import FacturesList from './pages/FacturesList.jsx';
+import ShowInvoice from './pages/ShowInvoice.jsx';
+import EditInvoice from './pages/EditInvoice.jsx';
 import ClientsList from './pages/ClientsList.jsx';
 import Statistiques from './pages/Statistiques.jsx';
 import Settings from './pages/Settings.jsx';
@@ -134,6 +136,8 @@ export default function App() {
            <Route index element={<Dashboard />} />
            <Route path="factures" element={<FacturesList />} />
            <Route path="factures/nouvelle" element={<CreateInvoiceForm />} />
+           <Route path="factures/:id" element={<ShowInvoice />} />
+           <Route path="factures/:id/edit" element={<EditInvoice />} />
            <Route path="devis" element={<Devis />} />
            <Route path="paiements" element={<Paiements />} />
            <Route path="clients" element={<ClientsList />} />

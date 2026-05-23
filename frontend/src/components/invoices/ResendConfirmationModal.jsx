@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, X, Loader2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function ResendConfirmationModal({ isOpen, onClose, onConfirm, invoice }) {
+export default function ResendConfirmationModal({ isOpen, onClose, onConfirm, invoice, isLoading }) {
   const { t } = useLanguage();
   if (!isOpen || !invoice) return null;
 
@@ -18,7 +18,7 @@ export default function ResendConfirmationModal({ isOpen, onClose, onConfirm, in
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
+          onClick={isLoading ? undefined : onClose}
           className="absolute inset-0 bg-[#0F172A]/80 backdrop-blur-sm"
         />
         <motion.div
@@ -44,22 +44,32 @@ export default function ResendConfirmationModal({ isOpen, onClose, onConfirm, in
                <button
                  type="button"
                  onClick={onClose}
-                 className="flex-1 rounded-xl px-4 py-3 text-sm font-bold text-[#526e9c] hover:bg-[#526e9c]/10 transition-colors"
+                 disabled={isLoading}
+                 className="flex-1 rounded-xl px-4 py-3 text-sm font-bold text-[#526e9c] hover:bg-[#526e9c]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                >
                  {t('modals.cancel')}
                </button>
                <button
                  type="button"
                  onClick={onConfirm}
-                 className="flex-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all"
+                 disabled={isLoading}
+                 className="flex-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all flex justify-center items-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed"
                >
-                 {t('modals.confirm')}
+                 {isLoading ? (
+                   <>
+                     <Loader2 className="animate-spin" size={16} />
+                     <span>{t('modals.confirm')}...</span>
+                   </>
+                 ) : (
+                   t('modals.confirm')
+                 )}
                </button>
              </div>
           </div>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 text-[#526e9c] hover:bg-[#526e9c]/10 rounded-full transition-colors"
+            disabled={isLoading}
+            className="absolute top-4 right-4 p-2 text-[#526e9c] hover:bg-[#526e9c]/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <X size={20} />
           </button>

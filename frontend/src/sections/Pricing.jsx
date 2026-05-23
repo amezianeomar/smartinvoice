@@ -31,11 +31,16 @@ export default function Pricing() {
             </div>
             <p className="text-xs md:text-sm text-[#526e9c] mb-8">{t('pricing.starter.desc')}</p>
             <ul className="space-y-4 mb-10 flex-1">
-              {[t('pricing.starter.f1'), t('pricing.starter.f2'), t('pricing.starter.f3'), t('pricing.starter.f4')].map((feat) => (
-                <li key={feat} className="flex items-center gap-3 text-xs md:text-sm font-medium">
-                  <CheckCircle2 size={16} className="text-emerald-500 md:w-[18px] md:h-[18px] shrink-0" /> {feat}
-                </li>
-              ))}
+              {Object.keys(t('pricing.starter'))
+                .filter(key => key.startsWith('f'))
+                .map((key) => {
+                  const feat = t(`pricing.starter.${key}`);
+                  return (
+                    <li key={key} className="flex items-center gap-3 text-xs md:text-sm font-medium">
+                      <CheckCircle2 size={16} className="text-emerald-500 md:w-[18px] md:h-[18px] shrink-0" /> {feat}
+                    </li>
+                  );
+                })}
             </ul>
             <Link to="/register"><Button variant="outline" className="w-full py-3 md:py-4 text-sm md:text-base">{t('pricing.starter.btn')}</Button></Link>
           </SpotlightCard>
@@ -50,11 +55,16 @@ export default function Pricing() {
               </div>
               <p className="text-xs md:text-sm opacity-80 mb-8">{t('pricing.pro.desc')}</p>
               <ul className="space-y-4 mb-10 flex-1">
-                {[t('pricing.pro.f1'), t('pricing.pro.f2'), t('pricing.pro.f3'), t('pricing.pro.f4'), t('pricing.pro.f5')].map((feat) => (
-                  <li key={feat} className="flex items-center gap-3 text-xs md:text-sm font-bold">
-                    <CheckCircle2 size={16} className="text-[#18adf2] md:w-[18px] md:h-[18px] shrink-0" /> {feat}
-                  </li>
-                ))}
+                {Object.keys(t('pricing.pro'))
+                  .filter(key => key.startsWith('f'))
+                  .map((key) => {
+                    const feat = t(`pricing.pro.${key}`);
+                    return (
+                      <li key={key} className="flex items-center gap-3 text-xs md:text-sm font-bold">
+                        <CheckCircle2 size={16} className="text-[#18adf2] md:w-[18px] md:h-[18px] shrink-0" /> {feat}
+                      </li>
+                    );
+                  })}
               </ul>
               <Link to="/register"><Button className="w-full py-3 md:py-4 text-sm md:text-base !bg-white dark:!bg-white !text-[#221ab7] dark:!text-[#5048e5] hover:scale-105 hover:!bg-gray-50 transition-transform shadow-xl border-none">{t('pricing.pro.btn')}</Button></Link>
             </SpotlightCard>
@@ -75,11 +85,16 @@ export default function Pricing() {
             </div>
             <p className="text-xs md:text-sm text-[#526e9c] mb-8">{t('pricing.business.desc')}</p>
             <ul className="space-y-4 mb-10 flex-1">
-              {[t('pricing.business.f1'), t('pricing.business.f2'), t('pricing.business.f3'), t('pricing.business.f4')].map((feat) => (
-                <li key={feat} className="flex items-center gap-3 text-xs md:text-sm font-medium">
-                  <CheckCircle2 size={16} className="text-emerald-500 md:w-[18px] md:h-[18px] shrink-0" /> {feat}
-                </li>
-              ))}
+              {Object.keys(t('pricing.business'))
+                .filter(key => key.startsWith('f'))
+                .map((key) => {
+                  const feat = t(`pricing.business.${key}`);
+                  return (
+                    <li key={key} className="flex items-center gap-3 text-xs md:text-sm font-medium">
+                      <CheckCircle2 size={16} className="text-emerald-500 md:w-[18px] md:h-[18px] shrink-0" /> {feat}
+                    </li>
+                  );
+                })}
             </ul>
             <Button
               variant="outline"

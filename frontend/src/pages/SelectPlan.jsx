@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Check, Loader2, Zap } from 'lucide-react';
 import api from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SelectPlan() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSelectPlan = async (plan) => {
@@ -46,19 +48,19 @@ export default function SelectPlan() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[#18adf2] text-sm font-bold mb-6"
           >
-            <Zap size={16} /> Dernière étape
+            <Zap size={16} /> {t('selectPlan.step')}
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl md:text-5xl font-black text-white mb-4"
           >
-            Choisissez votre forfait
+            {t('selectPlan.title')}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
             className="text-xl text-[#94A3B8] max-w-2xl mx-auto"
           >
-            Des outils performants pour simplifier votre gestion, quelle que soit la taille de votre entreprise.
+            {t('selectPlan.subtitle')}
           </motion.p>
         </div>
 
@@ -70,19 +72,20 @@ export default function SelectPlan() {
             className="bg-[#0F172A]/60 backdrop-blur-xl rounded-[2.5rem] border border-white/10 p-8 sm:p-10 flex flex-col hover:border-white/20 transition-colors"
           >
             <div className="mb-8">
-              <h3 className="text-2xl font-black text-white mb-2">Découverte</h3>
+              <h3 className="text-2xl font-black text-white mb-2">{t('selectPlan.free.title')}</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-5xl font-black text-white">0 DH</span>
-                <span className="text-[#94A3B8]">/ mois</span>
+                <span className="text-5xl font-black text-white">{t('selectPlan.free.price')}</span>
+                <span className="text-[#94A3B8]">{t('selectPlan.free.period')}</span>
               </div>
-              <p className="mt-4 text-[#94A3B8]">Idéal pour tester la plateforme ou gérer une activité occasionnelle.</p>
+              <p className="mt-4 text-[#94A3B8]">{t('selectPlan.free.desc')}</p>
             </div>
             
             <ul className="space-y-4 mb-10 flex-grow">
-              <Feature text="Jusqu'à 5 factures par mois" />
-              <Feature text="Gestion de 3 clients maximum" />
-              <Feature text="Modèle de facture standard" />
-              <Feature text="Support par email (48h)" />
+              {Object.keys(t('selectPlan.free'))
+                .filter(key => key.startsWith('f'))
+                .map(key => (
+                  <Feature key={key} text={t(`selectPlan.free.${key}`)} />
+                ))}
             </ul>
             
             <button 
@@ -90,7 +93,7 @@ export default function SelectPlan() {
               disabled={isLoading}
               className="w-full py-4 rounded-xl font-bold text-white border-2 border-white/10 hover:bg-white/5 transition-all flex justify-center items-center gap-2"
             >
-              {isLoading === 'gratuit' ? <Loader2 className="animate-spin" size={20} /> : 'Continuer avec Gratuit'}
+              {isLoading === 'gratuit' ? <Loader2 className="animate-spin" size={20} /> : t('selectPlan.free.btn')}
             </button>
           </motion.div>
 
@@ -102,26 +105,25 @@ export default function SelectPlan() {
             {/* Popular Badge */}
             <div className="absolute top-0 right-10 -translate-y-1/2">
               <span className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white text-xs font-black uppercase tracking-wider py-1.5 px-4 rounded-full shadow-lg">
-                Recommandé
+                {t('selectPlan.pro.badge')}
               </span>
             </div>
 
             <div className="mb-8">
-              <h3 className="text-2xl font-black text-white mb-2">SI-PRO</h3>
+              <h3 className="text-2xl font-black text-white mb-2">{t('selectPlan.pro.title')}</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-5xl font-black text-white">199 DH</span>
-                <span className="text-[#94A3B8]">/ mois</span>
+                <span className="text-5xl font-black text-white">{t('selectPlan.pro.price')}</span>
+                <span className="text-[#94A3B8]">{t('selectPlan.pro.period')}</span>
               </div>
-              <p className="mt-4 text-[#18adf2] font-semibold">Toute la puissance de SmartInvoice pour votre croissance.</p>
+              <p className="mt-4 text-[#18adf2] font-semibold">{t('selectPlan.pro.desc')}</p>
             </div>
             
             <ul className="space-y-4 mb-10 flex-grow">
-              <Feature text="Factures & devis illimités" highlight />
-              <Feature text="Clients illimités" highlight />
-              <Feature text="Envoi par email automatique" highlight />
-              <Feature text="Modèles Premium personnalisables" highlight />
-              <Feature text="Statistiques avancées & rapports" highlight />
-              <Feature text="Support prioritaire 24/7" highlight />
+              {Object.keys(t('selectPlan.pro'))
+                .filter(key => key.startsWith('f'))
+                .map(key => (
+                  <Feature key={key} text={t(`selectPlan.pro.${key}`)} highlight />
+                ))}
             </ul>
             
             <button 
@@ -129,7 +131,7 @@ export default function SelectPlan() {
               disabled={isLoading}
               className="w-full py-4 rounded-xl font-black text-white bg-gradient-to-r from-[#221ab7] to-[#18adf2] hover:opacity-90 transition-all shadow-[0_0_30px_rgba(24,173,242,0.4)] flex justify-center items-center gap-2 hover:scale-[1.02]"
             >
-              {isLoading === 'pro' ? <Loader2 className="animate-spin" size={20} /> : 'Passer à la version PRO'}
+              {isLoading === 'pro' ? <Loader2 className="animate-spin" size={20} /> : t('selectPlan.pro.btn')}
             </button>
           </motion.div>
 

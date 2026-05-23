@@ -18,7 +18,12 @@ class InvoiceApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create([
+            'nom' => 'Test Business',
+            'adresse_siege' => '123 Test Street',
+            'ice' => '123456789012345',
+            'patente' => '98765432',
+        ]);
         $this->client = Client::factory()->create(['user_id' => $this->user->id]);
     }
 
@@ -34,7 +39,8 @@ class InvoiceApiTest extends TestCase
                 [
                     'designation' => 'Web Design',
                     'quantite' => 2,
-                    'prix_unitaire' => 1000
+                    'prix_unitaire' => 1000,
+                    'taux_tva' => 20
                 ]
             ]
         ];
@@ -49,6 +55,34 @@ class InvoiceApiTest extends TestCase
                  ->assertJsonCount(1, 'data.invoice_items');
 
         $this->assertDatabaseHas('invoices', ['numero' => 'INV-TEST-001']);
+    }
+
+    public function test_user_with_incomplete_profile_is_blocked_from_creating_invoice()
+    {
+        $incompleteUser = User::factory()->create(); // missing legal info
+        $client = Client::factory()->create(['user_id' => $incompleteUser->id]);
+
+        $payload = [
+            'client_id' => $client->id,
+            'numero' => 'INV-TEST-002',
+            'date_emission' => '2026-04-14',
+            'date_echeance' => '2026-05-14',
+            'statut' => 'brouillon',
+            'items' => [
+                [
+                    'designation' => 'Web Design',
+                    'quantite' => 2,
+                    'prix_unitaire' => 1000,
+                    'taux_tva' => 20
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($incompleteUser, 'sanctum')->postJson('/api/invoices', $payload);
+
+        $response->assertStatus(403)
+                 ->assertJsonPath('success', false)
+                 ->assertJsonPath('error_code', 'INCOMPLETE_PROFILE');
     }
 
     public function test_dashboard_aggregates_are_accurate()

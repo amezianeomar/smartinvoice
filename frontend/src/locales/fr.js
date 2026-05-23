@@ -96,7 +96,7 @@ export const fr = {
       desc: "Parfait pour les freelances qui débutent.",
       f1: "3 Factures / jour (quota 24h)",
       f2: "3 Emails / jour (quota 24h)",
-      f3: "TVA Automatique",
+      f3: "Clients illimités",
       f4: "Support de Base",
       btn: "Commencer Gratuitement"
     },
@@ -109,6 +109,7 @@ export const fr = {
       f3: "CRM Clients",
       f4: "Support 24/7",
       f5: "TVA Automatique",
+      f6: "Suppression du filigrane SI-PRO",
       btn: "Commencer"
     },
     business: {
@@ -178,7 +179,7 @@ export const fr = {
     loginSubtitle: "Accédez à votre tableau de bord SI-PRO.",
     orEmail: "Ou avec votre email",
     emailLabel: "Adresse Email",
-    emailPlaceholder: "amine@entreprise.ma",
+    emailPlaceholder: "smartinvoicep@gmail.com",
     passwordLabel: "Mot de passe",
     passwordPlaceholder: "••••••••",
     forgot: "Oublié ?",
@@ -254,17 +255,15 @@ export const fr = {
     action: "Action",
     viewAll: "Voir tout",
     recentSubtitle: "Les 5 dernières factures générées",
-    viewDetails: "Voir détails"
-  },
-  
+    viewDetails: "Voir détails",
     recentInvoicesSubtitle: "Les 5 dernières factures générées",
-    viewAll: "Voir tout",
     invoiceNo: "N° Facture",
     statusSent: "Envoyée",
     statusDraft: "Brouillon",
     statusPaid: "Payée",
     statusCancelled: "Annulée",
-    months: ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEP", "OCT", "NOV", "DEC"],
+    months: ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEP", "OCT", "NOV", "DEC"]
+  },
   upgrade: {
     title1: "Passez à la vitesse",
     title2: "supérieure",
@@ -276,12 +275,6 @@ export const fr = {
   comingSoon: {
     description: "{feature} est actuellement en développement. Cette fonctionnalité sera disponible dans la prochaine mise à jour majeure. Merci de votre patience !",
     roadmap: "Roadmap V2.0"
-  },
-  modals: {
-    warning: "Attention",
-    resendWarning: "Cette facture a déjà été envoyée le {date}. Voulez-vous envoyer un rappel ?",
-    cancel: "Annuler",
-    confirm: "Confirmer"
   },
   stats: {
     advanced: "Statistiques Avancées",
@@ -362,7 +355,7 @@ export const fr = {
     nameLabel: "Nom Complet",
     namePlaceholder: "Amine Tazi",
     emailLabel: "Email Professionnel",
-    emailPlaceholder: "amine@entreprise.ma",
+    emailPlaceholder: "smartinvoicep@gmail.com",
     companyLabel: "Nom de l'Entreprise",
     companyPlaceholder: "Nord-Sud Logistics",
     messageLabel: "Message",
@@ -407,5 +400,128 @@ export const fr = {
     feedbackDeleted: "Facture {numero} supprimee.",
     feedbackDeleteFail: "Echec de suppression.",
     feedbackViewFail: "Echec de prévisualisation PDF."
+  },
+  settingsPdf: {
+    title: "Personnalisation PDF",
+    watermarkTitle: "Masquer le filigrane \"SI-PRO\"",
+    watermarkDesc: "Désactivez le filigrane d'arrière-plan sur vos factures PDF.",
+    watermarkUpgrade: "Passez à la version PRO pour débloquer cette fonctionnalité."
+  },
+  selectPlan: {
+    step: "Dernière étape",
+    title: "Choisissez votre forfait",
+    subtitle: "Des outils performants pour simplifier votre gestion, quelle que soit la taille de votre entreprise.",
+    free: {
+      title: "Découverte",
+      price: "0 DH",
+      period: "/ mois",
+      desc: "Idéal pour tester la plateforme ou gérer une activité occasionnelle.",
+      f1: "3 Factures / jour (quota 24h)",
+      f2: "3 Emails / jour (quota 24h)",
+      f3: "Clients illimités",
+      f4: "Support de Base",
+      btn: "Continuer avec Gratuit"
+    },
+    pro: {
+      badge: "Recommandé",
+      title: "SI-PRO",
+      price: "199 DH",
+      period: "/ mois",
+      desc: "Toute la puissance de SmartInvoice pour votre croissance.",
+      f1: "Factures & devis illimités",
+      f2: "Clients illimités",
+      f3: "Envoi par email automatique",
+      f4: "Modèles Premium personnalisables",
+      f5: "Statistiques avancées & rapports",
+      f6: "Support prioritaire 24/7",
+      f7: "Suppression du filigrane SI-PRO",
+      btn: "Passer à la version PRO"
+    }
+  },
+  modals: {
+    warning: "Attention",
+    resendWarning: "Cette facture a déjà été envoyée le {date}. Voulez-vous envoyer un rappel ?",
+    cancel: "Annuler",
+    confirm: "Confirmer",
+    incompleteProfile: {
+      title: "Profil Incomplet",
+      message: "Pour générer des factures légales et valides, vous devez d'abord remplir vos informations d'entreprise (ICE, Patente, et Adresse).",
+      closeBtn: "Fermer",
+      settingsBtn: "Aller aux Paramètres"
+    },
+    quotaReached: {
+      title: "Limite Quotidienne Atteinte",
+      message: "Vous avez atteint votre limite de création. Veuillez patienter 24 heures ou passer à la version Pro pour un accès illimité.",
+      advantagesTitle: "Avantages de SI-PRO",
+      adv1: "Création de factures illimitée",
+      adv2: "Accès aux Statistiques Avancées",
+      adv3: "Personnalisation avancée",
+      upgradeBtn: "Passer à la version PRO",
+      laterBtn: "Plus tard"
+    },
+    featureLocked: {
+      title: "Fonctionnalité PRO",
+      message: "Cette fonctionnalité est exclusive aux membres PRO. Passez à la version supérieure pour y accéder et développer votre activité.",
+      advantagesTitle: "Avantages de SI-PRO",
+      adv1: "Création de factures illimitée",
+      adv2: "Accès aux Statistiques Avancées",
+      adv3: "Personnalisation avancée",
+      upgradeBtn: "Passer à la version PRO",
+      laterBtn: "Plus tard"
+    }
+  },
+  checkout: {
+    back: "Changer d'abonnement",
+    summaryTitle: "Résumé de la commande",
+    monthlySub: "Abonnement Mensuel",
+    total: "Total",
+    securePayment: "Vos paiements sont sécurisés. Nous utilisons un cryptage SSL 256 bits pour protéger vos informations.",
+    paymentTitle: "Paiement",
+    paymentSubtitle: "Entrez vos informations de carte",
+    cardName: "Nom sur la carte",
+    cardNumber: "Numéro de carte",
+    expiry: "Date d'exp.",
+    cvc: "CVC",
+    processing: "Traitement en cours...",
+    payButton: "Payer {price} DH",
+    errorFields: "Veuillez remplir tous les champs de la carte.",
+    errorProcess: "Erreur lors du traitement du paiement."
+  },
+  createInvoice: {
+    title: "Nouvelle Facture",
+    subtitle: "Créez et envoyez une nouvelle facture à votre client.",
+    clientInfo: "Informations du Client",
+    selectClientLabel: "Sélectionner un Client",
+    selectPlaceholder: "Sélectionnez...",
+    loadingClients: "Chargement des clients...",
+    invoiceNumber: "Numéro de Facture",
+    invoiceDetails: "Détails de la Facture",
+    issueDate: "Date d'émission",
+    dueDate: "Date d'échéance",
+    status: "Statut",
+    statusDraft: "Brouillon",
+    statusSent: "Envoyée",
+    statusPaid: "Payée",
+    items: "Articles",
+    description: "Description",
+    qty: "Qté",
+    unitPrice: "Prix Unitaire",
+    total: "Total",
+    designationPlaceholder: "Désignation",
+    deleteLine: "Supprimer la ligne",
+    addLine: "Ajouter une ligne",
+    notesLabel: "Notes pour le client",
+    notesPlaceholder: "Merci pour votre confiance...",
+    subtotal: "Sous-total",
+    tax: "TVA",
+    taxExempt: "TVA (Exonéré)",
+    totalTtc: "Total TTC",
+    taxDisclaimer: "TVA non applicable, article 92 du Code Général des Impôts.",
+    cancel: "Annuler",
+    createBtn: "Créer la Facture",
+    errNoClient: "Veuillez sélectionner un client.",
+    errNoItem: "Ajoutez au moins une ligne valide.",
+    successMsg: "Facture créée avec succès. Redirection vers la liste...",
+    errCreate: "Impossible de créer la facture."
   }
 };

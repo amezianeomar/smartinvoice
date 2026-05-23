@@ -96,7 +96,7 @@ export const en = {
       desc: "Perfect for freelancers starting out.",
       f1: "3 Invoices / day (24h quota)",
       f2: "3 Emails / day (24h quota)",
-      f3: "Automatic VAT",
+      f3: "Unlimited clients",
       f4: "Basic Support",
       btn: "Start for Free"
     },
@@ -109,6 +109,7 @@ export const en = {
       f3: "Client CRM",
       f4: "24/7 Support",
       f5: "Automatic VAT",
+      f6: "Remove SI-PRO Watermark",
       btn: "Get Started"
     },
     business: {
@@ -178,7 +179,7 @@ export const en = {
     loginSubtitle: "Access your SI-PRO dashboard.",
     orEmail: "Or with your email",
     emailLabel: "Email Address",
-    emailPlaceholder: "amine@company.ma",
+    emailPlaceholder: "smartinvoicep@gmail.com",
     passwordLabel: "Password",
     passwordPlaceholder: "••••••••",
     forgot: "Forgot?",
@@ -254,17 +255,15 @@ export const en = {
     action: "Action",
     viewAll: "View All",
     recentSubtitle: "Last 5 generated invoices",
-    viewDetails: "View Details"
-  },
-  
+    viewDetails: "View Details",
     recentInvoicesSubtitle: "The last 5 generated invoices",
-    viewAll: "View all",
     invoiceNo: "Invoice No.",
     statusSent: "Sent",
     statusDraft: "Draft",
     statusPaid: "Paid",
     statusCancelled: "Cancelled",
-    months: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+    months: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+  },
   upgrade: {
     title1: "Take your business to the",
     title2: "next level",
@@ -276,12 +275,6 @@ export const en = {
   comingSoon: {
     description: "{feature} is currently in development. This module is strictly scoped for our Version 2.0 roadmap. Thank you for your patience!",
     roadmap: "Roadmap V2.0"
-  },
-  modals: {
-    warning: "Warning",
-    resendWarning: "This invoice was already sent on {date}. Would you like to send a reminder?",
-    cancel: "Cancel",
-    confirm: "Confirm"
   },
   stats: {
     advanced: "Advanced Analytics",
@@ -362,7 +355,7 @@ export const en = {
     nameLabel: "Full Name",
     namePlaceholder: "Amine Tazi",
     emailLabel: "Work Email",
-    emailPlaceholder: "amine@company.ma",
+    emailPlaceholder: "smartinvoicep@gmail.com",
     companyLabel: "Company Name",
     companyPlaceholder: "Nord-Sud Logistics",
     messageLabel: "Message",
@@ -407,5 +400,128 @@ export const en = {
     feedbackDeleted: "Invoice {numero} deleted.",
     feedbackDeleteFail: "Failed to delete.",
     feedbackViewFail: "Failed to preview PDF."
+  },
+  settingsPdf: {
+    title: "PDF Customization",
+    watermarkTitle: "Hide \"SI-PRO\" Watermark",
+    watermarkDesc: "Disable the background watermark on your PDF invoices.",
+    watermarkUpgrade: "Upgrade to PRO to unlock this feature."
+  },
+  selectPlan: {
+    step: "Final step",
+    title: "Choose your plan",
+    subtitle: "Powerful tools to simplify your management, whatever the size of your business.",
+    free: {
+      title: "Discovery",
+      price: "0 MAD",
+      period: "/ month",
+      desc: "Ideal for testing the platform or managing occasional activity.",
+      f1: "3 Invoices / day (24h quota)",
+      f2: "3 Emails / day (24h quota)",
+      f3: "Unlimited clients",
+      f4: "Basic Support",
+      btn: "Continue with Free"
+    },
+    pro: {
+      badge: "Recommended",
+      title: "SI-PRO",
+      price: "199 MAD",
+      period: "/ month",
+      desc: "All the power of SmartInvoice for your growth.",
+      f1: "Unlimited invoices & quotes",
+      f2: "Unlimited clients",
+      f3: "Automatic email sending",
+      f4: "Customizable Premium templates",
+      f5: "Advanced statistics & reports",
+      f6: "24/7 priority support",
+      f7: "Remove SI-PRO Watermark",
+      btn: "Upgrade to PRO"
+    }
+  },
+  modals: {
+    warning: "Warning",
+    resendWarning: "This invoice was already sent on {date}. Would you like to send a reminder?",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    incompleteProfile: {
+      title: "Incomplete Profile",
+      message: "To generate legal and valid invoices, you must first fill in your business information (ICE, Patente, and Address).",
+      closeBtn: "Close",
+      settingsBtn: "Go to Settings"
+    },
+    quotaReached: {
+      title: "Daily Limit Reached",
+      message: "You have reached your creation limit. Please wait 24 hours or upgrade to the Pro version for unlimited access.",
+      advantagesTitle: "SI-PRO Advantages",
+      adv1: "Unlimited invoice creation",
+      adv2: "Access to Advanced Statistics",
+      adv3: "Advanced customization",
+      upgradeBtn: "Upgrade to PRO",
+      laterBtn: "Later"
+    },
+    featureLocked: {
+      title: "PRO Feature",
+      message: "This feature is exclusive to PRO members. Upgrade your account to access it and grow your business.",
+      advantagesTitle: "SI-PRO Advantages",
+      adv1: "Unlimited invoice creation",
+      adv2: "Access to Advanced Statistics",
+      adv3: "Advanced customization",
+      upgradeBtn: "Upgrade to PRO",
+      laterBtn: "Later"
+    }
+  },
+  checkout: {
+    back: "Change plan",
+    summaryTitle: "Order Summary",
+    monthlySub: "Monthly Subscription",
+    total: "Total",
+    securePayment: "Your payments are secure. We use 256-bit SSL encryption to protect your information.",
+    paymentTitle: "Payment",
+    paymentSubtitle: "Enter your card information",
+    cardName: "Name on card",
+    cardNumber: "Card number",
+    expiry: "Expiry date",
+    cvc: "CVC",
+    processing: "Processing...",
+    payButton: "Pay {price} MAD",
+    errorFields: "Please fill in all card fields.",
+    errorProcess: "Error processing payment."
+  },
+  createInvoice: {
+    title: "New Invoice",
+    subtitle: "Create and send a new invoice to your client.",
+    clientInfo: "Client Information",
+    selectClientLabel: "Select a Client",
+    selectPlaceholder: "Select...",
+    loadingClients: "Loading clients...",
+    invoiceNumber: "Invoice Number",
+    invoiceDetails: "Invoice Details",
+    issueDate: "Issue Date",
+    dueDate: "Due Date",
+    status: "Status",
+    statusDraft: "Draft",
+    statusSent: "Sent",
+    statusPaid: "Paid",
+    items: "Items",
+    description: "Description",
+    qty: "Qty",
+    unitPrice: "Unit Price",
+    total: "Total",
+    designationPlaceholder: "Item description",
+    deleteLine: "Delete line",
+    addLine: "Add line",
+    notesLabel: "Notes for the client",
+    notesPlaceholder: "Thank you for your business...",
+    subtotal: "Subtotal",
+    tax: "VAT",
+    taxExempt: "VAT (Exempt)",
+    totalTtc: "Total (Incl. VAT)",
+    taxDisclaimer: "VAT not applicable, article 92 of the General Tax Code.",
+    cancel: "Cancel",
+    createBtn: "Create Invoice",
+    errNoClient: "Please select a client.",
+    errNoItem: "Add at least one valid item.",
+    successMsg: "Invoice created successfully. Redirecting to list...",
+    errCreate: "Unable to create the invoice."
   }
 };

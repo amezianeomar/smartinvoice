@@ -1,63 +1,53 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 
 export default function useClients() {
-  const [clients, setClients] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
-  const fetchClients = useCallback(async () => {
-    setIsLoading(true);
-    setError('');
-
-    try {
+  const { data: clients = [], isLoading, error, refetch: fetchClients } = useQuery({
+    queryKey: ['clients'],
+    queryFn: async () => {
       const res = await api.get('/clients');
-      setClients(res.data?.data || []);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Impossible de charger les clients.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return res.data?.data || [];
+    },
+  });
 
-  useEffect(() => {
-    fetchClients();
-  }, [fetchClients]);
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      const res = await api.post('/clients', payload);
+      return res.data?.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+  });
 
-  const createClient = useCallback(async (payload) => {
-    const res = await api.post('/clients', payload);
-    const newClient = res.data?.data;
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, payload }) => {
+      const res = await api.put(`/clients/${id}`, payload);
+      return res.data?.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+  });
 
-    if (newClient) {
-      setClients((prev) => [newClient, ...prev]);
-    }
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      await api.delete(`/clients/${id}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+  });
 
-    return newClient;
-  }, []);
-
-  const updateClient = useCallback(async (id, payload) => {
-    const res = await api.put(`/clients/${id}`, payload);
-    const updated = res.data?.data;
-
-    if (updated) {
-      setClients((prev) => prev.map((client) => (client.id === id ? updated : client)));
-    }
-
-    return updated;
-  }, []);
-
-  const deleteClient = useCallback(async (id) => {
-    await api.delete(`/clients/${id}`);
-    setClients((prev) => prev.filter((client) => client.id !== id));
-  }, []);
+  const updateClient = useCallback(
+    (id, payload) => updateMutation.mutateAsync({ id, payload }),
+    [updateMutation]
+  );
 
   return {
     clients,
     isLoading,
-    error,
+    error: error ? (error.response?.data?.message || 'Impossible de charger les clients.') : '',
     fetchClients,
-    createClient,
+    createClient: createMutation.mutateAsync,
     updateClient,
-    deleteClient,
+    deleteClient: deleteMutation.mutateAsync,
   };
 }

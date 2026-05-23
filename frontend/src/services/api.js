@@ -155,7 +155,7 @@ api.interceptors.response.use(
     // Global handling for 403 Quota Exceeded
     if (error.response && error.response.status === 403 && error.response.data?.error === 'quota_exceeded') {
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('openUpgradeModal'));
+        window.dispatchEvent(new CustomEvent('openUpgradeModal', { detail: { type: 'quota' } }));
       }
     }
     

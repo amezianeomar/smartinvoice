@@ -60,7 +60,7 @@ class ContactController extends Controller
 
         Mail::raw($body, function ($message) use ($data) {
             $message
-                ->to('solaymangame2006@gmail.com', 'SmartInvoice Admin')
+                ->to('smartinvoicep@gmail.com', 'SmartInvoice Admin')
                 ->subject("💼 Sales Inquiry from {$data['name']} — {$data['company']}")
                 ->replyTo($data['email'], $data['name']);
         });

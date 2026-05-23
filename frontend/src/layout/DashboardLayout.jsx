@@ -4,13 +4,25 @@ import { Outlet } from "react-router-dom";
 import AppHeader from "./AppHeader";
 import AppSidebar from "./AppSidebar";
 import UpgradeModal from "../components/UpgradeModal";
+import useInvoices from "../hooks/useInvoices";
+import useClients from "../hooks/useClients";
+import useDashboard from "../hooks/useDashboard";
 
 const LayoutContent = ({ isDark, setIsDark }) => {
   const { isExpanded, isHovered, isMobileOpen, toggleMobileSidebar } = useSidebar();
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [upgradeModalType, setUpgradeModalType] = useState('quota');
+
+  // Background Prefetching on Mount
+  useInvoices();
+  useClients();
+  useDashboard();
 
   useEffect(() => {
-    const handleOpenModal = () => setIsUpgradeModalOpen(true);
+    const handleOpenModal = (e) => {
+      setUpgradeModalType(e.detail?.type || 'quota');
+      setIsUpgradeModalOpen(true);
+    };
     window.addEventListener('openUpgradeModal', handleOpenModal);
     return () => window.removeEventListener('openUpgradeModal', handleOpenModal);
   }, []);
@@ -41,6 +53,7 @@ const LayoutContent = ({ isDark, setIsDark }) => {
       <UpgradeModal 
         isOpen={isUpgradeModalOpen} 
         onClose={() => setIsUpgradeModalOpen(false)} 
+        type={upgradeModalType}
       />
     </div>
   );

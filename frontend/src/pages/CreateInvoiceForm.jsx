@@ -3,6 +3,8 @@ import { Save, X, Plus, Trash2, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useClients from '../hooks/useClients';
 import useInvoices from '../hooks/useInvoices';
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 function toInputDate(date) {
    const d = new Date(date);
@@ -20,8 +22,17 @@ function generateInvoiceNumber() {
 
 export default function CreateInvoiceForm() {
    const navigate = useNavigate();
+   const { t } = useLanguage();
    const { clients, isLoading: isClientsLoading, error: clientsError } = useClients();
    const { createInvoice } = useInvoices();
+   const { user } = useAuth();
+
+   const defaultTva = useMemo(() => {
+      if (!user?.taux_tva_defaut) return 20;
+      if (user.taux_tva_defaut === 'Exonéré') return 0;
+      const parsed = parseFloat(user.taux_tva_defaut);
+      return isNaN(parsed) ? 20 : parsed;
+   }, [user?.taux_tva_defaut]);
 
    const [isSubmitting, setIsSubmitting] = useState(false);
    const [submitMessage, setSubmitMessage] = useState('');
@@ -39,17 +50,22 @@ export default function CreateInvoiceForm() {
          designation: '',
          quantite: 1,
          prix_unitaire: 0,
+         taux_tva: defaultTva,
       },
    ]);
 
+   const [showProfileModal, setShowProfileModal] = useState(false);
+
    const totals = useMemo(() => {
+      let tva = 0;
       const subtotal = items.reduce((sum, item) => {
          const qty = Number(item.quantite) || 0;
          const price = Number(item.prix_unitaire) || 0;
-         return sum + qty * price;
+         const lineTotal = qty * price;
+         tva += lineTotal * ((Number(item.taux_tva) || 0) / 100);
+         return sum + lineTotal;
       }, 0);
 
-      const tva = subtotal * 0.2;
       const ttc = subtotal + tva;
 
       return { subtotal, tva, ttc };
@@ -65,7 +81,7 @@ export default function CreateInvoiceForm() {
    const handleAddItem = () => {
       setItems((prev) => [
          ...prev,
-         { designation: '', quantite: 1, prix_unitaire: 0 },
+         { designation: '', quantite: 1, prix_unitaire: 0, taux_tva: defaultTva },
       ]);
    };
 
@@ -100,12 +116,12 @@ export default function CreateInvoiceForm() {
       const validItems = items.filter((item) => item.designation.trim() && Number(item.quantite) > 0);
 
       if (!form.client_id) {
-         setSubmitError('Veuillez selectionner un client.');
+         setSubmitError(t('createInvoice.errNoClient'));
          return;
       }
 
       if (validItems.length === 0) {
-         setSubmitError('Ajoutez au moins une ligne valide.');
+         setSubmitError(t('createInvoice.errNoItem'));
          return;
       }
 
@@ -123,13 +139,19 @@ export default function CreateInvoiceForm() {
                designation: item.designation.trim(),
                quantite: Number(item.quantite),
                prix_unitaire: Number(item.prix_unitaire),
+               taux_tva: Number(item.taux_tva),
             })),
          };
 
          await createInvoice(payload);
-         setSubmitMessage('Facture creee avec succes. Redirection vers la liste...');
+         setSubmitMessage(t('createInvoice.successMsg'));
          setTimeout(() => navigate('/dashboard/factures'), 900);
       } catch (err) {
+         if (err.response?.data?.error_code === 'INCOMPLETE_PROFILE') {
+            setShowProfileModal(true);
+            return;
+         }
+
          const apiMessage = err.response?.data?.message;
          const details = err.response?.data?.errors || err.response?.data?.data;
          if (details && typeof details === 'object') {
@@ -137,10 +159,10 @@ export default function CreateInvoiceForm() {
             if (Array.isArray(firstError) && firstError[0]) {
                setSubmitError(firstError[0]);
             } else {
-               setSubmitError(apiMessage || 'Impossible de creer la facture.');
+               setSubmitError(apiMessage || t('createInvoice.errCreate'));
             }
          } else {
-            setSubmitError(apiMessage || 'Impossible de creer la facture.');
+            setSubmitError(apiMessage || t('createInvoice.errCreate'));
          }
       } finally {
          setIsSubmitting(false);
@@ -149,10 +171,31 @@ export default function CreateInvoiceForm() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+           <div className="bg-white dark:bg-[#0F172A] border border-red-500/30 shadow-2xl rounded-3xl p-8 max-w-md w-full animate-in fade-in zoom-in duration-200">
+              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6 mx-auto">
+                 <X size={32} className="text-red-500" />
+              </div>
+              <h2 className="text-2xl font-black text-center text-[#0F172A] dark:text-white mb-4">{t('modals.incompleteProfile.title')}</h2>
+              <p className="text-center text-[#526e9c] mb-8">
+                 {t('modals.incompleteProfile.message')}
+              </p>
+              <div className="flex gap-4">
+                 <button onClick={() => setShowProfileModal(false)} className="flex-1 py-3 px-4 rounded-xl font-bold text-[#526e9c] bg-[#526e9c]/10 hover:bg-[#526e9c]/20 transition-colors">
+                    {t('modals.incompleteProfile.closeBtn')}
+                 </button>
+                 <button onClick={() => navigate('/dashboard/parametres')} className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-[#221ab7] to-[#18adf2] shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:-translate-y-1 transition-all">
+                    {t('modals.incompleteProfile.settingsBtn')}
+                 </button>
+              </div>
+           </div>
+        </div>
+      )}
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
          <div>
-            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">Nouvelle Facture</h1>
-            <p className="text-[#526e9c] text-sm font-medium">Créez et envoyez une nouvelle facture à votre client.</p>
+            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('createInvoice.title')}</h1>
+            <p className="text-[#526e9c] text-sm font-medium">{t('createInvoice.subtitle')}</p>
          </div>
       </div>
 
@@ -161,25 +204,25 @@ export default function CreateInvoiceForm() {
           
           {/* Section: Client Info */}
           <div className="space-y-4">
-             <h3 className="text-lg font-black text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-2">Informations du Client</h3>
+             <h3 className="text-lg font-black text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-2">{t('createInvoice.clientInfo')}</h3>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Sélectionner un Client</label>
+                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('createInvoice.selectClientLabel')}</label>
                    <select
                       value={form.client_id}
                       onChange={(e) => setForm((prev) => ({ ...prev, client_id: e.target.value }))}
                       className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none appearance-none"
                    >
-                      <option value="">Selectionnez...</option>
+                      <option value="">{t('createInvoice.selectPlaceholder')}</option>
                       {clients.map((client) => (
                         <option key={client.id} value={client.id}>{client.nom}</option>
                       ))}
                    </select>
-                   {isClientsLoading && <p className="mt-1 text-xs text-[#526e9c]">Chargement des clients...</p>}
+                   {isClientsLoading && <p className="mt-1 text-xs text-[#526e9c]">{t('createInvoice.loadingClients')}</p>}
                    {clientsError && <p className="mt-1 text-xs text-red-500">{clientsError}</p>}
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Numero de Facture</label>
+                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('createInvoice.invoiceNumber')}</label>
                    <input
                      type="text"
                      value={form.numero}
@@ -192,10 +235,10 @@ export default function CreateInvoiceForm() {
 
            {/* Section: Invoice Details */}
            <div className="space-y-4">
-             <h3 className="text-lg font-black text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-2">Détails de la Facture</h3>
+             <h3 className="text-lg font-black text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-2">{t('createInvoice.invoiceDetails')}</h3>
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Date d'émission</label>
+                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('createInvoice.issueDate')}</label>
                    <input
                      type="date"
                      value={form.date_emission}
@@ -204,7 +247,7 @@ export default function CreateInvoiceForm() {
                    />
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Date d'échéance</label>
+                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('createInvoice.dueDate')}</label>
                    <input
                      type="date"
                      value={form.date_echeance}
@@ -213,15 +256,15 @@ export default function CreateInvoiceForm() {
                    />
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Statut</label>
+                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('createInvoice.status')}</label>
                    <select
                      value={form.statut}
                      onChange={(e) => setForm((prev) => ({ ...prev, statut: e.target.value }))}
                      className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none"
                    >
-                     <option value="brouillon">Brouillon</option>
-                     <option value="envoyee">Envoyee</option>
-                     <option value="payee">Payee</option>
+                     <option value="brouillon">{t('createInvoice.statusDraft')}</option>
+                     <option value="envoyee">{t('createInvoice.statusSent')}</option>
+                     <option value="payee">{t('createInvoice.statusPaid')}</option>
                    </select>
                 </div>
              </div>
@@ -229,15 +272,15 @@ export default function CreateInvoiceForm() {
 
           {/* Section: Articles */}
           <div className="space-y-4">
-             <h3 className="text-lg font-black text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-2">Articles</h3>
+             <h3 className="text-lg font-black text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-2">{t('createInvoice.items')}</h3>
              <div className="border border-[#526e9c]/20 rounded-2xl overflow-hidden bg-white/30 dark:bg-[#080C16]/30">
                 <table className="w-full text-left">
                    <thead className="bg-[#526e9c]/5 border-b border-[#526e9c]/20 text-[11px] uppercase tracking-widest text-[#526e9c]">
                      <tr>
-                       <th className="p-4 font-bold w-1/2">Description</th>
-                       <th className="p-4 font-bold w-24">Qté</th>
-                       <th className="p-4 font-bold">Prix Unitaire</th>
-                       <th className="p-4 font-bold text-right pr-4">Total</th>
+                       <th className="p-4 font-bold w-1/2">{t('createInvoice.description')}</th>
+                       <th className="p-4 font-bold w-24">{t('createInvoice.qty')}</th>
+                       <th className="p-4 font-bold">{t('createInvoice.unitPrice')}</th>
+                       <th className="p-4 font-bold text-right pr-4">{t('createInvoice.total')}</th>
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-[#526e9c]/10">
@@ -249,7 +292,7 @@ export default function CreateInvoiceForm() {
                                         <td className="p-4">
                                            <input
                                               type="text"
-                                              placeholder="Designation"
+                                              placeholder={t('createInvoice.designationPlaceholder')}
                                               value={item.designation}
                                               onChange={(e) => handleItemChange(index, 'designation', e.target.value)}
                                               className="w-full px-3 py-2.5 rounded-lg border border-[#526e9c]/10 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 outline-none"
@@ -270,7 +313,7 @@ export default function CreateInvoiceForm() {
                                                    type="number"
                                                    min="0"
                                                    step="0.01"
-                                                   value={item.prix_unitaire}
+                                                    value={item.prix_unitaire}
                                                    onChange={(e) => handleItemChange(index, 'prix_unitaire', e.target.value)}
                                                    className="w-full pl-3 pr-10 py-2.5 rounded-lg border border-[#526e9c]/10 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white focus:ring-2 focus:ring-[#18adf2]/50 outline-none block"
                                                 />
@@ -282,9 +325,9 @@ export default function CreateInvoiceForm() {
                                               <span>{formatMoney(lineTotal)}</span>
                                               <button
                                                  type="button"
-                                                 onClick={() => handleRemoveItem(index)}
+                                              onClick={() => handleRemoveItem(index)}
                                                  className="p-1.5 text-[#526e9c] hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
-                                                 title="Supprimer la ligne"
+                                                 title={t('createInvoice.deleteLine')}
                                               >
                                                  <Trash2 size={16} />
                                               </button>
@@ -302,7 +345,7 @@ export default function CreateInvoiceForm() {
                 onClick={handleAddItem}
                 className="flex items-center gap-2 text-sm font-bold text-[#18adf2] hover:text-[#221ab7] transition-colors bg-[#18adf2]/10 hover:bg-[#18adf2]/20 px-4 py-2.5 rounded-xl border border-[#18adf2]/20 w-fit"
              >
-                <Plus size={16} /> Ajouter une ligne
+                <Plus size={16} /> {t('createInvoice.addLine')}
              </button>
           </div>
 
@@ -311,10 +354,10 @@ export default function CreateInvoiceForm() {
           <div className="flex flex-col md:flex-row justify-between gap-6">
              <div className="w-full md:w-1/2 space-y-4">
                 <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">Notes pour le client</label>
+                   <label className="text-xs font-bold text-[#526e9c] uppercase tracking-wider">{t('createInvoice.notesLabel')}</label>
                    <textarea 
                       rows="3" 
-                      placeholder="Merci pour votre confiance..." 
+                      placeholder={t('createInvoice.notesPlaceholder')} 
                       value={form.notes}
                       onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
                       className="w-full px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/50 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none resize-none"
@@ -325,18 +368,37 @@ export default function CreateInvoiceForm() {
              <div className="w-full md:w-1/3 p-6 rounded-2xl bg-[#526e9c]/5 border border-[#526e9c]/10">
                 <div className="space-y-3">
                    <div className="flex justify-between text-sm text-[#526e9c] font-medium">
-                      <span>Sous-total</span>
+                      <span>{t('createInvoice.subtotal')}</span>
                       <span>{formatMoney(totals.subtotal)}</span>
                    </div>
-                   <div className="flex justify-between text-sm text-[#526e9c] font-medium">
-                      <span>TVA (20%)</span>
-                      <span>{formatMoney(totals.tva)}</span>
-                   </div>
+                    <div className="flex justify-between text-sm text-[#526e9c] font-medium">
+                       <span>
+                          {(() => {
+                             if (items.length === 0) return t('createInvoice.tax');
+                             const rates = [...new Set(items.map(item => Number(item.taux_tva)))];
+                             if (rates.length === 1) {
+                                const rate = rates[0];
+                                return rate === 0 ? t('createInvoice.taxExempt') : `${t('createInvoice.tax')} (${rate}%)`;
+                             }
+                             return t('createInvoice.tax');
+                          })()}
+                       </span>
+                       <span>{formatMoney(totals.tva)}</span>
+                    </div>
                    <div className="h-[1px] bg-[#526e9c]/20 my-2"></div>
                    <div className="flex justify-between text-lg font-black text-[#0F172A] dark:text-white">
-                      <span>Total TTC</span>
+                      <span>{t('createInvoice.totalTtc')}</span>
                       <span>{formatMoney(totals.ttc)}</span>
                    </div>
+                   {(() => {
+                      if (items.length > 0) {
+                         const rates = [...new Set(items.map(item => Number(item.taux_tva)))];
+                         if (rates.length === 1 && rates[0] === 0) {
+                            return <p className="text-[11px] italic text-slate-500 font-medium text-right mt-2">{t('createInvoice.taxDisclaimer')}</p>;
+                         }
+                      }
+                      return null;
+                   })()}
                 </div>
              </div>
           </div>
@@ -347,10 +409,10 @@ export default function CreateInvoiceForm() {
           {/* Form Actions */}
           <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-[#526e9c]/10">
              <button type="button" onClick={() => navigate('/dashboard/factures')} className="px-6 py-3 rounded-xl font-bold text-[#526e9c] bg-[#526e9c]/10 hover:bg-[#526e9c]/20 transition-colors flex items-center justify-center gap-2">
-                <X size={18} /> Annuler
+                <X size={18} /> {t('createInvoice.cancel')}
              </button>
              <button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-8 py-3 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all hover:-translate-y-1 flex items-center justify-center gap-2 disabled:opacity-70">
-                {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Créer la Facture
+                {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} {t('createInvoice.createBtn')}
              </button>
           </div>
 
