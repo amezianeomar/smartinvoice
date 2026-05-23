@@ -12,6 +12,7 @@ export default function FacturesList() {
    const navigate = useNavigate();
    const location = useLocation();
    const [searchTerm, setSearchTerm] = useState(location.state?.search || '');
+   const [currentPage, setCurrentPage] = useState(1);
 
    useEffect(() => {
       if (location.state?.search) {
@@ -51,12 +52,20 @@ export default function FacturesList() {
          const textOk = !q
             ? true
             : [invoice.numero, invoice.client?.nom, invoice.statut]
-                  .filter(Boolean)
-                  .some((value) => String(value).toLowerCase().includes(q));
+               .filter(Boolean)
+               .some((value) => String(value).toLowerCase().includes(q));
 
          return statusOk && textOk;
       });
    }, [invoices, searchTerm, activeStatus]);
+
+   useEffect(() => {
+      setCurrentPage(1);
+   }, [searchTerm, activeStatus]);
+
+   const itemsPerPage = 10;
+   const totalPages = Math.ceil(filteredInvoices.length / itemsPerPage);
+   const paginatedInvoices = filteredInvoices.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
    const formatDate = (date) => {
       if (!date) return '-';
@@ -141,12 +150,12 @@ export default function FacturesList() {
    const handleExportCSV = () => {
       if (!filteredInvoices.length) return;
       const headers = [
-        t('invoicesList.invoiceNumber'),
-        t('invoicesList.client'),
-        t('invoicesList.creation'),
-        t('invoicesList.dueDate'),
-        t('invoicesList.amount'),
-        t('invoicesList.status')
+         t('invoicesList.invoiceNumber'),
+         t('invoicesList.client'),
+         t('invoicesList.creation'),
+         t('invoicesList.dueDate'),
+         t('invoicesList.amount'),
+         t('invoicesList.status')
       ];
       const csvContent = [
          headers.join(','),
@@ -171,137 +180,152 @@ export default function FacturesList() {
       document.body.removeChild(link);
    };
 
-  const getStatusStyle = (status) => {
+   const getStatusStyle = (status) => {
       switch (normalizedStatus(status)) {
          case 'payee':
             return { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'border-emerald-500/20', icon: <CheckCircle size={14} />, label: t('invoicesList.paid') };
          case 'envoyee':
             return { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20', icon: <Clock size={14} />, label: t('invoicesList.sent') };
          case 'brouillon':
-            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: t('invoicesList.draft') };         default:
+            return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: t('invoicesList.draft') }; default:
             return { bg: 'bg-[#526e9c]/10', text: 'text-[#526e9c]', border: 'border-[#526e9c]/20', icon: <AlertCircle size={14} />, label: status || 'N/A' };
-    }
-  };
+      }
+   };
 
-  return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-         <div>
-            <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('invoicesList.title')}</h1>
-            <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>         </div>
+   return (
+      <div className="max-w-7xl mx-auto">
+         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+               <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('invoicesList.title')}</h1>
+               <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>         </div>
+         </div>
+
+         <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 shadow-xl overflow-hidden flex flex-col min-h-[600px]">
+            {/* Toolbar */}
+            <div className="p-4 md:p-6 border-b border-[#526e9c]/10 gap-4 flex flex-col md:flex-row justify-between items-center bg-white/30 dark:bg-black/10">
+               <div className="relative w-full md:w-96 group">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#526e9c] transition-colors group-focus-within:text-[#18adf2]"><Search size={18} /></span>
+                  <input type="text" placeholder={t('invoicesList.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />          </div>
+               <div className="flex gap-3 w-full md:w-auto">
+                  <button
+                     type="button"
+                     onClick={() => setActiveStatus((prev) => (prev === 'all' ? 'envoyee' : 'all'))}
+                     className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors text-sm font-bold shadow-sm"
+                  >
+                     <Filter size={18} /> {t('invoicesList.filter')}
+                  </button>
+                  <button type="button" onClick={handleExportCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
+                     <Download size={18} /> {t('invoicesList.export')}             </button>
+               </div>
+            </div>
+
+            {(error || feedback) && (
+               <div className={`px-6 py-3 text-sm font-medium ${error ? 'text-red-500' : 'text-emerald-500'}`}>
+                  {error || feedback}
+               </div>
+            )}
+
+            {/* Data Table Area */}
+            <div className="overflow-x-auto flex-1 flex flex-col">
+               {isLoading ? (
+                  <TableSkeleton />
+               ) : filteredInvoices.length === 0 ? (
+                  <div className="flex-1 flex items-center justify-center">
+                     <EmptyState
+                        icon={FileText}
+                        title={t('invoicesList.emptyTitle')}
+                        description={t('invoicesList.emptyDesc')}
+                        actionText={t('invoicesList.emptyAction')} actionIcon={Plus}
+                        onAction={() => navigate('/dashboard/factures/nouvelle')}
+                     />
+                  </div>
+               ) : (
+                  <table className="w-full text-left">
+                     <thead>
+                        <tr className="bg-[#526e9c]/5 text-[11px] uppercase tracking-widest text-[#526e9c] border-b border-[#526e9c]/20">
+                           <th className="px-4 py-4 font-bold">{t('invoicesList.invoiceNumber')}</th>
+                           <th className="px-4 py-4 font-bold">{t('invoicesList.client')}</th>
+                           <th className="px-4 py-4 font-bold">{t('invoicesList.creation')}</th>
+                           <th className="px-4 py-4 font-bold">{t('invoicesList.dueDate')}</th>
+                           <th className="px-4 py-4 font-bold">{t('invoicesList.amount')}</th>
+                           <th className="px-4 py-4 font-bold">{t('invoicesList.status')}</th>
+                           <th className="px-4 py-4 font-bold text-center">{t('invoicesList.actions')}</th>
+                        </tr>
+                     </thead>
+                     <tbody className="divide-y divide-[#526e9c]/10">
+                        {paginatedInvoices.map((inv) => {
+                           const status = getStatusStyle(inv.statut);
+                           return (
+                              <tr key={inv.id} className="hover:bg-[#526e9c]/5 transition-colors group">
+                                 <td className="px-4 py-4 whitespace-nowrap">
+                                    <div className="flex items-center gap-3">
+                                       <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors"><FileText size={18} /></div>
+                                       <button onClick={() => navigate(`/dashboard/factures/${inv.id}`)} className="font-bold text-[#18adf2] hover:underline text-left truncate">{inv.numero}</button>
+                                    </div>
+                                 </td>
+                                 <td className="px-4 py-4 text-[#526e9c] font-medium break-words min-w-[150px]">{inv.client?.nom || '-'}</td>
+                                 <td className="px-4 py-4 text-[#526e9c] text-sm whitespace-nowrap">{formatDate(inv.date_emission)}</td>
+                                 <td className="px-4 py-4 text-[#526e9c] text-sm whitespace-nowrap">{formatDate(inv.date_echeance)}</td>
+                                 <td className="px-4 py-4 font-black text-[#0F172A] dark:text-white whitespace-nowrap">{formatMoney(inv.total_ttc)}</td>
+                                 <td className="px-4 py-4 whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border ${status.bg} ${status.text} ${status.border}`}>
+                                       {status.icon} {status.label}
+                                    </span>
+                                 </td>
+                                 <td className="px-4 py-4 whitespace-nowrap">
+                                    <InvoiceActions
+                                       onView={() => navigate(`/dashboard/factures/${inv.id}`)}
+                                       onEdit={() => navigate(`/dashboard/factures/${inv.id}/edit`)}
+                                       onDownload={() => handleDownload(inv)}
+                                       onSendEmail={() => handleSendEmail(inv)}
+                                       onDelete={() => handleDelete(inv)}
+                                       busy={busyInvoiceId === inv.id}
+                                       disableEdit={['payee', 'payée'].includes(String(inv.statut).toLowerCase())}
+                                    />
+                                 </td>
+                              </tr>
+                           );
+                        })}
+                     </tbody>
+                  </table>
+               )}
+            </div>
+
+            {/* Pagination */}
+            {!isLoading && filteredInvoices.length > 0 && (
+               <div className="p-4 border-t border-[#526e9c]/10 flex items-center justify-between text-sm text-[#526e9c]">
+                  <span>{t('invoicesList.showing').replace('{filtered}', `${Math.min((currentPage - 1) * itemsPerPage + 1, filteredInvoices.length)} - ${Math.min(currentPage * itemsPerPage, filteredInvoices.length)}`).replace('{total}', filteredInvoices.length)}</span>
+                  <div className="flex gap-2">
+                     <button
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                     >
+                        {t('invoicesList.previous')}
+                     </button>
+                     <span className="px-3 py-1 rounded-md border border-[#526e9c]/20 bg-[#18adf2]/10 text-[#18adf2] font-bold">
+                        {currentPage} / {totalPages || 1}
+                     </span>
+                     <button
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage >= totalPages}
+                        className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                     >
+                        {t('invoicesList.next')}
+                     </button>
+                  </div>
+               </div>
+            )}
+
+         </div>
+
+         <ResendConfirmationModal
+            isOpen={!!resendInvoice}
+            invoice={resendInvoice}
+            isLoading={busyInvoiceId === resendInvoice?.id}
+            onClose={() => setResendInvoice(null)}
+            onConfirm={() => executeSendEmail(resendInvoice)}
+         />
       </div>
-
-      <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 shadow-xl overflow-hidden flex flex-col min-h-[600px]">
-        {/* Toolbar */}
-        <div className="p-4 md:p-6 border-b border-[#526e9c]/10 gap-4 flex flex-col md:flex-row justify-between items-center bg-white/30 dark:bg-black/10">
-          <div className="relative w-full md:w-96 group">
-             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#526e9c] transition-colors group-focus-within:text-[#18adf2]"><Search size={18} /></span>
-             <input type="text" placeholder={t('invoicesList.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white/50 dark:bg-[#0F172A]/50 text-sm text-[#0F172A] dark:text-white placeholder-[#526e9c]/70 focus:ring-2 focus:ring-[#18adf2]/50 focus:border-[#18adf2] transition-all outline-none" />          </div>
-          <div className="flex gap-3 w-full md:w-auto">
-             <button
-                type="button"
-                onClick={() => setActiveStatus((prev) => (prev === 'all' ? 'envoyee' : 'all'))}
-                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#526e9c]/20 bg-white dark:bg-[#0F172A]/50 text-[#526e9c] hover:text-[#0F172A] dark:hover:text-white transition-colors text-sm font-bold shadow-sm"
-             >
-                <Filter size={18} /> {t('invoicesList.filter')}
-             </button>
-             <button type="button" onClick={handleExportCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#18adf2]/30 bg-[#18adf2]/10 text-[#18adf2] hover:bg-[#18adf2]/20 transition-colors text-sm font-bold shadow-sm">
-                <Download size={18} /> {t('invoicesList.export')}             </button>
-          </div>
-        </div>
-
-        {(error || feedback) && (
-          <div className={`px-6 py-3 text-sm font-medium ${error ? 'text-red-500' : 'text-emerald-500'}`}>
-            {error || feedback}
-          </div>
-        )}
-
-        {/* Data Table Area */}
-        <div className="overflow-x-auto flex-1 flex flex-col">
-          {isLoading ? (
-             <TableSkeleton />
-          ) : filteredInvoices.length === 0 ? (
-             <div className="flex-1 flex items-center justify-center">
-                <EmptyState 
-                   icon={FileText} 
-                   title={t('invoicesList.emptyTitle')} 
-                   description={t('invoicesList.emptyDesc')} 
-                   actionText={t('invoicesList.emptyAction')}                   actionIcon={Plus}
-                   onAction={() => navigate('/dashboard/factures/nouvelle')}
-                />
-             </div>
-          ) : (
-          <table className="w-full text-left whitespace-nowrap w-full min-w-max">
-             <thead>
-                <tr className="bg-[#526e9c]/5 text-[11px] uppercase tracking-widest text-[#526e9c] border-b border-[#526e9c]/20">
-                   <th className="px-4 py-4 font-bold">{t('invoicesList.invoiceNumber')}</th>
-                   <th className="px-4 py-4 font-bold">{t('invoicesList.client')}</th>
-                   <th className="px-4 py-4 font-bold">{t('invoicesList.creation')}</th>
-                   <th className="px-4 py-4 font-bold">{t('invoicesList.dueDate')}</th>
-                   <th className="px-4 py-4 font-bold">{t('invoicesList.amount')}</th>
-                   <th className="px-4 py-4 font-bold">{t('invoicesList.status')}</th>
-                   <th className="px-4 py-4 font-bold text-center">{t('invoicesList.actions')}</th>
-                </tr>
-             </thead>
-             <tbody className="divide-y divide-[#526e9c]/10">
-                {filteredInvoices.map((inv) => {
-                   const status = getStatusStyle(inv.statut);
-                   return (
-                      <tr key={inv.id} className="hover:bg-[#526e9c]/5 transition-colors group">
-                         <td className="px-4 py-4">
-                            <div className="flex items-center gap-3">
-                               <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors"><FileText size={18}/></div>
-                               <button onClick={() => navigate(`/dashboard/factures/${inv.id}`)} className="font-bold text-[#18adf2] hover:underline text-left truncate">{inv.numero}</button>
-                            </div>
-                         </td>
-                         <td className="px-4 py-4 text-[#526e9c] font-medium">{inv.client?.nom || '-'}</td>
-                         <td className="px-4 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_emission)}</td>
-                         <td className="px-4 py-4 text-[#526e9c] text-sm">{formatDate(inv.date_echeance)}</td>
-                         <td className="px-4 py-4 font-black text-[#0F172A] dark:text-white">{formatMoney(inv.total_ttc)}</td>
-                         <td className="px-4 py-4">
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border ${status.bg} ${status.text} ${status.border}`}>
-                               {status.icon} {status.label}
-                            </span>
-                         </td>
-                         <td className="px-4 py-4">
-                            <InvoiceActions
-                              onView={() => navigate(`/dashboard/factures/${inv.id}`)}
-                              onEdit={() => navigate(`/dashboard/factures/${inv.id}/edit`)}
-                              onDownload={() => handleDownload(inv)}
-                              onSendEmail={() => handleSendEmail(inv)}
-                              onDelete={() => handleDelete(inv)}
-                              busy={busyInvoiceId === inv.id}
-                              disableEdit={['payee', 'payée'].includes(String(inv.statut).toLowerCase())}
-                            />
-                         </td>
-                      </tr>
-                   );
-                })}
-             </tbody>
-          </table>
-          )}
-        </div>
-        
-        {/* Pagination */}
-        {!isLoading && filteredInvoices.length > 0 && (
-        <div className="p-4 border-t border-[#526e9c]/10 flex items-center justify-between text-sm text-[#526e9c]">
-           <span>{t('invoicesList.showing').replace('{filtered}', filteredInvoices.length).replace('{total}', invoices.length)}</span>
-           <div className="flex gap-2">
-              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.previous')}</button>
-              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 bg-[#18adf2]/10 text-[#18adf2] font-bold">1</button>
-              <button className="px-3 py-1 rounded-md border border-[#526e9c]/20 hover:bg-[#526e9c]/10 transition-colors" disabled>{t('invoicesList.next')}</button>           </div>
-        </div>
-        )}
-
-      </div>
-
-      <ResendConfirmationModal
-        isOpen={!!resendInvoice}
-        invoice={resendInvoice}
-        isLoading={busyInvoiceId === resendInvoice?.id}
-        onClose={() => setResendInvoice(null)}
-        onConfirm={() => executeSendEmail(resendInvoice)}
-      />
-    </div>
-  );
+   );
 }
