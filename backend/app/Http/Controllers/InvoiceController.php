@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 class InvoiceController extends Controller
@@ -45,6 +46,16 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        if (empty($user->nom) || empty($user->adresse_siege) || empty($user->ice) || empty($user->patente)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile incomplet. Veuillez remplir vos informations légales (ICE, Patente, Adresse) pour générer une facture.',
+                'error_code' => 'INCOMPLETE_PROFILE',
+                'errors' => []
+            ], 403);
+        }
+
         try {
             $validated = $request->validate([
                 'client_id' => 'required|exists:clients,id',
@@ -57,6 +68,7 @@ class InvoiceController extends Controller
                 'items.*.designation' => 'required|string|max:255',
                 'items.*.quantite' => 'required|integer|min:1',
                 'items.*.prix_unitaire' => 'required|numeric|min:0',
+                'items.*.taux_tva' => 'required|numeric|min:0|max:100',
             ]);
 
             DB::beginTransaction();
@@ -81,20 +93,24 @@ class InvoiceController extends Controller
             ]);
 
             $total_ht = 0;
+            $total_tva = 0;
 
             foreach ($validated['items'] as $itemData) {
                 $montant_ligne = $itemData['quantite'] * $itemData['prix_unitaire'];
                 $total_ht += $montant_ligne;
+                
+                $ligne_tva = $montant_ligne * ($itemData['taux_tva'] / 100);
+                $total_tva += $ligne_tva;
 
                 $invoice->invoiceItems()->create([
                     'designation' => $itemData['designation'],
                     'quantite' => $itemData['quantite'],
                     'prix_unitaire' => $itemData['prix_unitaire'],
+                    'taux_tva' => $itemData['taux_tva'],
                     'montant_ligne' => $montant_ligne,
                 ]);
             }
 
-            $total_tva = $total_ht * 0.20;
             $total_ttc = $total_ht + $total_tva;
 
             $invoice->update([
@@ -133,14 +149,28 @@ class InvoiceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Invoice retrieved successfully',
-            'data' => $invoice->load('invoiceItems', 'client')
+            'data' => $invoice->load('invoiceItems', 'client', 'user')
         ]);
     }
 
     public function update(Request $request, Invoice $invoice)
     {
-        if ($invoice->user_id !== auth()->id()) {
+        $user = auth()->user();
+        if (empty($user->nom) || empty($user->adresse_siege) || empty($user->ice) || empty($user->patente)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile incomplet. Veuillez remplir vos informations légales (ICE, Patente, Adresse) pour générer une facture.',
+                'error_code' => 'INCOMPLETE_PROFILE',
+                'errors' => []
+            ], 403);
+        }
+
+        if ($invoice->user_id !== $user->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized', 'errors' => []], 403);
+        }
+
+        if (in_array(strtolower($invoice->statut), ['payee', 'payée'])) {
+            return response()->json(['success' => false, 'message' => 'Cannot edit a paid invoice', 'errors' => []], 403);
         }
 
         try {
@@ -155,6 +185,7 @@ class InvoiceController extends Controller
                 'items.*.designation' => 'required|string|max:255',
                 'items.*.quantite' => 'required|integer|min:1',
                 'items.*.prix_unitaire' => 'required|numeric|min:0',
+                'items.*.taux_tva' => 'required|numeric|min:0|max:100',
             ]);
 
             DB::beginTransaction();
@@ -173,20 +204,24 @@ class InvoiceController extends Controller
                 $invoice->invoiceItems()->delete();
 
                 $total_ht = 0;
+                $total_tva = 0;
 
                 foreach ($validated['items'] as $itemData) {
                     $montant_ligne = $itemData['quantite'] * $itemData['prix_unitaire'];
                     $total_ht += $montant_ligne;
 
+                    $ligne_tva = $montant_ligne * ($itemData['taux_tva'] / 100);
+                    $total_tva += $ligne_tva;
+
                     $invoice->invoiceItems()->create([
                         'designation' => $itemData['designation'],
                         'quantite' => $itemData['quantite'],
                         'prix_unitaire' => $itemData['prix_unitaire'],
+                        'taux_tva' => $itemData['taux_tva'],
                         'montant_ligne' => $montant_ligne,
                     ]);
                 }
 
-                $total_tva = $total_ht * 0.20;
                 $total_ttc = $total_ht + $total_tva;
 
                 $invoice->update([
@@ -201,7 +236,7 @@ class InvoiceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Invoice updated successfully',
-                'data' => $invoice->load('invoiceItems', 'client')
+                'data' => $invoice->load('invoiceItems', 'client', 'user')
             ]);
             
         } catch (ValidationException $e) {
@@ -240,7 +275,16 @@ class InvoiceController extends Controller
 
         $invoice->load('client', 'invoiceItems', 'user');
 
-        $pdf = Pdf::loadView('pdf.invoice', compact('invoice'));
+        $logoData = null;
+        if ($invoice->user && $invoice->user->logo_url) {
+            $logoData = Cache::remember('user_logo_b64_' . $invoice->user->id, 86400, function () use ($invoice) {
+                $context = stream_context_create(['http' => ['timeout' => 3]]);
+                $image = @file_get_contents($invoice->user->logo_url, false, $context);
+                return $image ? 'data:image/png;base64,' . base64_encode($image) : null;
+            });
+        }
+
+        $pdf = Pdf::loadView('pdf.invoice', compact('invoice', 'logoData'));
 
         return $pdf->download('facture_' . $invoice->numero . '.pdf');
     }
@@ -255,15 +299,54 @@ class InvoiceController extends Controller
             return response()->json(['success' => false, 'message' => 'Client has no email address', 'errors' => []], 400);
         }
 
+        $user = auth()->user();
+        $cacheKey = "user_emails_sent_" . $user->id;
+        $sentTimestamps = [];
+
+        // Quota check for free users: maximum 3 emails per rolling 24 hours
+        if ($user->statut_abonnement !== 'actif') {
+            $sentTimestamps = Cache::get($cacheKey, []);
+            $now = time();
+            $oneDayAgo = $now - 86400;
+
+            // Filter out timestamps older than 24 hours
+            $sentTimestamps = array_filter($sentTimestamps, function ($timestamp) use ($oneDayAgo) {
+                return $timestamp >= $oneDayAgo;
+            });
+
+            if (count($sentTimestamps) >= 3) {
+                return response()->json([
+                    'message' => 'Payment required to access this feature.',
+                    'error' => 'quota_exceeded'
+                ], 403);
+            }
+        }
+
         try {
             $invoice->load('client', 'invoiceItems', 'user');
-            $pdf = Pdf::loadView('pdf.invoice', compact('invoice'));
+
+            $logoData = null;
+            if ($invoice->user && $invoice->user->logo_url) {
+                $logoData = Cache::remember('user_logo_b64_' . $invoice->user->id, 86400, function () use ($invoice) {
+                    $context = stream_context_create(['http' => ['timeout' => 3]]);
+                    $image = @file_get_contents($invoice->user->logo_url, false, $context);
+                    return $image ? 'data:image/png;base64,' . base64_encode($image) : null;
+                });
+            }
+
+            $pdf = Pdf::loadView('pdf.invoice', compact('invoice', 'logoData'));
             $pdfContent = $pdf->output();
 
             Mail::to($invoice->client->email)->send(new InvoiceMail($invoice, $pdfContent));
 
             // update invoice status to sent (envoyee)
             $invoice->update(['statut' => 'envoyee']);
+
+            // Persist the email count if successfully sent
+            if ($user->statut_abonnement !== 'actif') {
+                $sentTimestamps[] = time();
+                Cache::put($cacheKey, array_values($sentTimestamps), 86400);
+            }
 
             return response()->json([
                 'success' => true,

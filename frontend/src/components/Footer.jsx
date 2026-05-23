@@ -70,7 +70,7 @@ export default function Footer() {
           <div className="flex gap-4">
             <a href="#" className="w-10 h-10 rounded-full bg-[#526e9c]/10 text-[#526e9c] hover:bg-[#18adf2] hover:text-white flex items-center justify-center transition-all"><Globe size={18} /></a>
             <a href="#" className="w-10 h-10 rounded-full bg-[#526e9c]/10 text-[#526e9c] hover:bg-[#221ab7] hover:text-white flex items-center justify-center transition-all"><MessageCircle size={18} /></a>
-            <a href="#" className="w-10 h-10 rounded-full bg-[#526e9c]/10 text-[#526e9c] hover:bg-gray-800 hover:text-white flex items-center justify-center transition-all"><Mail size={18} /></a>
+            <a href="mailto:smartinvoicep@gmail.com" className="w-10 h-10 rounded-full bg-[#526e9c]/10 text-[#526e9c] hover:bg-gray-800 hover:text-white flex items-center justify-center transition-all"><Mail size={18} /></a>
           </div>
         </div>
 

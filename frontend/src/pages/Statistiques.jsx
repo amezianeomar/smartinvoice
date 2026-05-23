@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   TrendingUp, TrendingDown, Activity, FileText,
   Users, Clock, Loader2, ArrowUpRight, AlertTriangle, Inbox
@@ -6,6 +6,7 @@ import {
 import MonthlySalesChart from '../components/dashboard/MonthlySalesChart';
 import api from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
+import { useQuery } from '@tanstack/react-query';
 
 // Helper to format values elegantly
 function formatNumber(value) {
@@ -257,28 +258,17 @@ function RevenueLineChart({ chartData }) {
 // ─── Main Statistiques Page ───
 export default function Statistiques() {
   const { t } = useLanguage();
-  const [stats, setStats] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchAdvancedStats = async () => {
-      try {
-        const res = await api.get('/dashboard/advanced-stats');
-        if (res.data.success) {
-          setStats(res.data.data);
-        } else {
-          setError(t('stats.error'));
-        }
-      } catch (err) {
-        console.error('Advanced statistics fetch error:', err);
-        setError(t('stats.networkError'));
-      } finally {
-        setIsLoading(false);
+  const { data: stats, isLoading, error } = useQuery({
+    queryKey: ['stats'],
+    queryFn: async () => {
+      const res = await api.get('/dashboard/advanced-stats');
+      if (res.data.success) {
+        return res.data.data;
       }
-    };
-    fetchAdvancedStats();
-  }, []);
+      throw new Error(t('stats.error'));
+    }
+  });
 
   if (isLoading) {
     return (
@@ -296,7 +286,7 @@ export default function Statistiques() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3 text-center max-w-sm">
           <AlertTriangle className="text-red-400" size={40} />
-          <p className="text-[#0F172A] dark:text-white font-bold">{error}</p>
+          <p className="text-[#0F172A] dark:text-white font-bold">{error?.message || t('stats.networkError')}</p>
         </div>
       </div>
     );

@@ -90,6 +90,7 @@ class SettingsController extends Controller
                 'patente' => 'nullable|string|max:255',
                 'taux_tva_defaut' => 'nullable|string|max:255',
                 'adresse_siege' => 'nullable|string|max:255',
+                'remove_watermark' => 'nullable|boolean',
             ]);
 
             $user = $request->user();

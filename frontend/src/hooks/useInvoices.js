@@ -1,53 +1,57 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 
 export default function useInvoices() {
-  const [invoices, setInvoices] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
-  const fetchInvoices = useCallback(async (params = {}) => {
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const res = await api.get('/invoices', { params });
-      setInvoices(res.data?.data || []);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Impossible de charger les factures.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchInvoices();
-  }, [fetchInvoices]);
+  const { data: invoices = [], isLoading, error, refetch: fetchInvoices } = useQuery({
+    queryKey: ['invoices'],
+    queryFn: async () => {
+      const res = await api.get('/invoices');
+      return res.data?.data || [];
+    },
+  });
 
   const fetchInvoice = useCallback(async (id) => {
     const res = await api.get(`/invoices/${id}`);
     return res.data?.data;
   }, []);
 
-  const createInvoice = useCallback(async (payload) => {
-    const res = await api.post('/invoices', payload);
-    const created = res.data?.data;
+  const createMutation = useMutation({
+    mutationFn: async (payload) => {
+      const res = await api.post('/invoices', payload);
+      return res.data?.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
 
-    if (created) {
-      setInvoices((prev) => [created, ...prev]);
-    }
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, payload }) => {
+      const res = await api.put(`/invoices/${id}`, payload);
+      return res.data?.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
 
-    return created;
-  }, []);
-
-  const deleteInvoice = useCallback(async (id) => {
-    await api.delete(`/invoices/${id}`);
-    setInvoices((prev) => prev.filter((invoice) => invoice.id !== id));
-  }, []);
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      await api.delete(`/invoices/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
 
   const downloadInvoicePdf = useCallback(async (invoice) => {
     const res = await api.get(`/invoices/${invoice.id}/pdf`, { responseType: 'blob' });
-
     const fileName = `facture_${invoice.numero || invoice.id}.pdf`;
     const blobUrl = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
     const link = document.createElement('a');
@@ -66,28 +70,25 @@ export default function useInvoices() {
     setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
   }, []);
 
-  const sendInvoiceEmail = useCallback(async (invoiceId) => {
-    const res = await api.post(`/invoices/${invoiceId}/send-email`);
-
-    setInvoices((prev) =>
-      prev.map((invoice) =>
-        invoice.id === invoiceId ? { ...invoice, statut: 'envoyee' } : invoice
-      )
-    );
-
-    return res.data;
-  }, []);
+  const sendEmailMutation = useMutation({
+    mutationFn: async (invoiceId) => {
+      const res = await api.post(`/invoices/${invoiceId}/send-email`);
+      return res.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['invoices'] }),
+  });
 
   return {
     invoices,
     isLoading,
-    error,
+    error: error ? (error.response?.data?.message || 'Impossible de charger les factures.') : '',
     fetchInvoices,
     fetchInvoice,
-    createInvoice,
-    deleteInvoice,
+    createInvoice: createMutation.mutateAsync,
+    updateInvoice: (id, payload) => updateMutation.mutateAsync({ id, payload }),
+    deleteInvoice: deleteMutation.mutateAsync,
     downloadInvoicePdf,
     viewInvoicePdf,
-    sendInvoiceEmail,
+    sendInvoiceEmail: sendEmailMutation.mutateAsync,
   };
 }

@@ -14,6 +14,7 @@ class InvoiceItem extends Model
         'designation',
         'quantite',
         'prix_unitaire',
+        'taux_tva',
         'montant_ligne',
     ];
 

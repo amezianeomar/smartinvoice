@@ -240,7 +240,8 @@ export default function FacturesList() {
                    <th className="px-4 py-4 font-bold">{t('invoicesList.dueDate')}</th>
                    <th className="px-4 py-4 font-bold">{t('invoicesList.amount')}</th>
                    <th className="px-4 py-4 font-bold">{t('invoicesList.status')}</th>
-                   <th className="px-4 py-4 font-bold text-center">{t('invoicesList.actions')}</th>                </tr>
+                   <th className="px-4 py-4 font-bold text-center">{t('invoicesList.actions')}</th>
+                </tr>
              </thead>
              <tbody className="divide-y divide-[#526e9c]/10">
                 {filteredInvoices.map((inv) => {
@@ -250,7 +251,7 @@ export default function FacturesList() {
                          <td className="px-4 py-4">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 rounded-xl bg-[#526e9c]/10 flex items-center justify-center text-[#526e9c] group-hover:bg-[#18adf2]/10 group-hover:text-[#18adf2] transition-colors"><FileText size={18}/></div>
-                               <button onClick={() => handleView(inv)} className="font-bold text-[#18adf2] hover:underline text-left truncate">{inv.numero}</button>
+                               <button onClick={() => navigate(`/dashboard/factures/${inv.id}`)} className="font-bold text-[#18adf2] hover:underline text-left truncate">{inv.numero}</button>
                             </div>
                          </td>
                          <td className="px-4 py-4 text-[#526e9c] font-medium">{inv.client?.nom || '-'}</td>
@@ -264,11 +265,13 @@ export default function FacturesList() {
                          </td>
                          <td className="px-4 py-4">
                             <InvoiceActions
-                              onView={() => handleView(inv)}
+                              onView={() => navigate(`/dashboard/factures/${inv.id}`)}
+                              onEdit={() => navigate(`/dashboard/factures/${inv.id}/edit`)}
                               onDownload={() => handleDownload(inv)}
                               onSendEmail={() => handleSendEmail(inv)}
                               onDelete={() => handleDelete(inv)}
                               busy={busyInvoiceId === inv.id}
+                              disableEdit={['payee', 'payée'].includes(String(inv.statut).toLowerCase())}
                             />
                          </td>
                       </tr>
@@ -295,6 +298,7 @@ export default function FacturesList() {
       <ResendConfirmationModal
         isOpen={!!resendInvoice}
         invoice={resendInvoice}
+        isLoading={busyInvoiceId === resendInvoice?.id}
         onClose={() => setResendInvoice(null)}
         onConfirm={() => executeSendEmail(resendInvoice)}
       />

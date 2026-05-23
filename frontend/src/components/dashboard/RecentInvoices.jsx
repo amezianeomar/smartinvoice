@@ -61,11 +61,13 @@ export default function RecentInvoices({ invoices = [] }) {
         <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr className="border-b border-[#526e9c]/20 text-[11px] uppercase tracking-widest text-[#526e9c]">
-              <th className="pb-4 font-bold pl-2">{t('dashboard.invoiceNumber') || 'N° Facture'}</th>              <th className="pb-4 font-bold">{t('dashboard.client')}</th>
+              <th className="pb-4 font-bold pl-2">{t('dashboard.invoiceNumber') || 'N° Facture'}</th>
+              <th className="pb-4 font-bold">{t('dashboard.client')}</th>
               <th className="pb-4 font-bold">{t('dashboard.date')}</th>
               <th className="pb-4 font-bold">{t('dashboard.amount')}</th>
               <th className="pb-4 font-bold">{t('dashboard.status')}</th>
-              <th className="pb-4 font-bold text-right pr-2">{t('dashboard.action') || 'Action'}</th>            </tr>
+              <th className="pb-4 font-bold text-right pr-2">{t('dashboard.action') || 'Action'}</th>
+            </tr>
           </thead>
           <tbody className="divide-y divide-[#526e9c]/10">
             {invoices.map((invoice, index) => (

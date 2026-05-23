@@ -4,10 +4,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Checkout() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
@@ -24,7 +26,7 @@ export default function Checkout() {
   const handlePayment = async (e) => {
     e.preventDefault();
     if (!cardNumber || !expiry || !cvc || !cardName) {
-      setError("Veuillez remplir tous les champs de la carte.");
+      setError(t('checkout.errorFields'));
       return;
     }
 
@@ -59,7 +61,7 @@ export default function Checkout() {
 
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || err.message || "Erreur lors du traitement du paiement.");
+      setError(err.response?.data?.message || err.message || t('checkout.errorProcess'));
       setIsLoading(false);
     }
   };
@@ -108,30 +110,30 @@ export default function Checkout() {
           className="w-full lg:w-1/3 bg-[#0F172A]/60 backdrop-blur-xl rounded-[2rem] border border-white/10 p-8 flex flex-col shadow-2xl"
         >
           <Link to="/select-plan" className="inline-flex items-center gap-2 text-sm text-[#94A3B8] hover:text-white transition-colors mb-8">
-            <ArrowLeft size={16} /> Changer d'abonnement
+            <ArrowLeft size={16} /> {t('checkout.back')}
           </Link>
 
-          <h2 className="text-xl font-black text-white mb-6">Résumé de la commande</h2>
+          <h2 className="text-xl font-black text-white mb-6">{t('checkout.summaryTitle')}</h2>
           
           <div className="flex justify-between items-center mb-4">
             <div>
               <p className="font-bold text-white">{planName}</p>
-              <p className="text-sm text-[#94A3B8]">Abonnement Mensuel</p>
+              <p className="text-sm text-[#94A3B8]">{t('checkout.monthlySub')}</p>
             </div>
-            <span className="font-black text-white">{price} DH</span>
+            <span className="font-black text-white">{price} {t('checkout.payButton').includes('MAD') ? 'MAD' : 'DH'}</span>
           </div>
 
           <div className="border-t border-white/10 my-4 pt-4">
             <div className="flex justify-between items-center">
-              <p className="font-bold text-white text-lg">Total</p>
-              <span className="font-black text-[#18adf2] text-xl">{price} DH</span>
+              <p className="font-bold text-white text-lg">{t('checkout.total')}</p>
+              <span className="font-black text-[#18adf2] text-xl">{price} {t('checkout.payButton').includes('MAD') ? 'MAD' : 'DH'}</span>
             </div>
           </div>
 
           <div className="mt-auto pt-8 flex items-start gap-3">
             <ShieldCheck className="text-[#18adf2] flex-shrink-0" size={20} />
             <p className="text-xs text-[#94A3B8] leading-relaxed">
-              Vos paiements sont sécurisés. Nous utilisons un cryptage SSL 256 bits pour protéger vos informations.
+              {t('checkout.securePayment')}
             </p>
           </div>
         </motion.div>
@@ -146,8 +148,8 @@ export default function Checkout() {
               <CreditCard size={24} className="text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-white">Paiement</h2>
-              <p className="text-[#94A3B8] text-sm">Entrez vos informations de carte</p>
+              <h2 className="text-2xl font-black text-white">{t('checkout.paymentTitle')}</h2>
+              <p className="text-[#94A3B8] text-sm">{t('checkout.paymentSubtitle')}</p>
             </div>
           </div>
 
@@ -162,7 +164,7 @@ export default function Checkout() {
             
             {/* Cardholder Name */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Nom sur la carte</label>
+              <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t('checkout.cardName')}</label>
               <div className="relative group/input">
                 <input 
                   type="text" 
@@ -176,7 +178,7 @@ export default function Checkout() {
 
             {/* Card Number */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Numéro de carte</label>
+              <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t('checkout.cardNumber')}</label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                   {/* Fake Visa/Mastercard Icon */}
@@ -199,7 +201,7 @@ export default function Checkout() {
             {/* Expiry and CVC */}
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-white/80 uppercase tracking-wider">Date d'exp.</label>
+                <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t('checkout.expiry')}</label>
                 <div className="relative group/input">
                   <input 
                     type="text" 
@@ -213,7 +215,7 @@ export default function Checkout() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-white/80 uppercase tracking-wider">CVC</label>
+                <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t('checkout.cvc')}</label>
                 <div className="relative group/input">
                   <input 
                     type="text" 
@@ -235,10 +237,10 @@ export default function Checkout() {
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin relative z-10" size={20} />
-                  <span className="relative z-10">Traitement en cours...</span>
+                  <span className="relative z-10">{t('checkout.processing')}</span>
                 </>
               ) : (
-                <span className="relative z-10">Payer {price} DH</span>
+                <span className="relative z-10">{t('checkout.payButton').replace('{price}', price)}</span>
               )}
             </button>
           </form>
