@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+//import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import './index.css'
 import App from './App.jsx'
 
@@ -27,7 +27,7 @@ createRoot(document.getElementById('root')).render(
             <App />
           </LanguageProvider>
         </AuthProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>,
