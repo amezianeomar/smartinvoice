@@ -101,12 +101,21 @@ export const AuthProvider = ({ children }) => {
   // Forgot Password method
   const forgotPassword = async (email) => {
     try {
-      const response = await api.post('/forgot-password', { email });
+      // Add a 10-second timeout specifically here so the UI doesn't hang forever 
+      // if the production SMTP server is misconfigured or unreachable.
+      const response = await api.post('/forgot-password', { email }, { timeout: 10000 });
       return { success: true, message: response.data.message };
     } catch (error) {
+      let errorMessage = error.response?.data?.message || "Une erreur est survenue";
+      
+      // Handle Axios timeout gracefully
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+         errorMessage = "Le serveur a mis trop de temps à répondre (Vérifiez la configuration email du serveur).";
+      }
+
       return {
         success: false,
-        error: error.response?.data?.message || "Une erreur est survenue",
+        error: errorMessage,
         errors: error.response?.data?.errors
       };
     }
