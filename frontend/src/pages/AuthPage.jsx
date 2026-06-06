@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Lock, User, ArrowRight, Zap, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,45 +25,87 @@ const staggerItem = {
 
 export default function AuthPage({ initialMode = 'login' }) {
   const { t } = useLanguage();
-  const [isLogin, setIsLogin] = useState(initialMode === 'login');
+  const [mode, setMode] = useState(initialMode); // 'login', 'register', 'forgot', 'reset'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [apiErrors, setApiErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const { login, register } = useAuth();
+  const { login, register, forgotPassword, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   // Password strength logic
   const strength = Math.min(Math.floor(password.length / 3), 3);
   const strengthColors = ['bg-red-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-400'];
 
+  // Sync mode if initialMode changes
+  useEffect(() => {
+    setMode(initialMode);
+    setApiErrors({});
+    setSuccessMessage('');
+  }, [initialMode]);
+
+  // Extract query params for reset password
+  useEffect(() => {
+    if (mode === 'reset') {
+      const params = new URLSearchParams(window.location.search);
+      const emailParam = params.get('email');
+      if (emailParam) {
+        setEmail(emailParam);
+      }
+    }
+  }, [mode]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setApiErrors({});
+    setSuccessMessage('');
 
-    const result = isLogin 
-      ? await login({ email, password })
-      : await register({ name, email, password, password_confirmation: passwordConfirmation });
+    let result;
+    if (mode === 'login') {
+      result = await login({ email, password });
+    } else if (mode === 'register') {
+      result = await register({ name, email, password, password_confirmation: passwordConfirmation });
+    } else if (mode === 'forgot') {
+      result = await forgotPassword(email);
+    } else if (mode === 'reset') {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      result = await resetPassword({ token, email, password, password_confirmation: passwordConfirmation });
+    }
 
     if (result.success) {
-      if (result.user?.role === 'admin') {
-         navigate('/admin');
-      } else if (isLogin) {
-        navigate('/dashboard');
-      } else {
+      if (mode === 'login') {
+        if (result.user?.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      } else if (mode === 'register') {
         navigate('/onboarding');
+      } else if (mode === 'forgot') {
+        setSuccessMessage(result.message || t("auth.forgotSuccess"));
+        setEmail('');
+        setIsLoading(false);
+      } else if (mode === 'reset') {
+        setSuccessMessage(result.message || t("auth.resetSuccessMessage"));
+        setTimeout(() => {
+          setMode('login');
+          setSuccessMessage('');
+          setPassword('');
+          setPasswordConfirmation('');
+        }, 3000);
+        setIsLoading(false);
       }
     } else {
-      // Fix 1: Properly handle truthy but empty error results (e.g. [])
       const errors = result.errors && Object.keys(result.errors).length > 0 
         ? result.errors 
         : { general: result.error };
       
-      // Fix 2: Map backend 'nom' to frontend 'name' for the validation UI
       if (errors.nom) {
         errors.name = errors.nom;
       }
@@ -72,6 +114,8 @@ export default function AuthPage({ initialMode = 'login' }) {
       setIsLoading(false);
     }
   };
+
+  const isFormLeft = mode === 'login' || mode === 'forgot' || mode === 'reset';
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[#030712] overflow-hidden font-sans relative">
@@ -91,7 +135,7 @@ export default function AuthPage({ initialMode = 'login' }) {
       </div>
 
       {/* Main Container */}
-      <div className={`relative w-full max-w-5xl ${isLogin ? 'h-[700px] lg:h-[650px]' : 'h-[900px] sm:h-[850px] lg:h-[750px]'} bg-[#0F172A]/80 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(34,26,183,0.2)] overflow-hidden flex flex-col lg:block transition-all duration-500`}>
+      <div className={`relative w-full max-w-5xl ${mode === 'register' ? 'h-[900px] sm:h-[850px] lg:h-[750px]' : 'h-[700px] lg:h-[650px]'} bg-[#0F172A]/80 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(34,26,183,0.2)] overflow-hidden flex flex-col lg:block transition-all duration-500`}>
         
         {/* Global Desktop Back button (Always on top) */}
         <div className="hidden lg:flex absolute top-8 right-8 z-[100] pointer-events-auto">
@@ -105,7 +149,7 @@ export default function AuthPage({ initialMode = 'login' }) {
         {/* ========================================================= */}
         <div 
           className={`absolute top-0 w-full lg:w-1/2 h-full z-20 flex flex-col justify-center p-8 sm:p-16 transition-all duration-[1200ms] ease-[cubic-bezier(0.87,0,0.13,1)] ${
-            isLogin ? 'left-0' : 'left-0 lg:translate-x-full'
+            isFormLeft ? 'left-0' : 'left-0 lg:translate-x-full'
           }`}
         >
           {/* Solid BG for the form panel to cover the background overlay */}
@@ -120,9 +164,9 @@ export default function AuthPage({ initialMode = 'login' }) {
             <a href="/" className="text-white/50 hover:text-white z-50 pointer-events-auto"><ArrowLeft size={20}/></a>
           </div>
 
-          <div className={`relative z-10 w-full max-w-sm mx-auto ${isLogin ? 'h-[500px]' : 'h-[700px] sm:h-[650px] lg:h-[650px]'} transition-all duration-500`}>
+          <div className={`relative z-10 w-full max-w-sm mx-auto ${mode === 'register' ? 'h-[700px] sm:h-[650px] lg:h-[650px]' : 'h-[500px]'} transition-all duration-500`}>
             <AnimatePresence mode="wait">
-              {isLogin ? (
+              {mode === 'login' && (
                 /* --- LOGIN FORM CONTENT --- */
                 <motion.div 
                   key="login" 
@@ -157,6 +201,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                       placeholder={t("auth.passwordPlaceholder")} 
                       forgotLink
                       forgotText={t("auth.forgot")} 
+                      onForgotClick={() => { setMode('forgot'); setApiErrors({}); setSuccessMessage(''); }}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       error={apiErrors.password?.[0]}
@@ -165,10 +210,12 @@ export default function AuthPage({ initialMode = 'login' }) {
                   </motion.form>
 
                   <motion.p variants={staggerItem} className="lg:hidden text-center text-sm text-[#94A3B8] mt-8">
-                    {t("auth.newText")} <button onClick={() => setIsLogin(false)} className="text-[#18adf2] font-bold">{t("auth.createAccountLink")}</button>
+                    {t("auth.newText")} <button onClick={() => setMode('register')} className="text-[#18adf2] font-bold">{t("auth.createAccountLink")}</button>
                   </motion.p>
                 </motion.div>
-              ) : (
+              )}
+
+              {mode === 'register' && (
                 /* --- REGISTER FORM CONTENT --- */
                 <motion.div 
                   key="register" 
@@ -249,8 +296,99 @@ export default function AuthPage({ initialMode = 'login' }) {
                   </motion.form>
 
                   <motion.p variants={staggerItem} className="lg:hidden text-center text-sm text-[#94A3B8] mt-8">
-                    {t("auth.alreadyMemberText")} <button onClick={() => setIsLogin(true)} className="text-[#18adf2] font-bold">{t("auth.loginLink")}</button>
+                    {t("auth.alreadyMemberText")} <button onClick={() => setMode('login')} className="text-[#18adf2] font-bold">{t("auth.loginLink")}</button>
                   </motion.p>
+                </motion.div>
+              )}
+
+              {mode === 'forgot' && (
+                /* --- FORGOT PASSWORD FORM CONTENT --- */
+                <motion.div 
+                  key="forgot" 
+                  variants={staggerContainer} 
+                  initial="hidden" animate="visible" exit="exit" 
+                  className="absolute inset-0 flex flex-col"
+                >
+                  <motion.h2 variants={staggerItem} className="text-3xl font-black text-white mb-2">{t('auth.forgotTitle')}</motion.h2>
+                  <motion.p variants={staggerItem} className="text-[#94A3B8] mb-8">{t('auth.forgotSubtitle')}</motion.p>
+                  
+                  {successMessage && (
+                    <motion.div variants={staggerItem} className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-bold mb-6">
+                      {successMessage}
+                    </motion.div>
+                  )}
+
+                  <motion.form variants={staggerItem} className="space-y-4 mt-2" onSubmit={handleSubmit}>
+                    <InputField 
+                      icon={Mail} 
+                      label={t("auth.emailLabel")} 
+                      type="email" 
+                      placeholder={t("auth.emailPlaceholder")} 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      error={apiErrors.email?.[0] || apiErrors.general}
+                    />
+                    <SubmitButton text={t("auth.sendResetLinkBtn")} isLoading={isLoading} />
+                  </motion.form>
+
+                  <motion.p variants={staggerItem} className="text-center text-sm text-[#94A3B8] mt-8">
+                    <button onClick={() => { setMode('login'); setApiErrors({}); setSuccessMessage(''); }} className="text-[#18adf2] font-bold hover:underline">{t("auth.backToLogin")}</button>
+                  </motion.p>
+                </motion.div>
+              )}
+
+              {mode === 'reset' && (
+                /* --- RESET PASSWORD FORM CONTENT --- */
+                <motion.div 
+                  key="reset" 
+                  variants={staggerContainer} 
+                  initial="hidden" animate="visible" exit="exit" 
+                  className="absolute inset-0 flex flex-col"
+                >
+                  <motion.h2 variants={staggerItem} className="text-3xl font-black text-white mb-2">{t('auth.resetPasswordTitle')}</motion.h2>
+                  <motion.p variants={staggerItem} className="text-[#94A3B8] mb-8">{t('auth.resetPasswordSubtitle')}</motion.p>
+                  
+                  {successMessage && (
+                    <motion.div variants={staggerItem} className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-bold mb-6">
+                      {successMessage}
+                    </motion.div>
+                  )}
+
+                  <motion.form variants={staggerItem} className="space-y-4 mt-2" onSubmit={handleSubmit}>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t("auth.passwordLabel")}</label>
+                      <div className="relative group/input">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Lock size={16} /></div>
+                        <input 
+                          type="password" 
+                          placeholder={t("auth.passwordPlaceholder")} 
+                          value={password} 
+                          onChange={(e) => setPassword(e.target.value)} 
+                          className={`w-full pl-11 pr-4 py-3 rounded-xl border ${apiErrors.password ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none`} 
+                        />
+                        <div className="absolute inset-0 border border-[#18adf2] rounded-xl opacity-0 scale-95 group-focus-within/input:opacity-100 group-focus-within/input:scale-100 transition-all duration-300 pointer-events-none shadow-[0_0_15px_rgba(24,173,242,0.3)]" />
+                      </div>
+                      {apiErrors.password && <p className="text-[10px] text-red-400 font-bold ml-1">{apiErrors.password[0]}</p>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{t("auth.confirmPasswordLabel")}</label>
+                      <div className="relative group/input">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors"><Lock size={16} /></div>
+                        <input 
+                          type="password" 
+                          placeholder={t("auth.passwordPlaceholder")} 
+                          value={passwordConfirmation} 
+                          onChange={(e) => setPasswordConfirmation(e.target.value)} 
+                          className={`w-full pl-11 pr-4 py-3 rounded-xl border ${apiErrors.password_confirmation ? 'border-red-500/50' : 'border-white/10'} bg-white/5 text-white placeholder-[#526e9c] focus:ring-2 focus:ring-[#18adf2] focus:border-transparent transition-all outline-none`} 
+                        />
+                        <div className="absolute inset-0 border border-[#18adf2] rounded-xl opacity-0 scale-95 group-focus-within/input:opacity-100 group-focus-within/input:scale-100 transition-all duration-300 pointer-events-none shadow-[0_0_15px_rgba(24,173,242,0.3)]" />
+                      </div>
+                      {apiErrors.password_confirmation && <p className="text-[10px] text-red-400 font-bold ml-1">{apiErrors.password_confirmation[0]}</p>}
+                    </div>
+
+                    <SubmitButton text={t("auth.resetBtn")} isLoading={isLoading} />
+                  </motion.form>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -262,7 +400,7 @@ export default function AuthPage({ initialMode = 'login' }) {
         {/* ========================================================= */}
         <div 
           className={`hidden lg:flex absolute top-0 w-1/2 h-full z-10 transition-all duration-[1200ms] ease-[cubic-bezier(0.87,0,0.13,1)] overflow-hidden ${
-            isLogin ? 'left-1/2' : 'left-0'
+            isFormLeft ? 'left-1/2' : 'left-0'
           }`}
         >
           {/* Deep Animated Gradient Mesh Background */}
@@ -279,7 +417,7 @@ export default function AuthPage({ initialMode = 'login' }) {
           <div className="relative w-full h-full flex flex-col items-center justify-center p-16 text-center z-20">
             
             <AnimatePresence mode="wait">
-              {isLogin ? (
+              {isFormLeft ? (
                 <motion.div 
                   key="overlay-login"
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -295,7 +433,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                     {t("auth.overlayNewSubtitle")}
                   </p>
                   <button 
-                    onClick={() => setIsLogin(false)}
+                    onClick={() => setMode('register')}
                     className="px-10 py-4 rounded-xl font-black text-white border-2 border-white/30 bg-white/10 backdrop-blur-md hover:bg-white hover:text-[#221ab7] transition-all duration-300 w-full max-w-xs shadow-xl"
                   >
                     {t("auth.overlayNewBtn")}
@@ -315,7 +453,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                     {t("auth.overlayWelcomeSubtitle")}
                   </p>
                   <button 
-                    onClick={() => setIsLogin(true)}
+                    onClick={() => setMode('login')}
                     className="px-10 py-4 rounded-xl font-black text-white border-2 border-white/30 bg-white/10 backdrop-blur-md hover:bg-white hover:text-[#221ab7] transition-all duration-300 w-full max-w-xs shadow-xl"
                   >
                     {t("auth.overlayWelcomeBtn")}
@@ -336,12 +474,20 @@ export default function AuthPage({ initialMode = 'login' }) {
 // HELPER COMPONENTS
 // ============================================================================
 
-function InputField({ icon: Icon, label, type, placeholder, forgotLink, forgotText, value, onChange, error }) {
+function InputField({ icon: Icon, label, type, placeholder, forgotLink, forgotText, onForgotClick, value, onChange, error }) {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center">
         <label className="text-xs font-bold text-white/80 uppercase tracking-wider">{label}</label>
-        {forgotLink && <a href="#" className="text-xs font-bold text-[#18adf2] hover:text-white transition-colors hover:underline">{forgotText || 'Oublié ?'}</a>}
+        {forgotLink && (
+          <button 
+            type="button" 
+            onClick={onForgotClick} 
+            className="text-xs font-bold text-[#18adf2] hover:text-white transition-colors hover:underline bg-transparent border-none cursor-pointer p-0"
+          >
+            {forgotText || 'Oublié ?'}
+          </button>
+        )}
       </div>
       <div className="relative group/input">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#526e9c] group-focus-within/input:text-[#18adf2] transition-colors z-10"><Icon size={16} /></div>

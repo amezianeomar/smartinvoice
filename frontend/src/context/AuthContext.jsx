@@ -98,8 +98,36 @@ export const AuthProvider = ({ children }) => {
     setToken(newToken);
   };
 
+  // Forgot Password method
+  const forgotPassword = async (email) => {
+    try {
+      const response = await api.post('/forgot-password', { email });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Une erreur est survenue",
+        errors: error.response?.data?.errors
+      };
+    }
+  };
+
+  // Reset Password method
+  const resetPassword = async (data) => {
+    try {
+      const response = await api.post('/reset-password', data);
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Une erreur est survenue",
+        errors: error.response?.data?.errors
+      };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, oauthLogin }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, oauthLogin, forgotPassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

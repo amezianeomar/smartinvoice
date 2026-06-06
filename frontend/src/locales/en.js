@@ -201,7 +201,16 @@ export const en = {
     overlayWelcomeTitle1: "Welcome",
     overlayWelcomeTitle2: "back!",
     overlayWelcomeSubtitle: "Log in to access your dashboard and track your cash flow evolution.",
-    overlayWelcomeBtn: "Log in"
+    overlayWelcomeBtn: "Log in",
+    forgotTitle: "Forgot Password?",
+    forgotSubtitle: "Enter your email address to receive a password reset link.",
+    sendResetLinkBtn: "Send reset link",
+    backToLogin: "Back to Log in",
+    forgotSuccess: "A password reset link has been sent to your email address.",
+    resetPasswordTitle: "Reset Password",
+    resetPasswordSubtitle: "Enter your new password below.",
+    resetBtn: "Reset password",
+    resetSuccessMessage: "Password reset successfully. Redirecting to login...",
   },
   sidebar: {
     mainMenu: "Main Menu",

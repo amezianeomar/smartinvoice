@@ -13,10 +13,14 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\OAuthController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\PasswordResetController;
 
 // Public Auth Routes
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->middleware('throttle:6,1');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:6,1');
+
 
 // OAuth Routes
 Route::get('/auth/{provider}/redirect', [OAuthController::class, 'redirect']);
