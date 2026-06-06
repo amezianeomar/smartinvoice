@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class PasswordResetController extends Controller
 {
@@ -39,7 +40,16 @@ class PasswordResetController extends Controller
                     ]
                 );
 
-                Mail::to($user->email)->send(new ResetPasswordMail($user, $token));
+                try {
+                    Mail::to($user->email)->send(new ResetPasswordMail($user, $token));
+                } catch (\Exception $e) {
+                    Log::error("Erreur lors de l'envoi de l'email de réinitialisation: " . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Impossible d\'envoyer l\'email. Veuillez vérifier la configuration de messagerie du serveur.',
+                        'error_details' => $e->getMessage()
+                    ], 500);
+                }
             }
 
             return response()->json([
