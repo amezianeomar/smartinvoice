@@ -197,7 +197,14 @@ export default function FacturesList() {
          <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                <h1 className="text-3xl font-black text-[#0F172A] dark:text-white mb-1 tracking-tight">{t('invoicesList.title')}</h1>
-               <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>         </div>
+               <p className="text-[#526e9c] text-sm font-medium">{t('invoicesList.subtitle')}</p>
+            </div>
+            <button 
+               onClick={() => navigate('/dashboard/factures/nouvelle')}
+               className="bg-gradient-to-r from-[#221ab7] to-[#18adf2] text-white px-5 py-2.5 rounded-xl font-bold shadow-[0_0_20px_rgba(24,173,242,0.3)] hover:shadow-[#18adf2]/50 transition-all hover:scale-105 active:scale-95"
+            >
+               {t('dashboard.newInvoiceBtn')}
+            </button>
          </div>
 
          <div className="rounded-3xl bg-white/70 dark:bg-[#131B2C]/70 backdrop-blur-xl border border-[#526e9c]/20 shadow-xl overflow-hidden flex flex-col min-h-[600px]">
