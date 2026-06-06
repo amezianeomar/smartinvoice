@@ -201,7 +201,16 @@ export const fr = {
     overlayWelcomeTitle1: "Content de",
     overlayWelcomeTitle2: "vous revoir !",
     overlayWelcomeSubtitle: "Connectez-vous pour accéder à votre tableau de bord et suivre l'évolution de votre trésorerie.",
-    overlayWelcomeBtn: "Se connecter"
+    overlayWelcomeBtn: "Se connecter",
+    forgotTitle: "Mot de passe oublié ?",
+    forgotSubtitle: "Saisissez votre adresse email pour recevoir un lien de réinitialisation.",
+    sendResetLinkBtn: "Envoyer le lien",
+    backToLogin: "Retour à la connexion",
+    forgotSuccess: "Un lien de réinitialisation a été envoyé à votre adresse email.",
+    resetPasswordTitle: "Réinitialiser le mot de passe",
+    resetPasswordSubtitle: "Saisissez votre nouveau mot de passe ci-dessous.",
+    resetBtn: "Mettre à jour",
+    resetSuccessMessage: "Mot de passe réinitialisé avec succès. Redirection...",
   },
   sidebar: {
     mainMenu: "Menu Principal",

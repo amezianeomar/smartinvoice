@@ -107,6 +107,10 @@ export default function App() {
           element={user && token ? <Navigate to={user.role === 'admin' ? "/admin" : (user.profession ? "/dashboard" : "/onboarding")} replace /> : <AuthPage initialMode="login" />} 
         />
         <Route 
+          path="/reset-password" 
+          element={user && token ? <Navigate to="/dashboard" replace /> : <AuthPage initialMode="reset" />} 
+        />
+        <Route 
           path="/register" 
           element={user && token ? <Navigate to={user.role === 'admin' ? "/admin" : (user.profession ? "/dashboard" : "/onboarding")} replace /> : <AuthPage initialMode="register" />} 
         />
