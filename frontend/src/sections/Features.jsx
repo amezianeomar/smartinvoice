@@ -163,7 +163,7 @@ const CrmMockup = () => {
 export default function Features() {
   const { t } = useLanguage();
   return (
-    <div className="relative max-w-7xl mx-auto px-6 py-32 z-10 space-y-40">
+    <section id="features" className="relative max-w-7xl mx-auto px-6 py-32 z-10 space-y-40">
       
       {/* FEATURE 1: INVOICING */}
       <motion.section 
@@ -294,6 +294,6 @@ export default function Features() {
         </div>
       </motion.section>
 
-    </div>
+    </section>
   );
 }
