@@ -143,9 +143,9 @@ export default function CreateInvoiceForm() {
             })),
          };
 
-         await createInvoice(payload);
+         const newInvoice = await createInvoice(payload);
          setSubmitMessage(t('createInvoice.successMsg'));
-         setTimeout(() => navigate('/dashboard/factures'), 900);
+         setTimeout(() => navigate(`/dashboard/factures/${newInvoice.id}`), 900);
       } catch (err) {
          if (err.response?.data?.error_code === 'INCOMPLETE_PROFILE') {
             setShowProfileModal(true);
