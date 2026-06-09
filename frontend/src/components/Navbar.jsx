@@ -45,6 +45,7 @@ export default function Navbar({ isDark, setIsDark }) {
         
         {/* Navigation Links - Hidden on Mobile */}
         <div className="hidden md:flex items-center gap-8">
+          <a href="#" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">{t('nav.home')}</a>
           <a href="#features" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">{t('nav.features')}</a>
           <a href="#pricing" className="text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors">{t('nav.pricing')}</a>
         </div>
@@ -64,6 +65,9 @@ export default function Navbar({ isDark, setIsDark }) {
               <Moon size={18} className="text-[#221ab7]" />
             )}
           </button>
+          <Link to="/login" className="hidden md:block text-sm font-bold text-[#526e9c] hover:text-[#18adf2] transition-colors mr-2">
+            {t('nav.login')}
+          </Link>
           
           <Link to="/register" className="hidden md:block">
             <Button variant="primary" size={isScrolled ? 'sm' : 'md'} className="rounded-full px-6">
@@ -91,6 +95,7 @@ export default function Navbar({ isDark, setIsDark }) {
             className="pointer-events-auto absolute top-[110%] w-[90%] left-[5%] p-2"
           >
             <div className="rounded-3xl bg-white/95 dark:bg-[#131B2C]/95 backdrop-blur-xl border border-[#526e9c]/20 shadow-2xl p-6 flex flex-col gap-6">
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">{t('nav.home')}</a>
               <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">{t('nav.features')}</a>
               <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#0F172A] dark:text-white border-b border-[#526e9c]/10 pb-4">{t('nav.pricing')}</a>
               <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-[#526e9c]">{t('nav.login')}</Link>

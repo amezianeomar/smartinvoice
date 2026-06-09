@@ -1,5 +1,6 @@
 export const fr = {
   nav: {
+    home: "Accueil",
     features: "Fonctionnalités",
     pricing: "Tarifs",
     login: "Se Connecter",
