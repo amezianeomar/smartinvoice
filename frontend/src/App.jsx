@@ -27,6 +27,7 @@ import AdminUsers from './pages/AdminUsers.jsx';
 import AdminSettings from './pages/AdminSettings.jsx';
 import AdminReports from './pages/AdminReports.jsx';
 import AdminMessages from './pages/AdminMessages.jsx';
+import NotFoundPage from './pages/NotFoundPage.jsx';
 
 /**
  * ProtectedRoute Wrapper
@@ -165,6 +166,9 @@ export default function App() {
            <Route path="rapports" element={<AdminReports />} />
            <Route path="messages" element={<AdminMessages />} />
         </Route>
+
+        {/* 404 Not Found Route - MUST be the very last route */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
     </div>

@@ -532,5 +532,11 @@ export const fr = {
     errNoItem: "Ajoutez au moins une ligne valide.",
     successMsg: "Facture créée avec succès. Redirection vers la liste...",
     errCreate: "Impossible de créer la facture."
+  },
+  notFound: {
+    title: "Page Introuvable",
+    subtitle: "Oups ! La page que vous recherchez n'existe pas ou a été déplacée.",
+    backHome: "Retour à l'accueil",
+    error: "Erreur 404"
   }
 };
